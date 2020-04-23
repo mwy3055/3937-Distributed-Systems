@@ -11,8 +11,6 @@ import kr.ac.konkuk.ccslab.cm.sns.CMSNSContent;
 import kr.ac.konkuk.ccslab.cm.sns.CMSNSContentList;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
-import project.WordChainInfo;
-import project.WordSendingEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,9 +21,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TestWinClientEventHandler implements CMAppEventHandler {
+public class TestClientEventHandler implements CMAppEventHandler {
     //private JTextArea m_outTextArea;
-    private TestWinClient m_client;
+    private TestClient m_client;
     private CMClientStub m_clientStub;
     private long m_lDelaySum;    // for forwarding simulation
     // for delay of SNS content downloading, distributed file processing, server response,
@@ -56,7 +54,7 @@ public class TestWinClientEventHandler implements CMAppEventHandler {
     private int m_nCurNumFilesPerSession;
 
 
-    public TestWinClientEventHandler(CMClientStub clientStub, TestWinClient client) {
+    public TestClientEventHandler(CMClientStub clientStub, TestClient client) {
         m_client = client;
         //m_outTextArea = textArea;
         m_clientStub = clientStub;
@@ -280,19 +278,9 @@ public class TestWinClientEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
-            case WordChainInfo.WORD_EVENT:
-                processWordEvent(cme);
-                break;
             default:
                 return;
         }
-    }
-
-    private void processWordEvent(CMEvent cme) {
-        WordSendingEvent event = (WordSendingEvent) cme;
-        String word = event.getWord();
-        printMessage("session(" + event.getHandlerSession() + "), group(" + event.getHandlerGroup() + ")\n");
-        printMessage("word: " + word + "\n");
     }
 
     private void processSessionEvent(CMEvent cme) {

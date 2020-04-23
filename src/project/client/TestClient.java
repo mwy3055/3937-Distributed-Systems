@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class TestWinClient extends JFrame {
+public class TestClient extends JFrame {
 
     private static final long serialVersionUID = 1L;
     //private JTextArea m_outTextArea;
@@ -45,9 +45,9 @@ public class TestWinClient extends JFrame {
     private JButton m_biFriendsButton;
     private MyMouseListener cmMouseListener;
     private CMClientStub m_clientStub;
-    private TestWinClientEventHandler m_eventHandler;
+    private TestClientEventHandler m_eventHandler;
 
-    TestWinClient() {
+    TestClient() {
         MyKeyListener cmKeyListener = new MyKeyListener();
         MyActionListener cmActionListener = new MyActionListener();
         cmMouseListener = new MyMouseListener();
@@ -150,7 +150,7 @@ public class TestWinClient extends JFrame {
 
         // create a CM object and set the event handler
         m_clientStub = new CMClientStub();
-        m_eventHandler = new TestWinClientEventHandler(m_clientStub, this);
+        m_eventHandler = new TestClientEventHandler(m_clientStub, this);
 
         // start CM
         testStartCM();
@@ -176,7 +176,7 @@ public class TestWinClient extends JFrame {
         return m_clientStub;
     }
 
-    public TestWinClientEventHandler getClientEventHandler() {
+    public TestClientEventHandler getClientEventHandler() {
         return m_eventHandler;
     }
 
@@ -4196,7 +4196,7 @@ public class TestWinClient extends JFrame {
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
-        TestWinClient client = new TestWinClient();
+        TestClient client = new TestClient();
         CMClientStub cmStub = client.getClientStub();
         cmStub.setAppEventHandler(client.getClientEventHandler());
     }

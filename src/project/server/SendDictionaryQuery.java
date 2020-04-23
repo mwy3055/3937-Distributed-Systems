@@ -21,13 +21,13 @@ public class SendDictionaryQuery implements Callable<Integer> {
         this.word = word;
     }
 
-    private static String queryURL(String word) {
+    private String getQueryURL() {
         final String word_id = word.toLowerCase();
         return "https://od-api.oxforddictionaries.com/api/v2/entries/en-us/" + word_id + "?fields=pronunciations&strictMatch=false";
     }
 
-    public int sendQuery() throws Exception {
-        String queryURL = queryURL(word);
+    private int sendQuery() throws Exception {
+        String queryURL = getQueryURL();
 
         Request request = new Request.Builder()
                 .header("Accept", "application/json")
@@ -68,18 +68,15 @@ public class SendDictionaryQuery implements Callable<Integer> {
 
         Gson gson = new Gson();
         APIResponse parsedResponse = gson.fromJson(response.body().string(), APIResponse.class);
-
         if (isNoun(parsedResponse)) {
-
             stringSet.add(word);
             return 1;
         } else {
-            System.out.println(word + " is not a noun.");
             return 0;
         }
     }
 
-    private static boolean isNoun(APIResponse response) {
+    private boolean isNoun(APIResponse response) {
         for (APIResponse.LexicalEntry entry : response.results.get(0).lexicalEntries) {
             if (entry.lexicalCategory.id.equalsIgnoreCase("noun")) {
                 return true;
