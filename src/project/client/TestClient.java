@@ -8,7 +8,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMEventManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
-import project.WordSendingEvent;
+import project.event.WordSendingEvent;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -887,9 +887,6 @@ public class TestClient extends JFrame {
 
         strInput = JOptionPane.showInputDialog("Input Message: ");
         if (strInput == null) return;
-
-        CMUserEvent userEvent = new CMUserEvent();
-        userEvent.setStringID(myself.getName());
 
         WordSendingEvent event = new WordSendingEvent();
         event.setHandlerSession(myself.getCurrentSession());

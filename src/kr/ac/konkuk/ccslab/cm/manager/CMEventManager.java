@@ -6,7 +6,8 @@ import kr.ac.konkuk.ccslab.cm.event.mqttevent.*;
 import kr.ac.konkuk.ccslab.cm.info.*;
 import kr.ac.konkuk.ccslab.cm.thread.CMEventReceiver;
 import project.WordChainInfo;
-import project.WordSendingEvent;
+import project.event.NextUserEvent;
+import project.event.WordSendingEvent;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -118,10 +119,13 @@ public class CMEventManager {
                         System.err.println("CMEventManager.unmarshallEvent(), unknown MQTT event ID: " + nEventID);
                         return null;
                 }
-                // from here
+            // WordChain custom event
             case WordChainInfo.WORD_EVENT:
                 WordSendingEvent wordEvent = new WordSendingEvent(buf);
                 return wordEvent;
+            case WordChainInfo.NEXT_USER_EVENT:
+                NextUserEvent nextUserEvent = new NextUserEvent(buf);
+                return nextUserEvent;
             default:
                 System.err.println("CMEventManager.unmarshallEvent(), unknown event type: " + nEventType);
                 return null;

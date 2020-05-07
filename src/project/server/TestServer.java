@@ -9,6 +9,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMConfigurator;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.sns.CMSNSUserAccessSimulator;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
+import project.event.NextUserEvent;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -175,6 +176,9 @@ public class TestServer extends JFrame {
         JMenuItem changeConfMenuItem = new JMenuItem("change configuration");
         changeConfMenuItem.addActionListener(menuListener);
         infoSubMenu.add(changeConfMenuItem);
+        JMenuItem showNextUserMenuItem = new JMenuItem("show next user");
+        showNextUserMenuItem.addActionListener(menuListener);
+        infoSubMenu.add(showNextUserMenuItem);
 
         serviceMenu.add(infoSubMenu);
 
@@ -1696,6 +1700,32 @@ public class TestServer extends JFrame {
         printMessage("\n");
     }
 
+    public void showNextUser() {
+        CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
+        System.out.println(String.format("Current session number: %d", interInfo.getSessionList().size()));
+        Iterator<CMSession> sessionIterator = interInfo.getSessionList().iterator();
+        while (sessionIterator.hasNext()) {
+            CMSession session = sessionIterator.next();
+            Iterator<CMGroup> iter = session.getGroupList().iterator();
+            while (iter.hasNext()) {
+                CMGroup gInfo = iter.next();
+                CMUser nextUser = gInfo.getNextUser();
+                if (nextUser == null) {
+                    printMessage(String.format("Session %s, group %s: has no next user.\n", session.getSessionName(), gInfo.getGroupName()));
+                } else {
+                    String userName = nextUser.getName();
+                    NextUserEvent nextUserEvent = new NextUserEvent(userName);
+                    nextUserEvent.setHandlerGroup(gInfo.getGroupName());
+                    nextUserEvent.setHandlerSession(session.getSessionName());
+                    m_serverStub.send(nextUserEvent, userName);
+
+                    printMessage(String.format("Session %s, group %s: Next user is %s\n", session.getSessionName(), gInfo.getGroupName(), userName));
+                }
+            }
+        }
+
+    }
+
 
     public class MyKeyListener implements KeyListener {
         public void keyPressed(KeyEvent e) {
@@ -1846,6 +1876,9 @@ public class TestServer extends JFrame {
                 case "print all retain info":
                     printAllMqttRetainInfo();
                     break;
+                case "show next user":
+                    showNextUser();
+                    break;
             }
         }
     }
@@ -1853,6 +1886,7 @@ public class TestServer extends JFrame {
     public static void main(String[] args) {
         TestServer server = new TestServer();
         CMServerStub cmStub = server.getServerStub();
+
         cmStub.setAppEventHandler(server.getServerEventHandler());
     }
 }

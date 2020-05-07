@@ -1,7 +1,8 @@
-package project;
+package project.event;
 
 import kr.ac.konkuk.ccslab.cm.event.CMEvent;
 import kr.ac.konkuk.ccslab.cm.info.CMInfo;
+import project.WordChainInfo;
 
 import java.nio.ByteBuffer;
 
@@ -10,7 +11,7 @@ public class WordSendingEvent extends CMEvent {
     private String word;
 
     public WordSendingEvent() {
-        this.m_nType = 990;
+        this.m_nType = WordChainInfo.WORD_EVENT;
         this.word = "";
     }
 

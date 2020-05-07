@@ -10,7 +10,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMDBManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
 import project.WordChainInfo;
-import project.WordSendingEvent;
+import project.event.WordSendingEvent;
 
 import java.io.*;
 import java.nio.channels.DatagramChannel;

@@ -11,6 +11,8 @@ import kr.ac.konkuk.ccslab.cm.sns.CMSNSContent;
 import kr.ac.konkuk.ccslab.cm.sns.CMSNSContentList;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
+import project.WordChainInfo;
+import project.event.NextUserEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -278,9 +280,17 @@ public class TestClientEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
+            case WordChainInfo.NEXT_USER_EVENT:
+                processNextUserEvent(cme);
+                break;
             default:
                 return;
         }
+    }
+
+    private void processNextUserEvent(CMEvent cme) {
+        NextUserEvent event = (NextUserEvent) cme;
+        printMessage(String.format("I am the next user of group %s, session %s.\n", event.getHandlerGroup(), event.getHandlerSession()));
     }
 
     private void processSessionEvent(CMEvent cme) {
