@@ -20,41 +20,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/midexam/MyClient.class" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/midexam/MyClientEventHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyActionListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyKeyListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyMenuListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyMouseListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClientEventHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/NextUserEvent.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/WordSendingEvent.class" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/midexam/MyClient.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/midexam/MyClientEventHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/project/event/NextUserEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/cm.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/cm.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-client.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroup.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroup.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMember.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMember.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordSendingEvent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyActionListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyActionListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyKeyListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyKeyListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyMenuListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyMenuListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyMouseListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyMouseListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyActionListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyActionListener.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyKeyListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyKeyListener.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyMenuListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyMenuListener.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServerEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServerEventHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/WordSendingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/TestClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/TestClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/TestClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/TestClientEventHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/server/TestServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/TestServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/server/TestServerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/TestServerEventHandler.java" afterDir="false" />
     </list>
@@ -113,6 +97,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="project.client" />
       <recent name="project.server" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
@@ -122,26 +107,13 @@
       <recent name="E:\code\3937 Distributed Systems" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestClient">
+  <component name="RunManager" selected="Application.WordChainClient">
     <configuration name="CMWinClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="test.CMWinClient" />
       <module name="3937 Distributed Systems" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="project.server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="CMWinServer (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test.CMWinServer" />
-      <module name="3937 Distributed Systems" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -188,13 +160,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="WordChainClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="project.client.WordChainClient" />
+      <module name="3937 Distributed Systems" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="project.client.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.TestClient" />
+        <item itemvalue="Application.WordChainClient" />
         <item itemvalue="Application.TestServer" />
+        <item itemvalue="Application.TestClient" />
         <item itemvalue="Application.MyClient" />
         <item itemvalue="Application.CMWinClient" />
-        <item itemvalue="Application.CMWinServer (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -234,7 +219,11 @@
       <workItem from="1588834634678" duration="487000" />
       <workItem from="1588835147803" duration="52000" />
       <workItem from="1588835223427" duration="72000" />
-      <workItem from="1588835323411" duration="335000" />
+      <workItem from="1588835323411" duration="735000" />
+      <workItem from="1589351888945" duration="599000" />
+      <workItem from="1589712406953" duration="486000" />
+      <workItem from="1589712919680" duration="3806000" />
+      <workItem from="1589716879878" duration="747000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -278,7 +267,28 @@
       <option name="project" value="LOCAL" />
       <updated>1587637546110</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="0507&#10;&#10;그룹에서 해당 유저의 다음 유저가 누구인지를 알려주는 코드 작성&#10;    - NextUserEvent &#10;    - 서버는 TestServer.showNextUser()가 호출되었을 때, 모든 세션에 있는 모든 그룹의 다음 유저 클라이언트에게 이벤트를 보냄&#10;    - 클라이언트가 이벤트를 받으면 화면에 메시지를 출력함&#10;    - 향후 이벤트를 받았을 때 단어를 입력할 수 있도록 수정해야 함&#10;    - 이벤트를 처리하기 위해 CMEventManager를 수정함">
+      <created>1588836025896</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1588836025896</updated>
+    </task>
+    <task id="LOCAL-00008" summary="0507 class file commit">
+      <created>1588836044500</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1588836044500</updated>
+    </task>
+    <task id="LOCAL-00009" summary="0517&#10;&#10;클라이언트를 GUI에서 CLI 방식으로 변경">
+      <created>1589715921247</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1589715921247</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -304,14 +314,17 @@
     <MESSAGE value="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함" />
     <MESSAGE value="0423&#10;&#10;클라이언트/서버 클래스 이름 수정&#10;그 외 간단히 코드 정리" />
     <MESSAGE value="gitignore 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="gitignore 추가" />
+    <MESSAGE value="0507&#10;&#10;그룹에서 해당 유저의 다음 유저가 누구인지를 알려주는 코드 작성&#10;    - NextUserEvent &#10;    - 서버는 TestServer.showNextUser()가 호출되었을 때, 모든 세션에 있는 모든 그룹의 다음 유저 클라이언트에게 이벤트를 보냄&#10;    - 클라이언트가 이벤트를 받으면 화면에 메시지를 출력함&#10;    - 향후 이벤트를 받았을 때 단어를 입력할 수 있도록 수정해야 함&#10;    - 이벤트를 처리하기 위해 CMEventManager를 수정함" />
+    <MESSAGE value="0507 class file commit" />
+    <MESSAGE value="0517&#10;&#10;클라이언트를 GUI에서 CLI 방식으로 변경" />
+    <option name="LAST_COMMIT_MESSAGE" value="0517&#10;&#10;클라이언트를 GUI에서 CLI 방식으로 변경" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser" timestamp="1588831587945">
+    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser" timestamp="1589716644840">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1588831587945" />
+    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1589716644840" />
     <state x="559" y="115" key="CommitChangelistDialog2" timestamp="1587281701416">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -328,22 +341,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1585108926410" />
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1588834599014">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1589716855547">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588834599014" />
-    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1588834599014">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589716855547" />
+    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1589716855547">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588834599014" />
-    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1588834599014">
+    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589716855547" />
+    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1589716855547">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588834599014" />
-    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1588834599014">
+    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589716855547" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1589716855547">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588834599014" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589716855547" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1587472330340">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -368,14 +381,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1588835121576" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1587637555289">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1589715924730">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1587637555289" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589715924730" />
     <state x="665" y="411" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1587281372770">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="665" y="411" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1920.1040@0.0.1920.1040" timestamp="1587281372770" />
+    <state x="633" y="307" key="git4idea.merge.GitPullDialog" timestamp="1589715983775">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="633" y="307" key="git4idea.merge.GitPullDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589715983775" />
     <state x="339" y="130" key="new project wizard" timestamp="1587212924351">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

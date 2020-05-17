@@ -95,6 +95,7 @@ public class TestServerEventHandler implements CMAppEventHandler {
         Future<Integer> result = m_executorService.submit(query);
 
         int rtnValue = -2;
+        int lifeChange = -1, scoreChange;
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -104,19 +105,22 @@ public class TestServerEventHandler implements CMAppEventHandler {
             case -2:
                 printMessage("Dictionary API connection error!\n");
                 break;
-            case -1:
+            case WordChainInfo.RESULT_DUPLICATION:
                 printMessage(word + " already exists.\n");
                 break;
-            case 0:
+            case WordChainInfo.RESULT_NOTNOUN:
                 printMessage(word + " is not a noun.\n");
                 break;
-            case 1:
+            case WordChainInfo.RESULT_OK:
                 printMessage(word + " is a noun.\n");
+                scoreChange = 100; // TODO: implement score calculation method
+                lifeChange = 0;
                 break;
             default:
                 printMessage("ELSE\n");
-                return;
+                break;
         }
+        m_server.sendQueryResult(wordEvent.getSender(), word, rtnValue, 100, lifeChange);
     }
 
     private void processSessionEvent(CMEvent cme) {

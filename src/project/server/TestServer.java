@@ -10,6 +10,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.sns.CMSNSUserAccessSimulator;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
 import project.event.NextUserEvent;
+import project.event.WordResultEvent;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -28,6 +29,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TestServer extends JFrame {
 
@@ -40,6 +43,8 @@ public class TestServer extends JFrame {
     private CMServerStub m_serverStub;
     private TestServerEventHandler m_eventHandler;
     private CMSNSUserAccessSimulator m_uaSim;
+
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     TestServer() {
 
@@ -1724,6 +1729,12 @@ public class TestServer extends JFrame {
             }
         }
 
+    }
+
+    public void sendQueryResult(String userName, String word, int resultCode, int scoreChange, int lifeChange) {
+        CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
+        WordResultEvent resultEvent = new WordResultEvent(resultCode, word, scoreChange, lifeChange);
+        m_serverStub.send(resultEvent, userName);
     }
 
 

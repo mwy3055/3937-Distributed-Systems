@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import project.WordChainInfo;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -70,9 +71,9 @@ public class SendDictionaryQuery implements Callable<Integer> {
         APIResponse parsedResponse = gson.fromJson(response.body().string(), APIResponse.class);
         if (isNoun(parsedResponse)) {
             stringSet.add(word);
-            return 1;
+            return WordChainInfo.RESULT_OK;
         } else {
-            return 0;
+            return WordChainInfo.RESULT_NOTNOUN;
         }
     }
 
@@ -88,7 +89,7 @@ public class SendDictionaryQuery implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         if (stringSet.contains(word)) {
-            return -1;
+            return WordChainInfo.RESULT_DUPLICATION;
         }
         return sendQuery();
     }
