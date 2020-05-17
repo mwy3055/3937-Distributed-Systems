@@ -1731,9 +1731,9 @@ public class TestServer extends JFrame {
 
     }
 
-    public void sendQueryResult(String userName, String word, int resultCode, int scoreChange, int lifeChange) {
+    public void sendQueryResult(String userName, String word, int resultCode, int scoreChange) {
         CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
-        WordResultEvent resultEvent = new WordResultEvent(resultCode, word, scoreChange, lifeChange);
+        WordResultEvent resultEvent = new WordResultEvent(resultCode, word, scoreChange);
         m_serverStub.send(resultEvent, userName);
     }
 

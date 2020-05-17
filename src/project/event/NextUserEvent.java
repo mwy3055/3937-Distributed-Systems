@@ -20,7 +20,7 @@ public class NextUserEvent extends CMEvent {
     }
 
     public NextUserEvent(String userName) {
-        this.m_nType = WordChainInfo.NEXT_USER_EVENT;
+        this.m_nType = WordChainInfo.EVENT_NEXTUSER;
         this.userName = userName;
     }
 

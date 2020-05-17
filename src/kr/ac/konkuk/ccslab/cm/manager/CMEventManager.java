@@ -120,10 +120,10 @@ public class CMEventManager {
                         return null;
                 }
             // WordChain custom event
-            case WordChainInfo.WORD_EVENT:
+            case WordChainInfo.EVENT_SEND_WORD:
                 WordSendingEvent wordEvent = new WordSendingEvent(buf);
                 return wordEvent;
-            case WordChainInfo.NEXT_USER_EVENT:
+            case WordChainInfo.EVENT_NEXTUSER:
                 NextUserEvent nextUserEvent = new NextUserEvent(buf);
                 return nextUserEvent;
             default:

@@ -78,7 +78,7 @@ public class TestServerEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
-            case WordChainInfo.WORD_EVENT:
+            case WordChainInfo.EVENT_SEND_WORD:
                 processWordEvent(cme);
                 break;
             default:
@@ -95,7 +95,7 @@ public class TestServerEventHandler implements CMAppEventHandler {
         Future<Integer> result = m_executorService.submit(query);
 
         int rtnValue = -2;
-        int lifeChange = -1, scoreChange;
+        int scoreChange;
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -114,13 +114,13 @@ public class TestServerEventHandler implements CMAppEventHandler {
             case WordChainInfo.RESULT_OK:
                 printMessage(word + " is a noun.\n");
                 scoreChange = 100; // TODO: implement score calculation method
-                lifeChange = 0;
                 break;
             default:
                 printMessage("ELSE\n");
                 break;
         }
-        m_server.sendQueryResult(wordEvent.getSender(), word, rtnValue, 100, lifeChange);
+        m_server.sendQueryResult(wordEvent.getSender(), word, rtnValue, 100);
+        // TODO: user status update(score...)
     }
 
     private void processSessionEvent(CMEvent cme) {

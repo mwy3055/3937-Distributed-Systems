@@ -13,6 +13,7 @@ import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
 import project.WordChainInfo;
 import project.event.NextUserEvent;
+import project.event.WordResultEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,9 +24,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TestClientEventHandler implements CMAppEventHandler {
+public class WordChainClientEventHandler implements CMAppEventHandler {
     //private JTextArea m_outTextArea;
-    private TestClient m_client;
+    private WordChainClient m_client;
     private CMClientStub m_clientStub;
     private long m_lDelaySum;    // for forwarding simulation
     // for delay of SNS content downloading, distributed file processing, server response,
@@ -56,7 +57,7 @@ public class TestClientEventHandler implements CMAppEventHandler {
     private int m_nCurNumFilesPerSession;
 
 
-    public TestClientEventHandler(CMClientStub clientStub, TestClient client) {
+    public WordChainClientEventHandler(CMClientStub clientStub, WordChainClient client) {
         m_client = client;
         //m_outTextArea = textArea;
         m_clientStub = clientStub;
@@ -280,9 +281,11 @@ public class TestClientEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
-            case WordChainInfo.NEXT_USER_EVENT:
+            case WordChainInfo.EVENT_NEXTUSER:
                 processNextUserEvent(cme);
                 break;
+            case WordChainInfo.EVENT_RESULT_WORD:
+                processReplyWordEvent(cme);
             default:
                 return;
         }
@@ -291,6 +294,23 @@ public class TestClientEventHandler implements CMAppEventHandler {
     private void processNextUserEvent(CMEvent cme) {
         NextUserEvent event = (NextUserEvent) cme;
         printMessage(String.format("I am the next user of group %s, session %s.\n", event.getHandlerGroup(), event.getHandlerSession()));
+    }
+
+    private void processReplyWordEvent(CMEvent cme) {
+        WordResultEvent resultEvent = (WordResultEvent) cme;
+        String word = resultEvent.getWord();
+        int resultCode = resultEvent.getResultCode();
+        int scoreChange = resultEvent.getScoreChange();
+
+        if (resultCode == WordChainInfo.RESULT_OK) {
+            printMessage(String.format("[Server] %s is valid. You got %d scores!", word, scoreChange));
+        } else if (resultCode == WordChainInfo.RESULT_NOTNOUN) {
+            printMessage(String.format("[Server] %s is not a noun. Your life will decrease by 1.", word));
+        } else if (resultCode == WordChainInfo.RESULT_DUPLICATION) {
+            printMessage(String.format("[Server] Someone already said %s. Your life will decrease by 1.", word));
+        } else if (resultCode == WordChainInfo.RESULT_TIMEOUT) {
+            printMessage(String.format("[Server] Timeout! Your life will decrease by 1."));
+        }
     }
 
     private void processSessionEvent(CMEvent cme) {
@@ -307,12 +327,6 @@ public class TestClientEventHandler implements CMAppEventHandler {
                 } else {
                     printMessage("This client successfully logs in to the default server.\n");
                     CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
-
-                    // Change the title of the client window
-                    m_client.setTitle("CM Client [" + interInfo.getMyself().getName() + "]");
-
-                    // Set the appearance of buttons in the client frame window
-                    m_client.setButtonsAccordingToClientState();
                 }
                 break;
             case CMSessionEvent.RESPONSE_SESSION_INFO:
@@ -329,7 +343,6 @@ public class TestClientEventHandler implements CMAppEventHandler {
             case CMSessionEvent.JOIN_SESSION_ACK:
                 lDelay = System.currentTimeMillis() - m_lStartTime;
                 printMessage("JOIN_SESSION_ACK delay: " + lDelay + " ms.\n");
-                m_client.setButtonsAccordingToClientState();
                 break;
             case CMSessionEvent.ADD_NONBLOCK_SOCKET_CHANNEL_ACK:
                 if (se.getReturnCode() == 0) {
@@ -398,16 +411,13 @@ public class TestClientEventHandler implements CMAppEventHandler {
                 }
                 break;
             case CMSessionEvent.UNEXPECTED_SERVER_DISCONNECTION:
-                m_client.printStyledMessage("Unexpected disconnection from ["
-                        + se.getChannelName() + "] with key[" + se.getChannelNum() + "]!\n", "bold");
-                m_client.setButtonsAccordingToClientState();
-                m_client.setTitle("CM Client");
+                printMessage("Unexpected disconnection from ["
+                        + se.getChannelName() + "] with key[" + se.getChannelNum() + "]!");
+
                 break;
             case CMSessionEvent.INTENTIONALLY_DISCONNECT:
-                m_client.printStyledMessage("Intentionally disconnected all channels from ["
-                        + se.getChannelName() + "]!\n", "bold");
-                m_client.setButtonsAccordingToClientState();
-                m_client.setTitle("CM Client");
+                printMessage("Intentionally disconnected all channels from ["
+                        + se.getChannelName() + "]!");
                 break;
             default:
                 return;
@@ -1245,7 +1255,7 @@ public class TestClientEventHandler implements CMAppEventHandler {
 			e.printStackTrace();
 		}
 		*/
-        m_client.printMessage(strText);
+        System.out.println(strText);
 
         return;
     }
@@ -1258,13 +1268,13 @@ public class TestClientEventHandler implements CMAppEventHandler {
 	*/
 
     private void printImage(String strPath) {
-        m_client.printImage(strPath);
+
     }
 
     private void printFilePath(String strPath) {
-        m_client.printFilePath(strPath);
+
     }
-	
+
 	/*
 	private void setMessage(String strText)
 	{

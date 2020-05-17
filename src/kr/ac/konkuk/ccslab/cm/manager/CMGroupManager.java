@@ -263,7 +263,7 @@ public class CMGroupManager {
                     case CMInterestEvent.USER_TALK:
                         processUSER_TALK(msg, cmInfo);
                         break;
-                    case WordChainInfo.NEXT_USER_EVENT:
+                    case WordChainInfo.EVENT_NEXTUSER:
                         System.out.println(String.format("CMGroupManager.processEvent(), NextUserEvent."));
                         break;
                     default:

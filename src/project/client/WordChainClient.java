@@ -8,7 +8,6 @@ import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import project.event.WordSendingEvent;
-import test.CMClientEventHandler;
 
 import javax.swing.*;
 import java.io.*;
@@ -23,13 +22,13 @@ import java.util.*;
 
 public class WordChainClient {
     private CMClientStub m_clientStub;
-    private CMClientEventHandler m_eventHandler;
+    private WordChainClientEventHandler m_eventHandler;
     private boolean m_bRun;
     private Scanner m_scan = null;
 
     public WordChainClient() {
         m_clientStub = new CMClientStub();
-        m_eventHandler = new CMClientEventHandler(m_clientStub);
+        m_eventHandler = new WordChainClientEventHandler(m_clientStub, this);
         m_bRun = true;
     }
 
@@ -37,7 +36,7 @@ public class WordChainClient {
         return m_clientStub;
     }
 
-    public CMClientEventHandler getClientEventHandler() {
+    public WordChainClientEventHandler getClientEventHandler() {
         return m_eventHandler;
     }
 
