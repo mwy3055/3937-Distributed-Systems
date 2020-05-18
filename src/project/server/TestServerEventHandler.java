@@ -90,6 +90,8 @@ public class TestServerEventHandler implements CMAppEventHandler {
         CMConfigurationInfo confInfo = m_serverStub.getCMInfo().getConfigurationInfo();
         WordSendingEvent wordEvent = (WordSendingEvent) cme;
         String word = wordEvent.getWord();
+        printMessage(String.format("User %s from group %s, session %s sent word %s.\n",
+                wordEvent.getSender(), wordEvent.getHandlerGroup(), wordEvent.getHandlerSession(),word));
 
         SendDictionaryQuery query = new SendDictionaryQuery(word);
         Future<Integer> result = m_executorService.submit(query);
@@ -106,13 +108,13 @@ public class TestServerEventHandler implements CMAppEventHandler {
                 printMessage("Dictionary API connection error!\n");
                 break;
             case WordChainInfo.RESULT_DUPLICATION:
-                printMessage(word + " already exists.\n");
+                printMessage(String.format("%s already exists.\n", word));
                 break;
             case WordChainInfo.RESULT_NOTNOUN:
-                printMessage(word + " is not a noun.\n");
+                printMessage(String.format("%s is not a noun.\n", word));
                 break;
             case WordChainInfo.RESULT_OK:
-                printMessage(word + " is a noun.\n");
+                printMessage(String.format("%s is a noun.\n", word));
                 scoreChange = 100; // TODO: implement score calculation method
                 break;
             default:

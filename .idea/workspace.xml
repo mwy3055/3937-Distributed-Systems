@@ -20,7 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
+      <change afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.project" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/3937 Distributed Systems.eml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cm-server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-server.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyActionListener.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/client/TestClient$MyKeyListener.class" beforeDir="false" />
@@ -35,14 +42,7 @@
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServerEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServerEventHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/TestClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/NextUserEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/NextUserEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/TestServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/TestServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/server/TestServerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/TestServerEventHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -227,6 +227,7 @@
       <workItem from="1589712406953" duration="486000" />
       <workItem from="1589712919680" duration="3806000" />
       <workItem from="1589716879878" duration="2168000" />
+      <workItem from="1589768215030" duration="1739000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -352,22 +353,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1585108926410" />
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1589719049935">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1589769912710">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589719049935" />
-    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1589719049935">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589769912710" />
+    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1589769912710">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589719049935" />
-    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1589719049935">
+    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589769912710" />
+    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1589769912710">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589719049935" />
-    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1589719049935">
+    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589769912710" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1589769912710">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589719049935" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589769912710" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1587472330340">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

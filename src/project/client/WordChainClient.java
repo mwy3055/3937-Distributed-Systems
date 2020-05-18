@@ -336,7 +336,6 @@ public class WordChainClient {
         System.out.print("Type word: ");
         try {
             strInput = br.readLine();
-            br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -349,7 +348,7 @@ public class WordChainClient {
         m_clientStub.send(event, "SERVER");
         event = null;
 
-        System.out.println("======word sending event: " + strInput);
+        System.out.println(String.format("====== send %s to server", strInput));
     }
 
     public void printAllMenus() {

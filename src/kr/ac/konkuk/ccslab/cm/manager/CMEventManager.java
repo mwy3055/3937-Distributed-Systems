@@ -7,6 +7,7 @@ import kr.ac.konkuk.ccslab.cm.info.*;
 import kr.ac.konkuk.ccslab.cm.thread.CMEventReceiver;
 import project.WordChainInfo;
 import project.event.NextUserEvent;
+import project.event.WordResultEvent;
 import project.event.WordSendingEvent;
 
 import java.net.InetSocketAddress;
@@ -126,6 +127,9 @@ public class CMEventManager {
             case WordChainInfo.EVENT_NEXTUSER:
                 NextUserEvent nextUserEvent = new NextUserEvent(buf);
                 return nextUserEvent;
+            case WordChainInfo.EVENT_RESULT_WORD:
+                WordResultEvent wordResultEvent = new WordResultEvent(buf);
+                return wordResultEvent;
             default:
                 System.err.println("CMEventManager.unmarshallEvent(), unknown event type: " + nEventType);
                 return null;
