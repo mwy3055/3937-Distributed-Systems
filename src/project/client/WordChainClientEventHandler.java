@@ -291,12 +291,20 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         }
     }
 
+    // TODO: process GameStartEvent
+
+    // TODO: process GameFinishEvent
+
+    // TODO: process TimeOutEvent
+
+
     private void processNextUserEvent(CMEvent cme) {
         NextUserEvent event = (NextUserEvent) cme;
         printMessage(String.format("I am the next user of group %s, session %s.\n", event.getHandlerGroup(), event.getHandlerSession()));
     }
 
     private void processReplyWordEvent(CMEvent cme) {
+        // TODO of leader: is this event mine?
         WordResultEvent resultEvent = (WordResultEvent) cme;
         String word = resultEvent.getWord();
         int resultCode = resultEvent.getResultCode();

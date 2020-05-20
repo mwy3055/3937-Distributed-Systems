@@ -1,5 +1,8 @@
 package project;
 
+/**
+ *  Constants, other shared values of WordChain project.
+ */
 public class WordChainInfo {
 
     /* results of SendDictionaryQuery */

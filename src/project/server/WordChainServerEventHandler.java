@@ -21,8 +21,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class TestServerEventHandler implements CMAppEventHandler {
-    private TestServer m_server;
+public class WordChainServerEventHandler implements CMAppEventHandler {
+    private WordChainServer m_server;
     private CMServerStub m_serverStub;
     private int m_nCheckCount;    // for internal forwarding simulation
     private boolean m_bDistFileProc;    // for distributed file processing
@@ -36,7 +36,7 @@ public class TestServerEventHandler implements CMAppEventHandler {
 
     private ExecutorService m_executorService = Executors.newSingleThreadExecutor();
 
-    public TestServerEventHandler(CMServerStub serverStub, TestServer server) {
+    public WordChainServerEventHandler(CMServerStub serverStub, WordChainServer server) {
         m_server = server;
         m_serverStub = serverStub;
         m_nCheckCount = 0;
@@ -92,12 +92,13 @@ public class TestServerEventHandler implements CMAppEventHandler {
         String word = wordEvent.getWord();
         printMessage(String.format("User %s from group %s, session %s sent word %s.\n",
                 wordEvent.getSender(), wordEvent.getHandlerGroup(), wordEvent.getHandlerSession(),word));
+        // TODO: receive event if time is over?
 
         SendDictionaryQuery query = new SendDictionaryQuery(word);
         Future<Integer> result = m_executorService.submit(query);
 
         int rtnValue = -2;
-        int scoreChange;
+        int scoreChange = 0;
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -121,7 +122,7 @@ public class TestServerEventHandler implements CMAppEventHandler {
                 printMessage("ELSE\n");
                 break;
         }
-        m_server.sendQueryResult(wordEvent.getSender(), word, rtnValue, 100);
+        m_server.sendQueryResult(wordEvent.getSender(), word, rtnValue, scoreChange);
         // TODO: user status update(score...)
     }
 
@@ -766,13 +767,5 @@ public class TestServerEventHandler implements CMAppEventHandler {
 		*/
         m_server.printMessage(strText);
     }
-	
-	/*
-	private void setMessage(String strText)
-	{
-		m_outTextArea.setText(strText);
-		m_outTextArea.setCaretPosition(m_outTextArea.getDocument().getLength());
-	}
-	*/
 
 }

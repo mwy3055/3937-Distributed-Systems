@@ -351,6 +351,15 @@ public class WordChainClient {
         System.out.println(String.format("====== send %s to server", strInput));
     }
 
+    // TODO: if server starts the game, execute this method
+    public void playGame() {
+        // TODO: deactivate the input line(JTextArea?)
+
+        // TODO: follow the server's instruction until game is over
+
+        // TODO: after game finished: what to do? logout? terminate client?
+    }
+
     public void printAllMenus() {
         System.out.println("---------------------------------- Help");
         System.out.println("0: show all menus");

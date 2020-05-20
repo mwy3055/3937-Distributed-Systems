@@ -46,6 +46,10 @@ public class CMGroup extends CMGroupInfo {
         m_membershipKey = key;
     }
 
+    public synchronized CMUser getCurrentUser() {
+        return currentUser;
+    }
+
     public synchronized CMUser getNextUser() {
         if (m_groupUsers.isEmpty()) {
             currentIndex = -2;

@@ -32,7 +32,7 @@ import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TestServer extends JFrame {
+public class WordChainServer extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,12 +41,12 @@ public class TestServer extends JFrame {
     private JTextField m_inTextField;
     private JButton m_startStopButton;
     private CMServerStub m_serverStub;
-    private TestServerEventHandler m_eventHandler;
+    private WordChainServerEventHandler m_eventHandler;
     private CMSNSUserAccessSimulator m_uaSim;
 
     private ExecutorService executor = Executors.newCachedThreadPool();
 
-    TestServer() {
+    WordChainServer() {
 
         MyKeyListener cmKeyListener = new MyKeyListener();
         MyActionListener cmActionListener = new MyActionListener();
@@ -87,7 +87,7 @@ public class TestServer extends JFrame {
 
         // create CM stub object and set the event handler
         m_serverStub = new CMServerStub();
-        m_eventHandler = new TestServerEventHandler(m_serverStub, this);
+        m_eventHandler = new WordChainServerEventHandler(m_serverStub, this);
         m_uaSim = new CMSNSUserAccessSimulator();
 
         // start cm
@@ -108,7 +108,7 @@ public class TestServer extends JFrame {
         return m_serverStub;
     }
 
-    public TestServerEventHandler getServerEventHandler() {
+    public WordChainServerEventHandler getServerEventHandler() {
         return m_eventHandler;
     }
 
@@ -1705,15 +1705,24 @@ public class TestServer extends JFrame {
         printMessage("\n");
     }
 
-    public void showNextUser() {
+    /**
+     * Test method to get next user of a group
+     * should not be called while implementing
+     */
+    public void showNextUser(String groupName, String sessionName) {
         CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
-        System.out.println(String.format("Current session number: %d", interInfo.getSessionList().size()));
         Iterator<CMSession> sessionIterator = interInfo.getSessionList().iterator();
         while (sessionIterator.hasNext()) {
             CMSession session = sessionIterator.next();
+            if (!session.getSessionName().equals(sessionName)) {
+                continue;
+            }
             Iterator<CMGroup> iter = session.getGroupList().iterator();
             while (iter.hasNext()) {
                 CMGroup gInfo = iter.next();
+                if (!gInfo.getGroupName().equals(groupName)) {
+                    continue;
+                }
                 CMUser nextUser = gInfo.getNextUser();
                 if (nextUser == null) {
                     printMessage(String.format("Session %s, group %s: has no next user.\n", session.getSessionName(), gInfo.getGroupName()));
@@ -1728,11 +1737,9 @@ public class TestServer extends JFrame {
                 }
             }
         }
-
     }
 
     public void sendQueryResult(String userName, String word, int resultCode, int scoreChange) {
-        CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
         WordResultEvent resultEvent = new WordResultEvent(resultCode, word, scoreChange);
         m_serverStub.send(resultEvent, userName);
     }
@@ -1887,15 +1894,76 @@ public class TestServer extends JFrame {
                 case "print all retain info":
                     printAllMqttRetainInfo();
                     break;
-                case "show next user":
-                    showNextUser();
-                    break;
             }
         }
     }
 
+    public class GameControl {
+        private String groupName;
+        private String sessionName;
+
+        private CMSession currentSession;
+        private CMGroup currentGroup;
+
+        private int turnLeft = 30;
+
+        public GameControl(String groupName, String sessionName) {
+            this.groupName = groupName;
+            this.sessionName = sessionName;
+
+            CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
+            Iterator<CMSession> sessionIterator = interInfo.getSessionList().iterator();
+            while (sessionIterator.hasNext()) {
+                CMSession session = sessionIterator.next();
+                if (session.getSessionName().equals(sessionName)) {
+                    currentSession = session;
+                    break;
+                }
+            }
+            if (currentSession == null) {
+                printMessage("Unable to get session object!");
+                System.exit(1);
+            }
+
+            Iterator<CMGroup> groupIterator = currentSession.getGroupList().iterator();
+            while (groupIterator.hasNext()) {
+                CMGroup group = groupIterator.next();
+                if (group.getGroupName().equals(groupName)) {
+                    currentGroup = group;
+                    break;
+                }
+            }
+            if (currentGroup == null) {
+                printMessage("Unable to get group object!");
+                System.exit(1);
+            }
+        }
+
+        // main function
+        public void start() {
+            // TODO: notify game is started to all users in group
+
+            // TODO: show random alphabet to start with
+
+            // TODO: main loop
+            while (turnLeft > 0) {
+                // TODO: give the next user a turn to type word
+                // TODO: wait 5 seconds for a response
+
+                // TODO: handle WordSendingEvent of user if time is not over, at WordChainServerEventHandler.processWordEvent()
+                // TODO: developing(leader)
+
+                // TODO: if time is over, decrease user's life by 1 and notify to all users
+
+                turnLeft--;
+            }
+
+            // TODO: game finished, show result
+        }
+    }
+
     public static void main(String[] args) {
-        TestServer server = new TestServer();
+        WordChainServer server = new WordChainServer();
         CMServerStub cmStub = server.getServerStub();
 
         cmStub.setAppEventHandler(server.getServerEventHandler());
