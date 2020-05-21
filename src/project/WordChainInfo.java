@@ -14,6 +14,7 @@ public class WordChainInfo {
     public static final int EVENT_SEND_WORD = 990;
     public static final int EVENT_NEXTUSER = 991;
     public static final int EVENT_RESULT_WORD = 992;
-
-
+    public static final int EVENT_START_GAME = 993;
+    public static final int EVENT_FINISH_GAME = 994;
+    public static final int EVENT_TIME_OVER = 995;
 }

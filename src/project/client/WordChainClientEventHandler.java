@@ -286,17 +286,29 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 break;
             case WordChainInfo.EVENT_RESULT_WORD:
                 processReplyWordEvent(cme);
+            case WordChainInfo.EVENT_START_GAME:
+                processGameStartEvent(cme);
+            case WordChainInfo.EVENT_FINISH_GAME:
+                processGameFinishEvent(cme);
+            case WordChainInfo.EVENT_TIME_OVER:
+                processTimeOutEvent(cme);
             default:
                 return;
         }
     }
 
     // TODO: process GameStartEvent
+    private void processGameStartEvent(CMEvent cme) {
 
+    }
     // TODO: process GameFinishEvent
+    private void processGameFinishEvent(CMEvent cme) {
 
+    }
     // TODO: process TimeOutEvent
+    private void processTimeOutEvent(CMEvent cme) {
 
+    }
 
     private void processNextUserEvent(CMEvent cme) {
         NextUserEvent event = (NextUserEvent) cme;
