@@ -12,8 +12,7 @@ import kr.ac.konkuk.ccslab.cm.sns.CMSNSContentList;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
 import project.WordChainInfo;
-import project.event.NextUserEvent;
-import project.event.WordResultEvent;
+import project.event.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -286,12 +285,16 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 break;
             case WordChainInfo.EVENT_RESULT_WORD:
                 processReplyWordEvent(cme);
+                break;
             case WordChainInfo.EVENT_START_GAME:
                 processGameStartEvent(cme);
+                break;
             case WordChainInfo.EVENT_FINISH_GAME:
                 processGameFinishEvent(cme);
+                break;
             case WordChainInfo.EVENT_TIME_OVER:
                 processTimeOutEvent(cme);
+                break;
             default:
                 return;
         }
@@ -299,15 +302,15 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
     // TODO: process GameStartEvent
     private void processGameStartEvent(CMEvent cme) {
-
+        GameStartEvent event = (GameStartEvent) cme;
     }
     // TODO: process GameFinishEvent
     private void processGameFinishEvent(CMEvent cme) {
-
+        GameFinishEvent event = (GameFinishEvent) cme;
     }
     // TODO: process TimeOutEvent
     private void processTimeOutEvent(CMEvent cme) {
-
+        TimeOutEvent event = (TimeOutEvent) cme;
     }
 
     private void processNextUserEvent(CMEvent cme) {

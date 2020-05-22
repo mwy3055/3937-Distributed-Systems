@@ -20,150 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/project/event/GameFinishEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/project/event/GameStartEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/project/event/TimeOutEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-client.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-server.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/META-INF/3937 Distributed Systems.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMChannelInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMChannelInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroup.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroup.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroupInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroupInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMList.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMember.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMember.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMessage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMqttSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMqttSession.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMqttTopicQoS.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMqttTopicQoS.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMqttWill.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMMqttWill.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMObject.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMPoint3f.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMPoint3f.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMPosition.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMPosition.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMQuat.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMQuat.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMRecvFileInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMRecvFileInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMSendFileInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMSendFileInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMServerInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMServerInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMSession.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMSessionInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMSessionInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMTransFileInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMTransFileInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMUnknownChannelInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMUnknownChannelInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMUser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMBlockingEventQueue.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMBlockingEventQueue.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMConcurrencyEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMConcurrencyEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMConsistencyEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMConsistencyEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMDataEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMDataEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMDummyEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMDummyEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMEventSynchronizer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMEventSynchronizer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMFileEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMFileEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMInterestEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMInterestEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMMultiServerEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMMultiServerEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMSNSEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMSNSEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMSessionEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMSessionEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMUserEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMUserEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMUserEventField.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/CMUserEventField.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/handler/CMAppEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/handler/CMAppEventHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/handler/CMEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/handler/CMEventHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/handler/CMMqttEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/handler/CMMqttEventHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventCONNACK.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventCONNACK.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventCONNECT.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventCONNECT.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventDISCONNECT.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventDISCONNECT.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventFixedHeader.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventFixedHeader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPINGREQ.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPINGREQ.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPINGRESP.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPINGRESP.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBACK.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBACK.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBCOMP.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBCOMP.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBLISH.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBLISH.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBREC.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBREC.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBREL.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventPUBREL.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventSUBACK.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventSUBACK.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventSUBSCRIBE.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventSUBSCRIBE.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventUNSUBACK.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventUNSUBACK.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventUNSUBSCRIBE.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/event/mqttevent/CMMqttEventUNSUBSCRIBE.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMCommInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMCommInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMConfigurationInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMConfigurationInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMDBInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMDBInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMEventInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMEventInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMFileTransferInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMFileTransferInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMInteractionInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMInteractionInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMMqttInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMMqttInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMSNSInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMSNSInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMThreadInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/info/CMThreadInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMCommManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMCommManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMConfigurator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMConfigurator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMDBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMDBManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMFileTransferManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMFileTransferManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMInteractionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMInteractionManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMMqttManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMMqttManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMSNSManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMSNSManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMServiceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMServiceManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMSessionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMSessionManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttach.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttach.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachAccessHistory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachAccessHistory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachAccessHistoryList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachAccessHistoryList.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachHashtable.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachHashtable.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSAttachList.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSContent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSContent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSContentList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSContentList.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSPrefetchHashMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSPrefetchHashMap.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSPrefetchList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSPrefetchList.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSUserAccessSimulator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/sns/CMSNSUserAccessSimulator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMClientStub.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMServerStub.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMServerStub.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMStub$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMStub$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMStub$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMStub$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMStub.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/stub/CMStub.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMByteReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMByteReceiver.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMByteSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMByteSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMClientKeepAliveTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMClientKeepAliveTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMEventReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMEventReceiver.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMOpenChannelTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMOpenChannelTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMRecvFileTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMRecvFileTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMRemoveChannelTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMRemoveChannelTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMSendFileTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMSendFileTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMServerKeepAliveTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/thread/CMServerKeepAliveTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/util/CMEndianness.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/util/CMEndianness.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/util/CMUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/util/CMUtil.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/NextUserEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/NextUserEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/WordSendingEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/WordSendingEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$LexicalCategory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$LexicalCategory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$LexicalEntry.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$LexicalEntry.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$Metadata.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$Metadata.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$Result.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse$Result.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/APIResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/SendDictionaryQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/SendDictionaryQuery.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyKeyListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyMenuListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServerEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMClientApp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMClientEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMMqttEventTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMServerApp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMServerEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyKeyListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyMenuListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyMouseListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClientEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer$MyActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer$MyKeyListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer$MyMenuListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServerEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
     </list>
@@ -418,7 +278,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589717715427</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
+      <created>1590034231169</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1590034231169</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -427,11 +294,41 @@
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
+        <entry key="1">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
           </value>
         </entry>
+      </map>
+    </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="1" value="TOOL_WINDOW" />
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
@@ -441,14 +338,14 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="first commit" />
     <MESSAGE value="0419&#10;&#10;옥스포드 사전 API에 연결하여 단어가 명사인지 판별하는 기능 추가&#10;  - 단어의 여러 뜻 중 명사 뜻이 하나라도 있다면 명사로 간주&#10;처음 입력된 단어는 HashSet에 저장하여 중복을 방지하는 기능 추가" />
-    <MESSAGE value="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함" />
     <MESSAGE value="0423&#10;&#10;클라이언트/서버 클래스 이름 수정&#10;그 외 간단히 코드 정리" />
     <MESSAGE value="gitignore 추가" />
     <MESSAGE value="0507&#10;&#10;그룹에서 해당 유저의 다음 유저가 누구인지를 알려주는 코드 작성&#10;    - NextUserEvent &#10;    - 서버는 TestServer.showNextUser()가 호출되었을 때, 모든 세션에 있는 모든 그룹의 다음 유저 클라이언트에게 이벤트를 보냄&#10;    - 클라이언트가 이벤트를 받으면 화면에 메시지를 출력함&#10;    - 향후 이벤트를 받았을 때 단어를 입력할 수 있도록 수정해야 함&#10;    - 이벤트를 처리하기 위해 CMEventManager를 수정함" />
     <MESSAGE value="0507 class file commit" />
     <MESSAGE value="0517&#10;&#10;클라이언트를 GUI에서 CLI 방식으로 변경" />
     <MESSAGE value="temporary commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="temporary commit" />
+    <MESSAGE value="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함" />
+    <option name="LAST_COMMIT_MESSAGE" value="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -525,10 +422,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="665" y="411" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1920.1040@0.0.1920.1040" timestamp="1587281372770" />
-    <state x="445" y="258" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1590033291822">
+    <state x="445" y="258" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1590160430574">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state x="445" y="258" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.689@0.0.1280.689" timestamp="1590033291822" />
+    <state x="445" y="258" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.689@0.0.1280.689" timestamp="1590160430574" />
     <state x="633" y="307" key="git4idea.merge.GitPullDialog" timestamp="1589717750866">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

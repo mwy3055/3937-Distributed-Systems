@@ -353,6 +353,8 @@ public class WordChainClient {
 
     // TODO: if server starts the game, execute this method
     public void playGame() {
+
+
         // TODO: deactivate the input line(JTextArea?)
 
         // TODO: follow the server's instruction until game is over
