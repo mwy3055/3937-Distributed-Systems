@@ -10,6 +10,7 @@ public class CMGroup extends CMGroupInfo {
 
     private int currentIndex;
     private CMUser currentUser;
+    private CMUser groupAdmin;
 
     public CMGroup() {
         super();
@@ -18,6 +19,7 @@ public class CMGroup extends CMGroupInfo {
         m_membershipKey = null;
         currentIndex = -2;
         currentUser = null;
+        groupAdmin = null;
     }
 
     public CMGroup(String strGroupName, String strAddress, int nPort) {
@@ -27,6 +29,7 @@ public class CMGroup extends CMGroupInfo {
         m_membershipKey = null;
         currentIndex = -2;
         currentUser = null;
+        groupAdmin = null;
     }
 
     // set/get methods
@@ -67,5 +70,14 @@ public class CMGroup extends CMGroupInfo {
             currentUser = m_groupUsers.getUser(currentIndex);
         }
         return currentUser;
+    }
+
+    public synchronized CMUser getGroupAdmin() {
+        return groupAdmin;
+    }
+
+    public synchronized void setGroupAdmin(CMUser user) {
+        this.groupAdmin = user;
+        user.setAdmin(true);
     }
 }

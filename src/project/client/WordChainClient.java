@@ -7,6 +7,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMConfigurator;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
+import project.event.RequestGameStartEvent;
 import project.event.WordSendingEvent;
 
 import javax.swing.*;
@@ -18,7 +19,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
+import java.util.concurrent.*;
 
 public class WordChainClient {
     private CMClientStub m_clientStub;
@@ -26,10 +27,18 @@ public class WordChainClient {
     private boolean m_bRun;
     private Scanner m_scan = null;
 
+    private BlockingQueue<String> lines;
+    private boolean isGettingWordInput;
+    private ExecutorService executorService;
+
     public WordChainClient() {
         m_clientStub = new CMClientStub();
         m_eventHandler = new WordChainClientEventHandler(m_clientStub, this);
         m_bRun = true;
+
+        lines = new LinkedBlockingQueue<>();
+        isGettingWordInput = false;
+        executorService = Executors.newCachedThreadPool();
     }
 
     public CMClientStub getClientStub() {
@@ -41,7 +50,7 @@ public class WordChainClient {
     }
 
     ///////////////////////////////////////////////////////////////
-    // test methods
+    // TODO: Implement from here
 
     public void startTest() {
         System.out.println("client application starts.");
@@ -49,12 +58,18 @@ public class WordChainClient {
         m_scan = new Scanner(System.in);
         String strInput = null;
         int nCommand = -1;
+        /*
+         * Thread t = new Thread(() -> { while (true) { try { lines.add(br.readLine());
+         * } catch (IOException e) { e.printStackTrace(); } } }); t.setDaemon(true);
+         * t.start();
+         */
         while (m_bRun) {
             System.out.println("Type \"0\" for menu.");
             System.out.print("> ");
             try {
+                // strInput = lines.take();
                 strInput = br.readLine();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
                 continue;
@@ -72,7 +87,7 @@ public class WordChainClient {
                     printAllMenus();
                     break;
                 case 100:
-                    testStartCM();
+                    connectServer();
                     break;
                 case 999:
                     testTerminateCM();
@@ -170,7 +185,7 @@ public class WordChainClient {
                 case 51: // print current information about the client
                     testCurrentUserStatus();
                     break;
-                case 52:    // print current channels information
+                case 52: // print current channels information
                     testPrintCurrentChannelInfo();
                     break;
                 case 53: // request additional server info
@@ -209,13 +224,13 @@ public class WordChainClient {
                 case 72: // push a file
                     testPushFile();
                     break;
-                case 73:    // test cancel receiving a file
+                case 73: // test cancel receiving a file
                     cancelRecvFile();
                     break;
-                case 74:    // test cancel sending a file
+                case 74: // test cancel sending a file
                     cancelSendFile();
                     break;
-                case 75:    // print sending/receiving file info
+                case 75: // print sending/receiving file info
                     printSendRecvFileInfo();
                     break;
                 case 80: // test SNS content download
@@ -303,7 +318,7 @@ public class WordChainClient {
                     testMqttDisconnect();
                     break;
                 case 990:
-                    testWordEvent();
+                    processMyTurn();
                     break;
                 default:
                     System.err.println("Unknown command.");
@@ -320,7 +335,157 @@ public class WordChainClient {
         m_scan.close();
     }
 
-    public void testWordEvent() {
+    public void connectServer() {
+        boolean bRet = m_clientStub.startCM();
+        if (!bRet) {
+            System.err.println("CM initialization error!");
+            return;
+        }
+
+        // get current server info from the server configuration file
+        String strCurServerAddress = null;
+        int nCurServerPort = -1;
+        String strNewServerAddress = "";
+        String strNewServerPort = "";
+
+        strCurServerAddress = m_clientStub.getServerAddress();
+        nCurServerPort = m_clientStub.getServerPort();
+
+        // ask the user if he/she would like to change the server info
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("========== start WordChainClient ==========");
+        System.out.println("Default server address: " + strCurServerAddress);
+        System.out.println("Default server port: " + nCurServerPort);
+
+        try {
+            String temp = "";
+            while (!temp.equalsIgnoreCase("Y") && !temp.equalsIgnoreCase("N")) {
+                System.out.print(String.format("Do you want to connect to default server?(Y/N): "));
+                temp = br.readLine().trim();
+            }
+            if (temp.equalsIgnoreCase("N")) {
+                System.out.print("Enter new server address: ");
+                strNewServerAddress = br.readLine().trim();
+                System.out.print("Enter new server port: ");
+                strNewServerPort = br.readLine().trim();
+            }
+            if (!strNewServerAddress.isEmpty() && !strNewServerAddress.equals(strCurServerAddress))
+                m_clientStub.setServerAddress(strNewServerAddress);
+            if (!strNewServerPort.isEmpty() && Integer.parseInt(strNewServerPort) != nCurServerPort)
+                m_clientStub.setServerPort(Integer.parseInt(strNewServerPort));
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // startTest();
+    }
+
+    public void login() {
+        String userName = null;
+
+        System.out.println("====== Login to server.");
+        System.out.print("user name: ");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            userName = br.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Sent the login request. Please wait...");
+
+        CMSessionEvent se = m_clientStub.syncLoginCM(userName, ""); // TODO: if you want to use DB, you should get
+                                                                    // password input
+        if (se != null) {
+            System.out.println(String.format("Successfully logged in to session %s!", se.getSessionName()));
+        } else {
+            System.err.println("Failed the login request!");
+            System.exit(1);
+        }
+        System.out.println("======");
+
+    }
+
+    public void showSessionInfoSync() {
+        CMSessionEvent se = null;
+        System.out.println("====== Loading session information. Please wait...");
+        se = m_clientStub.syncRequestSessionInfo();
+        if (se == null) {
+            System.err.println("failed the session-info request!");
+            return;
+        }
+
+        // print the request result
+        Iterator<CMSessionInfo> iter = se.getSessionInfoList().iterator();
+
+        System.out.format("%-60s%n", "------------------------------------------------------------");
+        System.out.format("%-20s%-20s%-10s%-10s%n", "name", "address", "port", "user num");
+        System.out.format("%-60s%n", "------------------------------------------------------------");
+
+        while (iter.hasNext()) {
+            CMSessionInfo tInfo = iter.next();
+            System.out.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(), tInfo.getAddress(), tInfo.getPort(),
+                    tInfo.getUserNum());
+        }
+        System.out.println("======");
+    }
+
+    public void startGame() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = "";
+        while (!input.equalsIgnoreCase("start")) {
+            try {
+                input = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (input.equalsIgnoreCase("start")) {
+                break;
+            }
+            System.out.println("Enter \"start\" to start the game.\n");
+        }
+        sendGameStartEvent();
+    }
+
+    public void sendGameStartEvent() {
+        CMUser myself = m_clientStub.getMyself();
+        if (!myself.getAdmin()) {
+            System.err.println("You are not a admin. Wait the admin to start the game.\n");
+            return;
+        }
+        System.out.println("Send game start request to server.");
+        RequestGameStartEvent event = new RequestGameStartEvent(myself.getCurrentSession(), myself.getCurrentGroup());
+        m_clientStub.send(event, "SERVER");
+    }
+
+    // TODO: if server starts the game, execute this method
+    public void playGame() {
+        // TODO: follow the server's instruction until game is over
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    lines.add(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+
+        while (true) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // TODO: after game finished: what to do? logout? terminate client?
+    }
+
+    public void processMyTurn() {
         CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
         CMUser myself = interInfo.getMyself();
         String strInput = null;
@@ -330,37 +495,31 @@ public class WordChainClient {
             return;
         }
 
-        System.out.println("====== test wordEvent in current group");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("====== Your turn. Enter the word.");
+        // BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.print("Type word: ");
         try {
-            strInput = br.readLine();
-        } catch (IOException e) {
+            strInput = lines.poll(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (strInput == null) return;
+
+        if (strInput == null) {
+            System.out.println("TIMEOUT");
+            return;
+        }
+        System.out.println(String.format("Input: %s", strInput));
 
         WordSendingEvent event = new WordSendingEvent();
-        event.setHandlerSession(myself.getCurrentSession());
-        event.setHandlerGroup(myself.getCurrentGroup());
         event.setWord(strInput);
         m_clientStub.send(event, "SERVER");
-        event = null;
 
         System.out.println(String.format("====== send %s to server", strInput));
     }
 
-    // TODO: if server starts the game, execute this method
-    public void playGame() {
-
-
-        // TODO: deactivate the input line(JTextArea?)
-
-        // TODO: follow the server's instruction until game is over
-
-        // TODO: after game finished: what to do? logout? terminate client?
-    }
+    ///////////////////////////////////////////////////////////////
+    // TODO: Implement end. DO NOT EDIT THE METHODS BELOW.
 
     public void printAllMenus() {
         System.out.println("---------------------------------- Help");
@@ -384,7 +543,8 @@ public class WordChainClient {
         System.out.println("28: join session of designated server, 29: leave session of designated server");
         System.out.println("---------------------------------- Event Transmission");
         System.out.println("40: chat, 41: multicast chat in current group");
-        System.out.println("42: test CMDummyEvent, 43: test CMUserEvent, 44: test datagram event, 45: test user position");
+        System.out.println(
+                "42: test CMDummyEvent, 43: test CMUserEvent, 44: test datagram event, 45: test user position");
         System.out.println("46: test sendrecv, 47: test castrecv");
         System.out.println("48: test asynchronous sendrecv, 49: test asynchronous castrecv");
         System.out.println("---------------------------------- Information");
@@ -400,7 +560,8 @@ public class WordChainClient {
         System.out.println("73: cancel receiving file, 74: cancel sending file");
         System.out.println("75: print sending/receiving file info");
         System.out.println("---------------------------------- Social Network Service");
-        System.out.println("80: request content list, 81: request next content list, 82: request previous content list");
+        System.out
+                .println("80: request content list, 81: request next content list, 82: request previous content list");
         System.out.println("83: request attached file, 84: upload content");
         System.out.println("---------------------------------- User");
         System.out.println("90: register new user, 91: deregister user, 92: find registered user");
@@ -412,7 +573,8 @@ public class WordChainClient {
         System.out.println("---------------------------------- Other CM Tests");
         System.out.println("101: test forwarding scheme, 102: test delay of forwarding scheme");
         System.out.println("103: test repeated request of SNS content list");
-        System.out.println("104: pull/push multiple files, 105: split file, 106: merge files, 107: distribute and merge file");
+        System.out.println(
+                "104: pull/push multiple files, 105: split file, 106: merge files, 107: distribute and merge file");
         System.out.println("108: send event with wrong # bytes, 109: send event with wrong type");
     }
 
@@ -433,9 +595,6 @@ public class WordChainClient {
         String strPassword = null;
         boolean bRequestResult = false;
         Console console = System.console();
-        if (console == null) {
-            System.err.println("Unable to obtain console.");
-        }
 
         System.out.println("====== login to default server");
         System.out.print("user name: ");
@@ -447,7 +606,7 @@ public class WordChainClient {
                 strPassword = br.readLine();
             } else
                 strPassword = new String(console.readPassword("password: "));
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -512,47 +671,6 @@ public class WordChainClient {
         System.out.println("======");
     }
 
-    public void testStartCM() {
-        // get current server info from the server configuration file
-        String strCurServerAddress = null;
-        int nCurServerPort = -1;
-        String strNewServerAddress = null;
-        String strNewServerPort = null;
-
-        strCurServerAddress = m_clientStub.getServerAddress();
-        nCurServerPort = m_clientStub.getServerPort();
-
-        // ask the user if he/she would like to change the server info
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("========== start CM");
-        System.out.println("current server address: " + strCurServerAddress);
-        System.out.println("current server port: " + nCurServerPort);
-
-        try {
-            System.out.print("new server address (enter for current value): ");
-            strNewServerAddress = br.readLine().trim();
-            System.out.print("new server port (enter for current value): ");
-            strNewServerPort = br.readLine().trim();
-
-            // update the server info if the user would like to do
-            if (!strNewServerAddress.isEmpty() && !strNewServerAddress.equals(strCurServerAddress))
-                m_clientStub.setServerAddress(strNewServerAddress);
-            if (!strNewServerPort.isEmpty() && Integer.parseInt(strNewServerPort) != nCurServerPort)
-                m_clientStub.setServerPort(Integer.parseInt(strNewServerPort));
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        boolean bRet = m_clientStub.startCM();
-        if (!bRet) {
-            System.err.println("CM initialization error!");
-            return;
-        }
-        startTest();
-    }
-
     public void testTerminateCM() {
         m_clientStub.terminateCM();
         m_bRun = false;
@@ -587,8 +705,8 @@ public class WordChainClient {
 
         while (iter.hasNext()) {
             CMSessionInfo tInfo = iter.next();
-            System.out.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(), tInfo.getAddress(),
-                    tInfo.getPort(), tInfo.getUserNum());
+            System.out.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(), tInfo.getAddress(), tInfo.getPort(),
+                    tInfo.getUserNum());
         }
 
         System.out.println("======");
@@ -682,7 +800,8 @@ public class WordChainClient {
         position.m_q.m_x = Float.parseFloat(strTokens[1]);
         position.m_q.m_y = Float.parseFloat(strTokens[2]);
         position.m_q.m_z = Float.parseFloat(strTokens[3]);
-        System.out.println("Quat input: (" + position.m_q.m_w + ", " + position.m_q.m_x + ", " + position.m_q.m_y + ", " + position.m_q.m_z + ")");
+        System.out.println("Quat input: (" + position.m_q.m_w + ", " + position.m_q.m_x + ", " + position.m_q.m_y + ", "
+                + position.m_q.m_z + ")");
 
         m_clientStub.sendUserPosition(position);
 
@@ -797,7 +916,6 @@ public class WordChainClient {
             nRecvPort = 0;
         }
 
-
         CMInterestEvent ie = new CMInterestEvent();
         ie.setID(CMInterestEvent.USER_TALK);
         ie.setHandlerSession(myself.getCurrentSession());
@@ -838,8 +956,8 @@ public class WordChainClient {
         ue.setHandlerSession(myself.getCurrentSession());
         ue.setHandlerGroup(myself.getCurrentGroup());
         while (!bEnd) {
-            System.out.println("If the data type is CM_BYTES, the number of bytes must be given "
-                    + "in the third parameter.");
+            System.out.println(
+                    "If the data type is CM_BYTES, the number of bytes must be given " + "in the third parameter.");
             System.out.print("(data type, field name, value): ");
             try {
                 strInput = br.readLine();
@@ -859,15 +977,15 @@ public class WordChainClient {
                 if (Integer.parseInt(strTokens[0]) == CMInfo.CM_BYTES) {
                     nValueByteNum = Integer.parseInt(strTokens[2]);
                     if (nValueByteNum < 0) {
-                        System.out.println("test.CMClientApp.testUserEvent(), Invalid nValueByteNum("
-                                + nValueByteNum + ")");
+                        System.out.println(
+                                "test.CMClientApp.testUserEvent(), Invalid nValueByteNum(" + nValueByteNum + ")");
                         ue.removeAllEventFields();
                         ue = null;
                         return;
                     }
                     byte[] valueBytes = new byte[nValueByteNum];
                     for (int i = 0; i < nValueByteNum; i++)
-                        valueBytes[i] = 1;    // dummy data
+                        valueBytes[i] = 1; // dummy data
                     ue.setEventBytesField(strTokens[1], nValueByteNum, valueBytes);
                 } else
                     ue.setEventField(Integer.parseInt(strTokens[0]), strTokens[1], strTokens[2]);
@@ -931,8 +1049,8 @@ public class WordChainClient {
         if (rue == null)
             System.err.println("The reply event is null!");
         else {
-            System.out.println("Received reply event from [" + rue.getSender() + "]: (type, " + rue.getType() +
-                    "), (id, " + rue.getID() + "), (string id, " + rue.getStringID() + ")");
+            System.out.println("Received reply event from [" + rue.getSender() + "]: (type, " + rue.getType()
+                    + "), (id, " + rue.getID() + "), (string id, " + rue.getStringID() + ")");
             System.out.println("Server response delay: " + lServerResponseDelay + "ms.");
         }
 
@@ -996,8 +1114,8 @@ public class WordChainClient {
         System.out.println("Waiting timeout: " + nTimeout + " ms");
 
         long lStartTime = System.currentTimeMillis();
-        rueArray = m_clientStub.castrecv(ue, strTargetSession, strTargetGroup,
-                CMInfo.CM_USER_EVENT, 223, nMinNumReplyEvents, nTimeout);
+        rueArray = m_clientStub.castrecv(ue, strTargetSession, strTargetGroup, CMInfo.CM_USER_EVENT, 223,
+                nMinNumReplyEvents, nTimeout);
         long lServerResponseDelay = System.currentTimeMillis() - lStartTime;
 
         if (rueArray == null) {
@@ -1141,8 +1259,7 @@ public class WordChainClient {
         System.out.println("---------------------------------------------------------");
         while (iter.hasNext()) {
             CMGroupInfo gInfo = iter.next();
-            System.out.format("%-20s%-20s%-20d%n", gInfo.getGroupName(), gInfo.getGroupAddress()
-                    , gInfo.getGroupPort());
+            System.out.format("%-20s%-20s%-20d%n", gInfo.getGroupName(), gInfo.getGroupAddress(), gInfo.getGroupPort());
         }
 
         return;
@@ -1154,8 +1271,8 @@ public class WordChainClient {
         CMConfigurationInfo confInfo = m_clientStub.getCMInfo().getConfigurationInfo();
         System.out.println("------ for the default server");
         System.out.println("name(" + myself.getName() + "), session(" + myself.getCurrentSession() + "), group("
-                + myself.getCurrentGroup() + "), udp port(" + myself.getUDPPort() + "), state("
-                + myself.getState() + "), attachment download scheme(" + confInfo.getAttachDownloadScheme() + ").");
+                + myself.getCurrentGroup() + "), udp port(" + myself.getUDPPort() + "), state(" + myself.getState()
+                + "), attachment download scheme(" + confInfo.getAttachDownloadScheme() + ").");
 
         // for additional servers
         Iterator<CMServer> iter = interInfo.getAddServerList().iterator();
@@ -1163,9 +1280,8 @@ public class WordChainClient {
             CMServer tserver = iter.next();
             if (tserver.getNonBlockSocketChannelInfo().findChannel(0) != null) {
                 System.out.println("------ for additional server[" + tserver.getServerName() + "]");
-                System.out.println("current session(" + tserver.getCurrentSessionName() +
-                        "), current group(" + tserver.getCurrentGroupName() + "), state("
-                        + tserver.getClientState() + ").");
+                System.out.println("current session(" + tserver.getCurrentSessionName() + "), current group("
+                        + tserver.getCurrentGroupName() + "), state(" + tserver.getClientState() + ").");
 
             }
         }
@@ -1205,7 +1321,8 @@ public class WordChainClient {
     // ServerSocketChannel is not supported.
     // A server cannot add SocketChannel.
     // For the SocketChannel, available server name must be given as well.
-    // For the MulticastChannel, session name and group name known by this client/server must be given.
+    // For the MulticastChannel, session name and group name known by this
+    // client/server must be given.
     public void testAddChannel() {
         int nChType = -1;
         int nChKey = -1;
@@ -1234,15 +1351,18 @@ public class WordChainClient {
 
         System.out.println("====== add additional channel");
 
-        // ask channel type, (server name), channel index (integer greater than 0), addr, port
+        // ask channel type, (server name), channel index (integer greater than 0),
+        // addr, port
         try {
             System.out.print("Select channel type (SocketChannel:2, DatagramChannel:3, MulticastChannel:4): ");
             nChType = m_scan.nextInt();
             if (nChType == CMInfo.CM_SOCKET_CHANNEL) {
                 System.out.print("is it a blocking channel? (\"y\": yes, \"n\": no): ");
                 strBlock = m_scan.next();
-                if (strBlock.equals("y")) isBlock = true;
-                else if (strBlock.equals("n")) isBlock = false;
+                if (strBlock.equals("y"))
+                    isBlock = true;
+                else if (strBlock.equals("n"))
+                    isBlock = false;
                 else {
                     System.err.println("invalid answer! : " + strBlock);
                     return;
@@ -1259,15 +1379,18 @@ public class WordChainClient {
                     System.out.print("Channel key(integer greater than 0): ");
                     nChKey = m_scan.nextInt();
                     if (nChKey <= 0) {
-                        System.err.println("testAddChannel(), invalid nonblocking socket channel key (" + nChKey + ")!");
+                        System.err
+                                .println("testAddChannel(), invalid nonblocking socket channel key (" + nChKey + ")!");
                         return;
                     }
                 }
 
                 System.out.print("Is the addition synchronous? (\"y\": yes, \"n\": no): ");
                 strSync = m_scan.next();
-                if (strSync.equals("y")) isSyncCall = true;
-                else if (strSync.equals("n")) isSyncCall = false;
+                if (strSync.equals("y"))
+                    isSyncCall = true;
+                else if (strSync.equals("n"))
+                    isSyncCall = false;
                 else {
                     System.err.println("invalid answer! :" + strSync);
                     return;
@@ -1278,8 +1401,10 @@ public class WordChainClient {
             } else if (nChType == CMInfo.CM_DATAGRAM_CHANNEL) {
                 System.out.print("is it a blocking channel? (\"y\": yes, \"n\": no): ");
                 strBlock = m_scan.next();
-                if (strBlock.equals("y")) isBlock = true;
-                else if (strBlock.equals("n")) isBlock = false;
+                if (strBlock.equals("y"))
+                    isBlock = true;
+                else if (strBlock.equals("n"))
+                    isBlock = false;
                 else {
                     System.err.println("invalid answer! : " + strBlock);
                     return;
@@ -1289,14 +1414,16 @@ public class WordChainClient {
                     System.out.print("Channel udp port: ");
                     nChPort = m_scan.nextInt();
                     if (nChPort < 0) {
-                        System.err.println("testAddChannel(), invalid blocking datagram channel key (" + nChPort + ")!");
+                        System.err
+                                .println("testAddChannel(), invalid blocking datagram channel key (" + nChPort + ")!");
                         return;
                     }
                 } else {
                     System.out.print("Channel udp port: ");
                     nChPort = m_scan.nextInt();
                     if (nChPort <= 0) {
-                        System.err.println("testAddChannel(), invalid nonblocking datagram channel key (" + nChPort + ")!");
+                        System.err.println(
+                                "testAddChannel(), invalid nonblocking datagram channel key (" + nChPort + ")!");
                         return;
                     }
                 }
@@ -1324,7 +1451,8 @@ public class WordChainClient {
                         sc = m_clientStub.syncAddBlockSocketChannel(nChKey, strServerName);
                         if (sc != null)
                             System.out.println("Successfully added a blocking socket channel both "
-                                    + "at the client and the server: key(" + nChKey + "), server(" + strServerName + ")");
+                                    + "at the client and the server: key(" + nChKey + "), server(" + strServerName
+                                    + ")");
                         else
                             System.err.println("Failed to add a blocking socket channel both at "
                                     + "the client and the server: key(" + nChKey + "), server(" + strServerName + ")");
@@ -1367,15 +1495,18 @@ public class WordChainClient {
                 if (isBlock) {
                     dc = m_clientStub.addBlockDatagramChannel(nChPort);
                     if (dc != null)
-                        System.out.println("Successfully added a blocking datagram socket channel: port(" + nChPort + ")");
+                        System.out.println(
+                                "Successfully added a blocking datagram socket channel: port(" + nChPort + ")");
                     else
                         System.err.println("Failed to add a blocking datagram socket channel: port(" + nChPort + ")");
                 } else {
                     dc = m_clientStub.addNonBlockDatagramChannel(nChPort);
                     if (dc != null)
-                        System.out.println("Successfully added a non-blocking datagram socket channel: port(" + nChPort + ")");
+                        System.out.println(
+                                "Successfully added a non-blocking datagram socket channel: port(" + nChPort + ")");
                     else
-                        System.err.println("Failed to add a non-blocking datagram socket channel: port(" + nChPort + ")");
+                        System.err
+                                .println("Failed to add a non-blocking datagram socket channel: port(" + nChPort + ")");
                 }
 
                 break;
@@ -1428,8 +1559,10 @@ public class WordChainClient {
             if (nChType == CMInfo.CM_SOCKET_CHANNEL) {
                 System.out.print("is it a blocking channel? (\"y\": yes, \"n\": no): ");
                 strBlock = m_scan.next();
-                if (strBlock.equals("y")) isBlock = true;
-                else if (strBlock.equals("n")) isBlock = false;
+                if (strBlock.equals("y"))
+                    isBlock = true;
+                else if (strBlock.equals("n"))
+                    isBlock = false;
                 else {
                     System.err.println("invalid answer! : " + strBlock);
                     return;
@@ -1444,8 +1577,10 @@ public class WordChainClient {
                     }
                     System.out.print("Is the removal synchronous? (\"y\": yes, \"n\": no); ");
                     strSync = m_scan.next();
-                    if (strSync.equals("y")) isSyncCall = true;
-                    else if (strSync.equals("n")) isSyncCall = false;
+                    if (strSync.equals("y"))
+                        isSyncCall = true;
+                    else if (strSync.equals("n"))
+                        isSyncCall = false;
                     else {
                         System.err.println("Invalid answer! : " + strSync);
                         return;
@@ -1463,8 +1598,10 @@ public class WordChainClient {
             } else if (nChType == CMInfo.CM_DATAGRAM_CHANNEL) {
                 System.out.print("is it a blocking channel? (\"y\": yes, \"n\": no): ");
                 strBlock = m_scan.next();
-                if (strBlock.equals("y")) isBlock = true;
-                else if (strBlock.equals("n")) isBlock = false;
+                if (strBlock.equals("y"))
+                    isBlock = true;
+                else if (strBlock.equals("n"))
+                    isBlock = false;
                 else {
                     System.err.println("invalid answer! : " + strBlock);
                     return;
@@ -1495,7 +1632,8 @@ public class WordChainClient {
                         result = m_clientStub.syncRemoveBlockSocketChannel(nChKey, strServerName);
                         if (result)
                             System.out.println("Successfully removed a blocking socket channel both "
-                                    + "at the client and the server: key(" + nChKey + "), server (" + strServerName + ")");
+                                    + "at the client and the server: key(" + nChKey + "), server (" + strServerName
+                                    + ")");
                         else
                             System.err.println("Failed to remove a blocking socket channel both at the client "
                                     + "and the server: key(" + nChKey + "), server (" + strServerName + ")");
@@ -1503,7 +1641,8 @@ public class WordChainClient {
                         result = m_clientStub.removeBlockSocketChannel(nChKey, strServerName);
                         if (result)
                             System.out.println("Successfully removed a blocking socket channel at the client and "
-                                    + "requested to remove it at the server: key(" + nChKey + "), server(" + strServerName + ")");
+                                    + "requested to remove it at the server: key(" + nChKey + "), server("
+                                    + strServerName + ")");
                         else
                             System.err.println("Failed to remove a blocking socket channel at the client or "
                                     + "failed to request to remove it at the server: key(" + nChKey + "), server("
@@ -1515,8 +1654,8 @@ public class WordChainClient {
                         System.out.println("Successfully removed a nonblocking socket channel: key(" + nChKey
                                 + "), server(" + strServerName + ")");
                     else
-                        System.err.println("Failed to remove a nonblocing socket channel: key(" + nChKey
-                                + "), server(" + strServerName + ")");
+                        System.err.println("Failed to remove a nonblocing socket channel: key(" + nChKey + "), server("
+                                + strServerName + ")");
                 }
 
                 break;
@@ -1524,23 +1663,28 @@ public class WordChainClient {
                 if (isBlock) {
                     result = m_clientStub.removeBlockDatagramChannel(nChPort);
                     if (result)
-                        System.out.println("Successfully removed a blocking datagram socket channel: port(" + nChPort + ")");
+                        System.out.println(
+                                "Successfully removed a blocking datagram socket channel: port(" + nChPort + ")");
                     else
-                        System.err.println("Failed to remove a blocking datagram socket channel: port(" + nChPort + ")");
+                        System.err
+                                .println("Failed to remove a blocking datagram socket channel: port(" + nChPort + ")");
                 } else {
                     result = m_clientStub.removeNonBlockDatagramChannel(nChPort);
                     if (result)
-                        System.out.println("Successfully removed a non-blocking datagram socket channel: port(" + nChPort + ")");
+                        System.out.println(
+                                "Successfully removed a non-blocking datagram socket channel: port(" + nChPort + ")");
                     else
-                        System.err.println("Failed to remove a non-blocking datagram socket channel: port(" + nChPort + ")");
+                        System.err.println(
+                                "Failed to remove a non-blocking datagram socket channel: port(" + nChPort + ")");
                 }
 
                 break;
             case CMInfo.CM_MULTICAST_CHANNEL:
-                result = m_clientStub.removeAdditionalMulticastChannel(strSessionName, strGroupName, strChAddress, nChPort);
+                result = m_clientStub.removeAdditionalMulticastChannel(strSessionName, strGroupName, strChAddress,
+                        nChPort);
                 if (result) {
-                    System.out.println("Successfully removed a multicast channel: session(" + strSessionName + "), group("
-                            + strGroupName + "), address(" + strChAddress + "), port(" + nChPort + ")");
+                    System.out.println("Successfully removed a multicast channel: session(" + strSessionName
+                            + "), group(" + strGroupName + "), address(" + strChAddress + "), port(" + nChPort + ")");
                 } else {
                     System.err.println("Failed to remove a multicast channel: session(" + strSessionName + "), group("
                             + strGroupName + "), address(" + strChAddress + "), port(" + nChPort + ")");
@@ -1766,7 +1910,7 @@ public class WordChainClient {
         for (int i = 0; i < nSimNum; i++) {
             for (int j = 0; j < 100; j++) {
                 ue = new CMUserEvent();
-                nEventID = rnd.nextInt(10);    // 0 ~ 9
+                nEventID = rnd.nextInt(10); // 0 ~ 9
                 if (nEventID >= 0 && nEventID < nEventRange)
                     ue.setStringID("testForward");
                 else
@@ -1892,7 +2036,7 @@ public class WordChainClient {
             strWriterName = br.readLine();
         } catch (NumberFormatException e) {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            // e.printStackTrace();
             System.err.println("Input data is not a number!");
             return;
         } catch (IOException e) {
@@ -1906,8 +2050,8 @@ public class WordChainClient {
 
         m_clientStub.requestSNSContent(strWriterName, nContentOffset);
         if (CMInfo._CM_DEBUG) {
-            System.out.println("[" + strUserName + "] requests content of writer[" + strWriterName
-                    + "] with offset(" + nContentOffset + ").");
+            System.out.println("[" + strUserName + "] requests content of writer[" + strWriterName + "] with offset("
+                    + nContentOffset + ").");
         }
 
         System.out.println("======");
@@ -1916,16 +2060,16 @@ public class WordChainClient {
 
     public void testRequestAttachedFileOfSNSContent() {
         System.out.println("===== Request an attached file of SNS content");
-//		int nContentID = 0;
-//		String strWriterName = null;
+        // int nContentID = 0;
+        // String strWriterName = null;
         String strFileName = null;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         try {
-//			System.out.print("SNS content ID: ");
-//			nContentID = Integer.parseInt(br.readLine());
-//			System.out.print("Writer name: ");
-//			strWriterName = br.readLine();
+            // System.out.print("SNS content ID: ");
+            // nContentID = Integer.parseInt(br.readLine());
+            // System.out.print("Writer name: ");
+            // strWriterName = br.readLine();
             System.out.print("Attached file name: ");
             strFileName = br.readLine();
         } catch (NumberFormatException e) {
@@ -1938,7 +2082,8 @@ public class WordChainClient {
             return;
         }
 
-//		m_clientStub.requestAttachedFileOfSNSContent(nContentID, strWriterName, strFileName);
+        // m_clientStub.requestAttachedFileOfSNSContent(nContentID, strWriterName,
+        // strFileName);
         m_clientStub.requestAttachedFileOfSNSContent(strFileName);
         return;
     }
@@ -1959,13 +2104,14 @@ public class WordChainClient {
         m_eventHandler.setPrintWriter(pw);
         m_eventHandler.setSimNum(100);
 
-        m_clientStub.requestSNSContent("", 0);    // no specific writer, offset = 0
+        m_clientStub.requestSNSContent("", 0); // no specific writer, offset = 0
 
         return;
     }
 
     // download the next SNS content list
-    // if this method is called without any previous download request, it requests the most recent list
+    // if this method is called without any previous download request, it requests
+    // the most recent list
     public void testDownloadNextSNSContent() {
         System.out.println("===== Request the next SNS content list");
         // start time of downloading contents
@@ -1976,7 +2122,8 @@ public class WordChainClient {
     }
 
     // download the previous SNS content list
-    // if this method is called without any previous download request, it requests the most recent list
+    // if this method is called without any previous download request, it requests
+    // the most recent list
     public void testDownloadPreviousSNSContent() {
         System.out.println("===== Request the previous SNS content list");
         // start time of downloading contents
@@ -2219,7 +2366,7 @@ public class WordChainClient {
         try {
             System.out.print("Input server name: ");
             strServerName = br.readLine();
-            if (strServerName.equals(m_clientStub.getDefaultServerName()))    // login to a default server
+            if (strServerName.equals(m_clientStub.getDefaultServerName())) // login to a default server
             {
                 System.out.print("User name: ");
                 user = br.readLine();
@@ -2347,8 +2494,7 @@ public class WordChainClient {
         System.out.println("---------------------------------------------------------");
         while (iter.hasNext()) {
             CMGroupInfo gInfo = iter.next();
-            System.out.format("%-20s%-20s%-20d%n", gInfo.getGroupName(), gInfo.getGroupAddress()
-                    , gInfo.getGroupPort());
+            System.out.format("%-20s%-20s%-20d%n", gInfo.getGroupName(), gInfo.getGroupAddress(), gInfo.getGroupPort());
         }
 
         return;
@@ -2465,7 +2611,7 @@ public class WordChainClient {
 
     public void testMergeFiles() {
         String[] strFiles = null;
-        //String strFileList = null;
+        // String strFileList = null;
         String strFilePrefix = null;
         String strMergeFileName = null;
         int nFileNum = -1;
@@ -2476,8 +2622,8 @@ public class WordChainClient {
         try {
             System.out.print("Number of split files: ");
             nFileNum = Integer.parseInt(br.readLine());
-            //System.out.print("Input split files in order: ");
-            //strFileList = br.readLine();
+            // System.out.print("Input split files in order: ");
+            // strFileList = br.readLine();
             System.out.print("Input prefix of split files: ");
             strFilePrefix = br.readLine();
             System.out.print("Input merged file name: ");
@@ -2492,15 +2638,11 @@ public class WordChainClient {
             return;
         }
 
-		/*
-		strFileList.trim();
-		strFiles = strFileList.split("\\s+");
-		if(nFileNum != strFiles.length)
-		{
-			System.out.println("Wrong number of input files!");
-			return;
-		}
-		*/
+        /*
+         * strFileList.trim(); strFiles = strFileList.split("\\s+"); if(nFileNum !=
+         * strFiles.length) { System.out.println("Wrong number of input files!");
+         * return; }
+         */
 
         // make list of split file names
         strFiles = new String[nFileNum];
@@ -2515,7 +2657,7 @@ public class WordChainClient {
 
     public void testDistFileProc() {
         CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
-        //CMFileTransferInfo fileInfo = m_clientStub.getCMInfo().getFileTransferInfo();
+        // CMFileTransferInfo fileInfo = m_clientStub.getCMInfo().getFileTransferInfo();
         String strFile = null;
         long lFileSize = 0;
         CMFileEvent fe = null;
@@ -2534,15 +2676,15 @@ public class WordChainClient {
             CMServer tserver = iter.next();
             nClientState = tserver.getClientState();
             if (nClientState == CMInfo.CM_INIT || nClientState == CMInfo.CM_CONNECT) {
-                System.out.println("You must log in the additional server(" + tserver.getServerName()
-                        + ")!");
+                System.out.println("You must log in the additional server(" + tserver.getServerName() + ")!");
                 return;
             }
         }
 
         // input file name
         try {
-            //System.out.println("A source file must exists in the file path configured in CM");
+            // System.out.println("A source file must exists in the file path configured in
+            // CM");
             System.out.print("Input a source file path: ");
             strFile = br.readLine();
         } catch (IOException e) {
@@ -2551,7 +2693,7 @@ public class WordChainClient {
         }
 
         // print the file size
-        //strFile = fileInfo.getFilePath()+"/"+strFile;
+        // strFile = fileInfo.getFilePath()+"/"+strFile;
         File srcFile = new File(strFile);
         lFileSize = srcFile.length();
         System.out.println("Source file (" + strFile + "): " + lFileSize + " Bytes.");
@@ -2579,7 +2721,8 @@ public class WordChainClient {
         m_eventHandler.setFileExtension(strExt);
         System.out.println("Source file extension: " + m_eventHandler.getFileExtension());
 
-        // split a file into pieces with the number of servers. each piece has the name of 'file name'-x.split
+        // split a file into pieces with the number of servers. each piece has the name
+        // of 'file name'-x.split
         // and send each piece to different server
         long lPieceSize = lFileSize / m_eventHandler.getCurrentServerNum();
         int i = 0;
@@ -2597,7 +2740,7 @@ public class WordChainClient {
         // make a file event (REQUEST_DIST_FILE_PROC)
         fe = new CMFileEvent();
         fe.setID(CMFileEvent.REQUEST_DIST_FILE_PROC);
-        //fe.setFileReceiver(interInfo.getMyself().getName());
+        // fe.setFileReceiver(interInfo.getMyself().getName());
         fe.setFileSender(interInfo.getMyself().getName());
 
         // for pieces except the last piece
@@ -2635,8 +2778,7 @@ public class WordChainClient {
         fe.setFileReceiver(m_clientStub.getDefaultServerName());
         m_clientStub.send(fe, m_clientStub.getDefaultServerName());
 
-        CMFileTransferManager.pushFile(strPieceName, m_clientStub.getDefaultServerName(),
-                m_clientStub.getCMInfo());
+        CMFileTransferManager.pushFile(strPieceName, m_clientStub.getDefaultServerName(), m_clientStub.getCMInfo());
 
         try {
             raf.close();
@@ -2647,10 +2789,12 @@ public class WordChainClient {
 
         // The next process proceeds when a modified piece is transferred from a server.
 
-        // Whenever a modified piece(m-'file name'-x.split) is transferred, if m_bDistSendRecv is true,
+        // Whenever a modified piece(m-'file name'-x.split) is transferred, if
+        // m_bDistSendRecv is true,
         // increase the number of pieces and its name is stored in an array.
         // When all modified pieces arrive, they are merged to a file (m-'file name').
-        // After the file is merged, set the received time, calculate the elapsed time, set m_bDistSendRecv to false
+        // After the file is merged, set the received time, calculate the elapsed time,
+        // set m_bDistSendRecv to false
         // and print the result.
 
         fe = null;
@@ -2732,7 +2876,8 @@ public class WordChainClient {
             nChKey = Integer.parseInt(strChKey);
             System.out.print("Server name(empty for the default server): ");
             strServerName = br.readLine();
-            if (strServerName.isEmpty()) strServerName = m_clientStub.getDefaultServerName();
+            if (strServerName.isEmpty())
+                strServerName = m_clientStub.getDefaultServerName();
             if (!isSocketChannel) {
                 System.out.print("receiver port (only for datagram channel): ");
                 String strRecvPort = br.readLine();
@@ -2750,7 +2895,8 @@ public class WordChainClient {
         if (isSocketChannel) {
             sc = m_clientStub.getBlockSocketChannel(nChKey, strServerName);
             if (sc == null) {
-                System.err.println("Blocking socket channel not found: key(" + nChKey + "), server(" + strServerName + ")");
+                System.err.println(
+                        "Blocking socket channel not found: key(" + nChKey + "), server(" + strServerName + ")");
                 return;
             }
             System.out.println("Blocking socket channel found: key(" + nChKey + "), server(" + strServerName + ")");
@@ -2896,8 +3042,7 @@ public class WordChainClient {
         }
 
         if (bDetail) {
-            mqttManager.connect(strWillTopic, strWillMessage, bWillRetain, willQoS, bWillFlag,
-                    bCleanSession);
+            mqttManager.connect(strWillTopic, strWillMessage, bWillRetain, willQoS, bWillFlag, bCleanSession);
         } else {
             mqttManager.connect();
         }
@@ -3054,19 +3199,16 @@ public class WordChainClient {
         String strServer = JOptionPane.showInputDialog("server name: ").trim();
 
         CMDummyEvent due = new CMDummyEvent();
-        due.setType(-1);    // set wrong event type
+        due.setType(-1); // set wrong event type
         m_clientStub.send(due, strServer);
     }
-
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         WordChainClient client = new WordChainClient();
         CMClientStub cmStub = client.getClientStub();
         cmStub.setAppEventHandler(client.getClientEventHandler());
-        client.testStartCM();
-
-        System.out.println("Client application is terminated.");
+        client.connectServer();
+        client.login();
     }
-
 }

@@ -2,6 +2,7 @@ package project.client;
 
 import kr.ac.konkuk.ccslab.cm.entity.CMServerInfo;
 import kr.ac.konkuk.ccslab.cm.entity.CMSessionInfo;
+import kr.ac.konkuk.ccslab.cm.entity.CMUser;
 import kr.ac.konkuk.ccslab.cm.event.*;
 import kr.ac.konkuk.ccslab.cm.event.handler.CMAppEventHandler;
 import kr.ac.konkuk.ccslab.cm.event.mqttevent.*;
@@ -12,7 +13,9 @@ import kr.ac.konkuk.ccslab.cm.sns.CMSNSContentList;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
 import project.WordChainInfo;
-import project.event.*;
+import project.event.NextUserEvent;
+import project.event.NotifyAdminEvent;
+import project.event.WordResultEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,25 +27,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class WordChainClientEventHandler implements CMAppEventHandler {
-    //private JTextArea m_outTextArea;
+    // private JTextArea m_outTextArea;
     private WordChainClient m_client;
     private CMClientStub m_clientStub;
-    private long m_lDelaySum;    // for forwarding simulation
-    // for delay of SNS content downloading, distributed file processing, server response,
+    private long m_lDelaySum; // for forwarding simulation
+    // for delay of SNS content downloading, distributed file processing, server
+    // response,
     // csc-ftp, c2c-ftp
     private long m_lStartTime;
-    private int m_nEstDelaySum;    // for SNS downloading simulation
-    private int m_nSimNum;        // for simulation of multiple sns content downloading
-    private FileOutputStream m_fos;    // for storing downloading delay of multiple SNS content
-    private PrintWriter m_pw;        //
-    private int m_nCurrentServerNum;    // for distributed file processing
-    private int m_nRecvPieceNum;        // for distributed file processing
-    private boolean m_bDistFileProc;    // for distributed file processing
-    private String m_strExt;            // for distributed file processing
-    private String[] m_filePieces;        // for distributed file processing
-    private boolean m_bReqAttachedFile;    // for storing the fact that the client requests an attachment
-    private int m_nMinNumWaitedEvents;  // for checking the completion of asynchronous castrecv service
-    private int m_nRecvReplyEvents;        // for checking the completion of asynchronous castrecv service
+    private int m_nEstDelaySum; // for SNS downloading simulation
+    private int m_nSimNum; // for simulation of multiple sns content downloading
+    private FileOutputStream m_fos; // for storing downloading delay of multiple SNS content
+    private PrintWriter m_pw; //
+    private int m_nCurrentServerNum; // for distributed file processing
+    private int m_nRecvPieceNum; // for distributed file processing
+    private boolean m_bDistFileProc; // for distributed file processing
+    private String m_strExt; // for distributed file processing
+    private String[] m_filePieces; // for distributed file processing
+    private boolean m_bReqAttachedFile; // for storing the fact that the client requests an attachment
+    private int m_nMinNumWaitedEvents; // for checking the completion of asynchronous castrecv service
+    private int m_nRecvReplyEvents; // for checking the completion of asynchronous castrecv service
 
     // information for csc-ftp and c2c-ftp experiments
     private String m_strFileSender;
@@ -55,10 +59,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
     private int m_nTotalNumFilesPerSession;
     private int m_nCurNumFilesPerSession;
 
-
     public WordChainClientEventHandler(CMClientStub clientStub, WordChainClient client) {
         m_client = client;
-        //m_outTextArea = textArea;
+        // m_outTextArea = textArea;
         m_clientStub = clientStub;
         m_lDelaySum = 0;
         m_lStartTime = 0;
@@ -280,20 +283,14 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
-            case WordChainInfo.EVENT_NEXTUSER:
+            case WordChainInfo.EVENT_NEXT_USER:
                 processNextUserEvent(cme);
                 break;
             case WordChainInfo.EVENT_RESULT_WORD:
                 processReplyWordEvent(cme);
                 break;
-            case WordChainInfo.EVENT_START_GAME:
-                processGameStartEvent(cme);
-                break;
-            case WordChainInfo.EVENT_FINISH_GAME:
-                processGameFinishEvent(cme);
-                break;
-            case WordChainInfo.EVENT_TIME_OVER:
-                processTimeOutEvent(cme);
+            case WordChainInfo.EVENT_NOTIFY_ADMIN:
+                processNotifyAdminEvent(cme);
                 break;
             default:
                 return;
@@ -305,17 +302,10 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         GameStartEvent event = (GameStartEvent) cme;
     }
     // TODO: process GameFinishEvent
-    private void processGameFinishEvent(CMEvent cme) {
-        GameFinishEvent event = (GameFinishEvent) cme;
-    }
-    // TODO: process TimeOutEvent
-    private void processTimeOutEvent(CMEvent cme) {
-        TimeOutEvent event = (TimeOutEvent) cme;
-    }
 
     private void processNextUserEvent(CMEvent cme) {
         NextUserEvent event = (NextUserEvent) cme;
-        printMessage(String.format("I am the next user of group %s, session %s.\n", event.getHandlerGroup(), event.getHandlerSession()));
+        m_client.processMyTurn();
     }
 
     private void processReplyWordEvent(CMEvent cme) {
@@ -334,6 +324,18 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         } else if (resultCode == WordChainInfo.RESULT_TIMEOUT) {
             printMessage(String.format("[Server] Timeout! Your life will decrease by 1."));
         }
+    }
+
+    private void processNotifyAdminEvent(CMEvent cme) {
+        NotifyAdminEvent event = (NotifyAdminEvent) cme;
+        CMInteractionInfo info = m_clientStub.getCMInfo().getInteractionInfo();
+        CMUser myself = info.getMyself();
+        myself.setAdmin(true);
+        System.out.println(String.format("You are the admin of session [%s], group [%s].", myself.getCurrentSession(),
+                myself.getCurrentGroup()));
+        System.out.println("If you want to start the game, enter \"start\" to the console.");
+        System.out.println("You can only start the game when there are more than 2 users in the group.");
+        m_client.startGame();
     }
 
     private void processSessionEvent(CMEvent cme) {
@@ -358,9 +360,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 processRESPONSE_SESSION_INFO(se);
                 break;
             case CMSessionEvent.SESSION_TALK:
-                //System.out.println("("+se.getHandlerSession()+")");
+                // System.out.println("("+se.getHandlerSession()+")");
                 printMessage("(" + se.getHandlerSession() + ")\n");
-                //System.out.println("<"+se.getUserName()+">: "+se.getTalk());
+                // System.out.println("<"+se.getUserName()+">: "+se.getTalk());
                 printMessage("<" + se.getUserName() + ">: " + se.getTalk() + "\n");
                 break;
             case CMSessionEvent.JOIN_SESSION_ACK:
@@ -377,8 +379,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 }
                 break;
             case CMSessionEvent.ADD_BLOCK_SOCKET_CHANNEL_ACK:
-                //lDelay = System.currentTimeMillis() - m_lStartTime;
-                //printMessage("ADD_BLOCK_SOCKET_CHANNEL_ACK delay: "+lDelay+" ms.\n");
+                // lDelay = System.currentTimeMillis() - m_lStartTime;
+                // printMessage("ADD_BLOCK_SOCKET_CHANNEL_ACK delay: "+lDelay+" ms.\n");
                 if (se.getReturnCode() == 0) {
                     printMessage("Adding a blocking socket channel (" + se.getChannelName() + "," + se.getChannelNum()
                             + ") failed at the server!\n");
@@ -388,8 +390,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 }
                 break;
             case CMSessionEvent.REMOVE_BLOCK_SOCKET_CHANNEL_ACK:
-                //lDelay = System.currentTimeMillis() - m_lStartTime;
-                //printMessage("REMOVE_BLOCK_SOCKET_CHANNEL_ACK delay: "+lDelay+" ms.\n");
+                // lDelay = System.currentTimeMillis() - m_lStartTime;
+                // printMessage("REMOVE_BLOCK_SOCKET_CHANNEL_ACK delay: "+lDelay+" ms.\n");
                 if (se.getReturnCode() == 0) {
                     printMessage("Removing a blocking socket channel (" + se.getChannelName() + "," + se.getChannelNum()
                             + ") failed at the server!\n");
@@ -401,46 +403,47 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             case CMSessionEvent.REGISTER_USER_ACK:
                 if (se.getReturnCode() == 1) {
                     // user registration succeeded
-                    //System.out.println("User["+se.getUserName()+"] successfully registered at time["
-                    //			+se.getCreationTime()+"].");
+                    // System.out.println("User["+se.getUserName()+"] successfully registered at
+                    // time["
+                    // +se.getCreationTime()+"].");
                     printMessage("User[" + se.getUserName() + "] successfully registered at time["
                             + se.getCreationTime() + "].\n");
                 } else {
                     // user registration failed
-                    //System.out.println("User["+se.getUserName()+"] failed to register!");
+                    // System.out.println("User["+se.getUserName()+"] failed to register!");
                     printMessage("User[" + se.getUserName() + "] failed to register!\n");
                 }
                 break;
             case CMSessionEvent.DEREGISTER_USER_ACK:
                 if (se.getReturnCode() == 1) {
                     // user deregistration succeeded
-                    //System.out.println("User["+se.getUserName()+"] successfully deregistered.");
+                    // System.out.println("User["+se.getUserName()+"] successfully deregistered.");
                     printMessage("User[" + se.getUserName() + "] successfully deregistered.\n");
                 } else {
                     // user registration failed
-                    //System.out.println("User["+se.getUserName()+"] failed to deregister!");
+                    // System.out.println("User["+se.getUserName()+"] failed to deregister!");
                     printMessage("User[" + se.getUserName() + "] failed to deregister!\n");
                 }
                 break;
             case CMSessionEvent.FIND_REGISTERED_USER_ACK:
                 if (se.getReturnCode() == 1) {
-                    //System.out.println("User profile search succeeded: user["+se.getUserName()
-                    //		+"], registration time["+se.getCreationTime()+"].");
-                    printMessage("User profile search succeeded: user[" + se.getUserName()
-                            + "], registration time[" + se.getCreationTime() + "].\n");
+                    // System.out.println("User profile search succeeded: user["+se.getUserName()
+                    // +"], registration time["+se.getCreationTime()+"].");
+                    printMessage("User profile search succeeded: user[" + se.getUserName() + "], registration time["
+                            + se.getCreationTime() + "].\n");
                 } else {
-                    //System.out.println("User profile search failed: user["+se.getUserName()+"]!");
+                    // System.out.println("User profile search failed:
+                    // user["+se.getUserName()+"]!");
                     printMessage("User profile search failed: user[" + se.getUserName() + "]!\n");
                 }
                 break;
             case CMSessionEvent.UNEXPECTED_SERVER_DISCONNECTION:
-                printMessage("Unexpected disconnection from ["
-                        + se.getChannelName() + "] with key[" + se.getChannelNum() + "]!");
+                printMessage("Unexpected disconnection from [" + se.getChannelName() + "] with key["
+                        + se.getChannelNum() + "]!");
 
                 break;
             case CMSessionEvent.INTENTIONALLY_DISCONNECT:
-                printMessage("Intentionally disconnected all channels from ["
-                        + se.getChannelName() + "]!");
+                printMessage("Intentionally disconnected all channels from [" + se.getChannelName() + "]!");
                 break;
             default:
                 return;
@@ -465,9 +468,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         CMInterestEvent ie = (CMInterestEvent) cme;
         switch (ie.getID()) {
             case CMInterestEvent.USER_TALK:
-                //System.out.println("("+ie.getHandlerSession()+", "+ie.getHandlerGroup()+")");
+                // System.out.println("("+ie.getHandlerSession()+", "+ie.getHandlerGroup()+")");
                 printMessage("(" + ie.getHandlerSession() + ", " + ie.getHandlerGroup() + ")\n");
-                //System.out.println("<"+ie.getUserName()+">: "+ie.getTalk());
+                // System.out.println("<"+ie.getUserName()+">: "+ie.getTalk());
                 printMessage("<" + ie.getUserName() + ">: " + ie.getTalk() + "\n");
                 break;
             default:
@@ -479,14 +482,16 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         CMDataEvent de = (CMDataEvent) cme;
         switch (de.getID()) {
             case CMDataEvent.NEW_USER:
-                //System.out.println("["+de.getUserName()+"] enters group("+de.getHandlerGroup()+") in session("
-                //		+de.getHandlerSession()+").");
+                // System.out.println("["+de.getUserName()+"] enters
+                // group("+de.getHandlerGroup()+") in session("
+                // +de.getHandlerSession()+").");
                 printMessage("[" + de.getUserName() + "] enters group(" + de.getHandlerGroup() + ") in session("
                         + de.getHandlerSession() + ").\n");
                 break;
             case CMDataEvent.REMOVE_USER:
-                //System.out.println("["+de.getUserName()+"] leaves group("+de.getHandlerGroup()+") in session("
-                //		+de.getHandlerSession()+").");
+                // System.out.println("["+de.getUserName()+"] leaves
+                // group("+de.getHandlerGroup()+") in session("
+                // +de.getHandlerSession()+").");
                 printMessage("[" + de.getUserName() + "] leaves group(" + de.getHandlerGroup() + ") in session("
                         + de.getHandlerSession() + ").\n");
                 break;
@@ -497,9 +502,10 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
     private void processDummyEvent(CMEvent cme) {
         CMDummyEvent due = (CMDummyEvent) cme;
-        //System.out.println("session("+due.getHandlerSession()+"), group("+due.getHandlerGroup()+")");
+        // System.out.println("session("+due.getHandlerSession()+"),
+        // group("+due.getHandlerGroup()+")");
         printMessage("session(" + due.getHandlerSession() + "), group(" + due.getHandlerGroup() + ")\n");
-        //System.out.println("dummy msg: "+due.getDummyInfo());
+        // System.out.println("dummy msg: "+due.getDummyInfo());
         printMessage("dummy msg: " + due.getDummyInfo() + "\n");
         return;
     }
@@ -513,22 +519,25 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
         if (ue.getStringID().equals("testForward")) {
             id = Integer.parseInt(ue.getEventField(CMInfo.CM_INT, "id"));
-            //System.out.println("Received user event \'testForward\', id: "+id);
+            // System.out.println("Received user event \'testForward\', id: "+id);
             printMessage("Received user event \'testForward\', id: " + id + "\n");
         } else if (ue.getStringID().equals("testNotForward")) {
             id = Integer.parseInt(ue.getEventField(CMInfo.CM_INT, "id"));
-            //System.out.println("Received user event 'testNotForward', id("+id+")");
+            // System.out.println("Received user event 'testNotForward', id("+id+")");
             printMessage("Received user event 'testNotForward', id(" + id + ")\n");
         } else if (ue.getStringID().equals("testForwardDelay")) {
             id = Integer.parseInt(ue.getEventField(CMInfo.CM_INT, "id"));
             lSendTime = Long.parseLong(ue.getEventField(CMInfo.CM_LONG, "stime"));
             long lDelay = System.currentTimeMillis() - lSendTime;
             m_lDelaySum += lDelay;
-            //System.out.println("Received user event 'testNotForward', id("+id+"), delay("+lDelay+"), delay_sum("+m_lDelaySum+")");
-            printMessage("Received user event 'testNotForward', id(" + id + "), delay(" + lDelay + "), delay_sum(" + m_lDelaySum + ")\n");
+            // System.out.println("Received user event 'testNotForward', id("+id+"),
+            // delay("+lDelay+"), delay_sum("+m_lDelaySum+")");
+            printMessage("Received user event 'testNotForward', id(" + id + "), delay(" + lDelay + "), delay_sum("
+                    + m_lDelaySum + ")\n");
         } else if (ue.getStringID().equals("EndForwardDelay")) {
             nSendNum = Integer.parseInt(ue.getEventField(CMInfo.CM_INT, "sendnum"));
-            //System.out.println("Received user envet 'EndForwardDelay', avg delay("+m_lDelaySum/nSendNum+" ms)");
+            // System.out.println("Received user envet 'EndForwardDelay', avg
+            // delay("+m_lDelaySum/nSendNum+" ms)");
             printMessage("Received user envet 'EndForwardDelay', avg delay(" + m_lDelaySum / nSendNum + " ms)\n");
             m_lDelaySum = 0;
         } else if (ue.getStringID().equals("repRecv")) {
@@ -553,8 +562,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             else
                 System.err.println("invalid sending option!: " + opt);
         } else if (ue.getStringID().equals("testSendRecv")) {
-            printMessage("Received user event from [" + ue.getSender() + "] to [" + ue.getReceiver() +
-                    "], (id, " + ue.getID() + "), (string id, " + ue.getStringID() + ")\n");
+            printMessage("Received user event from [" + ue.getSender() + "] to [" + ue.getReceiver() + "], (id, "
+                    + ue.getID() + "), (string id, " + ue.getStringID() + ")\n");
 
             if (!m_clientStub.getMyself().getName().equals(ue.getReceiver()))
                 return;
@@ -568,10 +577,10 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             else
                 printMessage("Failed to send the reply event!\n");
         } else if (ue.getStringID().equals("testCastRecv")) {
-            printMessage("Received user event from [" + ue.getSender() + "], to session[" +
-                    ue.getEventField(CMInfo.CM_STR, "Target Session") + "] and group[" +
-                    ue.getEventField(CMInfo.CM_STR, "Target Group") + "], (id, " + ue.getID() +
-                    "), (string id, " + ue.getStringID() + ")\n");
+            printMessage("Received user event from [" + ue.getSender() + "], to session["
+                    + ue.getEventField(CMInfo.CM_STR, "Target Session") + "] and group["
+                    + ue.getEventField(CMInfo.CM_STR, "Target Group") + "], (id, " + ue.getID() + "), (string id, "
+                    + ue.getStringID() + ")\n");
             CMUserEvent rue = new CMUserEvent();
             rue.setID(223);
             rue.setStringID("testReplyCastRecv");
@@ -583,14 +592,15 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         } else if (ue.getStringID().equals("testReplySendRecv")) // for testing asynchronous sendrecv service
         {
             long lServerResponseDelay = System.currentTimeMillis() - m_lStartTime;
-            printMessage("Asynchronously received reply event from [" + ue.getSender() + "]: (type, " + ue.getType() +
-                    "), (id, " + ue.getID() + "), (string id, " + ue.getStringID() + ")\n");
+            printMessage("Asynchronously received reply event from [" + ue.getSender() + "]: (type, " + ue.getType()
+                    + "), (id, " + ue.getID() + "), (string id, " + ue.getStringID() + ")\n");
             printMessage("Server response delay: " + lServerResponseDelay + "ms.\n");
 
         } else if (ue.getStringID().equals("testReplyCastRecv")) // for testing asynchronous castrecv service
         {
-            //printMessage("Asynchronously received reply event from ["+ue.getSender()+"]: (type, "+ue.getType()+
-            //		"), (id, "+ue.getID()+"), (string id, "+ue.getStringID()+")\n");
+            // printMessage("Asynchronously received reply event from ["+ue.getSender()+"]:
+            // (type, "+ue.getType()+
+            // "), (id, "+ue.getID()+"), (string id, "+ue.getStringID()+")\n");
             m_nRecvReplyEvents++;
 
             if (m_nRecvReplyEvents == m_nMinNumWaitedEvents) {
@@ -611,10 +621,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             while (iter.hasNext()) {
                 CMUserEventField uef = iter.next();
                 if (uef.nDataType == CMInfo.CM_BYTES) {
-                    printMessage(String.format("%-5s%-20s%-10d", uef.nDataType, uef.strFieldName,
-                            uef.nValueByteNum));
+                    printMessage(String.format("%-5s%-20s%-10d", uef.nDataType, uef.strFieldName, uef.nValueByteNum));
                     for (int i = 0; i < uef.nValueByteNum; i++) {
-                        //not yet
+                        // not yet
                     }
                     printMessage("\n");
                 } else {
@@ -644,8 +653,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             ue_start.setStringID("start_csc_ftp_session");
             ue_start.setEventField(CMInfo.CM_STR, "strFileSender", strMyName);
             ue_start.setEventField(CMInfo.CM_STR, "strFileReceiver", m_strFileReceiver);
-            ue_start.setEventField(CMInfo.CM_INT, "nNumFilesPerSession",
-                    Integer.toString(m_arraySendFiles.length));
+            ue_start.setEventField(CMInfo.CM_INT, "nNumFilesPerSession", Integer.toString(m_arraySendFiles.length));
             bReturn = m_clientStub.send(ue_start, strDefServer);
 
             if (!bReturn) {
@@ -657,8 +665,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 String strFilePath = m_arraySendFiles[i].getPath();
                 bReturn = m_clientStub.pushFile(strFilePath, strDefServer, CMInfo.FILE_OVERWRITE);
                 if (!bReturn) {
-                    printMessage("push file error! file(" + strFilePath + "), receiver("
-                            + strDefServer + ")\n");
+                    printMessage("push file error! file(" + strFilePath + "), receiver(" + strDefServer + ")\n");
                 }
             }
 
@@ -689,11 +696,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
         switch (fe.getID()) {
             case CMFileEvent.REQUEST_PERMIT_PULL_FILE:
-                String strReq = "[" + fe.getFileReceiver() + "] requests file(" + fe.getFileName() +
-                        ").\n";
+                String strReq = "[" + fe.getFileReceiver() + "] requests file(" + fe.getFileName() + ").\n";
                 printMessage(strReq);
-                nOption = JOptionPane.showConfirmDialog(null, strReq, "Request a file",
-                        JOptionPane.YES_NO_OPTION);
+                nOption = JOptionPane.showConfirmDialog(null, strReq, "Request a file", JOptionPane.YES_NO_OPTION);
                 if (nOption == JOptionPane.YES_OPTION) {
                     m_clientStub.replyEvent(fe, 1);
                 } else {
@@ -704,8 +709,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 if (fe.getReturnCode() == -1) {
                     printMessage("[" + fe.getFileName() + "] does not exist in the owner!\n");
                 } else if (fe.getReturnCode() == 0) {
-                    printMessage("[" + fe.getFileSender() + "] rejects to send file("
-                            + fe.getFileName() + ").\n");
+                    printMessage("[" + fe.getFileSender() + "] rejects to send file(" + fe.getFileName() + ").\n");
                 }
                 break;
             case CMFileEvent.REQUEST_PERMIT_PUSH_FILE:
@@ -714,8 +718,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 strReqBuf.append("file path: " + fe.getFilePath() + "\n");
                 strReqBuf.append("file size: " + fe.getFileSize() + "\n");
                 printMessage(strReqBuf.toString());
-                nOption = JOptionPane.showConfirmDialog(null, strReqBuf.toString(),
-                        "Permit to receive a file", JOptionPane.YES_NO_OPTION);
+                nOption = JOptionPane.showConfirmDialog(null, strReqBuf.toString(), "Permit to receive a file",
+                        JOptionPane.YES_NO_OPTION);
                 if (nOption == JOptionPane.YES_OPTION) {
                     m_clientStub.replyEvent(fe, 1);
                 } else {
@@ -734,13 +738,12 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 break;
             case CMFileEvent.START_FILE_TRANSFER_ACK:
             case CMFileEvent.START_FILE_TRANSFER_CHAN_ACK:
-                printMessage("[" + fe.getFileReceiver() + "] starts to receive file("
-                        + fe.getFileName() + ").\n");
+                printMessage("[" + fe.getFileReceiver() + "] starts to receive file(" + fe.getFileName() + ").\n");
                 break;
             case CMFileEvent.END_FILE_TRANSFER:
             case CMFileEvent.END_FILE_TRANSFER_CHAN:
-                printMessage("[" + fe.getFileSender() + "] completes to send file("
-                        + fe.getFileName() + ", " + fe.getFileSize() + " Bytes).\n");
+                printMessage("[" + fe.getFileSender() + "] completes to send file(" + fe.getFileName() + ", "
+                        + fe.getFileSize() + " Bytes).\n");
 
                 lTotalDelay = fInfo.getEndRecvTime() - fInfo.getStartRequestTime();
                 lTransferDelay = fInfo.getEndRecvTime() - fInfo.getStartRecvTime();
@@ -764,8 +767,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 break;
             case CMFileEvent.END_FILE_TRANSFER_ACK:
             case CMFileEvent.END_FILE_TRANSFER_CHAN_ACK:
-                printMessage("[" + fe.getFileReceiver() + "] compeletes to receive file("
-                        + fe.getFileName() + ", " + fe.getFileSize() + " Bytes).\n");
+                printMessage("[" + fe.getFileReceiver() + "] compeletes to receive file(" + fe.getFileName() + ", "
+                        + fe.getFileSize() + " Bytes).\n");
                 lTotalDelay = fInfo.getEndSendTime() - fInfo.getStartRequestTime();
                 lTransferDelay = fInfo.getEndSendTime() - fInfo.getStartSendTime();
                 printMessage("total delay(" + lTotalDelay + " ms), ");
@@ -807,11 +810,10 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             if (m_nCurNumFTPSessions < m_nTotalNumFTPSessions) {
                 for (int i = 0; i < m_arraySendFiles.length; i++) {
                     String strFilePath = m_arraySendFiles[i].getPath();
-                    bReturn = m_clientStub.pushFile(strFilePath, m_strFileReceiver,
-                            CMInfo.FILE_OVERWRITE);
+                    bReturn = m_clientStub.pushFile(strFilePath, m_strFileReceiver, CMInfo.FILE_OVERWRITE);
                     if (!bReturn) {
-                        printMessage("push file error! file(" + strFilePath + "), receiver("
-                                + m_strFileReceiver + ")\n");
+                        printMessage(
+                                "push file error! file(" + strFilePath + "), receiver(" + m_strFileReceiver + ")\n");
                     }
                 }
             } else if (m_nCurNumFTPSessions == m_nTotalNumFTPSessions) {
@@ -831,8 +833,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 m_nCurNumFTPSessions = 0;
                 m_nTotalNumFilesPerSession = 0;
             } else {
-                System.err.println("# completed ftp sessions (" + m_nCurNumFTPSessions
-                        + ") > # total ftp sessions (" + m_nTotalNumFTPSessions + ")!");
+                System.err.println("# completed ftp sessions (" + m_nCurNumFTPSessions + ") > # total ftp sessions ("
+                        + m_nTotalNumFTPSessions + ")!");
             }
         }
 
@@ -857,14 +859,13 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             m_nRecvPieceNum++;
         }
 
-
         // if the index is the same as the number of servers, merge the split file
         if (m_nRecvPieceNum == m_nCurrentServerNum) {
             if (m_nRecvPieceNum > 1) {
                 // set the merged file name m-'file name'.'ext'
                 int index = strFile.lastIndexOf("-");
-                strMergeName = confInfo.getTransferedFileHome().toString() + File.separator +
-                        strFile.substring(0, index) + "." + m_strExt;
+                strMergeName = confInfo.getTransferedFileHome().toString() + File.separator
+                        + strFile.substring(0, index) + "." + m_strExt;
 
                 // merge split pieces
                 CMFileTransferManager.mergeFiles(m_filePieces, m_nCurrentServerNum, strMergeName);
@@ -872,10 +873,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
             // calculate the total delay
             long lRecvTime = System.currentTimeMillis();
-            //System.out.println("total delay for ("+m_nRecvPieceNum+") files: "
-            //					+(lRecvTime-m_lStartTime)+" ms");
-            printMessage("total delay for (" + m_nRecvPieceNum + ") files: "
-                    + (lRecvTime - m_lStartTime) + " ms\n");
+            // System.out.println("total delay for ("+m_nRecvPieceNum+") files: "
+            // +(lRecvTime-m_lStartTime)+" ms");
+            printMessage("total delay for (" + m_nRecvPieceNum + ") files: " + (lRecvTime - m_lStartTime) + " ms\n");
 
             // reset m_bDistSendRecv, m_nRecvFilePieceNum
             m_bDistFileProc = false;
@@ -894,19 +894,21 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         switch (se.getID()) {
             case CMSNSEvent.CONTENT_UPLOAD_RESPONSE:
                 if (se.getReturnCode() == 1) {
-                    //System.out.println("Content upload succeeded.");
+                    // System.out.println("Content upload succeeded.");
                     printMessage("Content upload succeeded.\n");
                 } else {
-                    //System.out.println("Content upload failed.");
+                    // System.out.println("Content upload failed.");
                     printMessage("Content upload failed.\n");
                 }
-                //System.out.println("user("+se.getUserName()+"), seqNum("+se.getContentID()+"), time("
-                //		+se.getDate()+").");
-                printMessage("user(" + se.getUserName() + "), seqNum(" + se.getContentID() + "), time("
-                        + se.getDate() + ").\n");
+                // System.out.println("user("+se.getUserName()+"),
+                // seqNum("+se.getContentID()+"), time("
+                // +se.getDate()+").");
+                printMessage("user(" + se.getUserName() + "), seqNum(" + se.getContentID() + "), time(" + se.getDate()
+                        + ").\n");
                 break;
             case CMSNSEvent.CONTENT_DOWNLOAD_RESPONSE:
-                contentList.removeAllSNSContents();    // clear the content list to which downloaded contents will be stored
+                contentList.removeAllSNSContents(); // clear the content list to which downloaded contents will be
+                                                    // stored
                 m_nEstDelaySum = 0;
                 break;
             case CMSNSEvent.CONTENT_DOWNLOAD:
@@ -921,7 +923,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
                 contentList.addSNSContent(se.getContentID(), se.getDate(), se.getWriterName(), se.getMessage(),
                         se.getNumAttachedFiles(), se.getReplyOf(), se.getLevelOfDisclosure(), fNameList);
-                //printMessage("transmitted delay: "+se.getEstDelay()+"\n");
+                // printMessage("transmitted delay: "+se.getEstDelay()+"\n");
                 m_nEstDelaySum += se.getEstDelay();
                 break;
             case CMSNSEvent.CONTENT_DOWNLOAD_END:
@@ -929,87 +931,85 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 break;
             case CMSNSEvent.RESPONSE_ATTACHED_FILE:
                 if (se.getReturnCode() == 1) {
-                    printMessage("The request for an attached file [" + se.getFileName()
-                            + "] of content ID [" + se.getContentID() + "] written by [" + se.getWriterName()
-                            + "] is succeeded.\n");
+                    printMessage("The request for an attached file [" + se.getFileName() + "] of content ID ["
+                            + se.getContentID() + "] written by [" + se.getWriterName() + "] is succeeded.\n");
                 } else {
-                    printMessage("The request for an attached file [" + se.getFileName()
-                            + "] of content ID [" + se.getContentID() + "] written by [" + se.getWriterName()
-                            + "] is failed!\n");
+                    printMessage("The request for an attached file [" + se.getFileName() + "] of content ID ["
+                            + se.getContentID() + "] written by [" + se.getWriterName() + "] is failed!\n");
                     if (m_bReqAttachedFile)
-                        m_bReqAttachedFile = false;    // reset the flag
+                        m_bReqAttachedFile = false; // reset the flag
                 }
                 break;
             case CMSNSEvent.ADD_NEW_FRIEND_ACK:
                 if (se.getReturnCode() == 1) {
-                    //System.out.println("["+se.getUserName()+"] succeeds to add a friend["
-                    //		+se.getFriendName()+"].");
-                    printMessage("[" + se.getUserName() + "] succeeds to add a friend["
-                            + se.getFriendName() + "].\n");
+                    // System.out.println("["+se.getUserName()+"] succeeds to add a friend["
+                    // +se.getFriendName()+"].");
+                    printMessage("[" + se.getUserName() + "] succeeds to add a friend[" + se.getFriendName() + "].\n");
                 } else {
-                    //System.out.println("["+se.getUserName()+"] fails to add a friend["
-                    //		+se.getFriendName()+"].");
-                    printMessage("[" + se.getUserName() + "] fails to add a friend["
-                            + se.getFriendName() + "].\n");
+                    // System.out.println("["+se.getUserName()+"] fails to add a friend["
+                    // +se.getFriendName()+"].");
+                    printMessage("[" + se.getUserName() + "] fails to add a friend[" + se.getFriendName() + "].\n");
                 }
                 break;
             case CMSNSEvent.REMOVE_FRIEND_ACK:
                 if (se.getReturnCode() == 1) {
-                    //System.out.println("["+se.getUserName()+"] succeeds to remove a friend["
-                    //		+se.getFriendName()+"].");
-                    printMessage("[" + se.getUserName() + "] succeeds to remove a friend["
-                            + se.getFriendName() + "].\n");
+                    // System.out.println("["+se.getUserName()+"] succeeds to remove a friend["
+                    // +se.getFriendName()+"].");
+                    printMessage(
+                            "[" + se.getUserName() + "] succeeds to remove a friend[" + se.getFriendName() + "].\n");
                 } else {
-                    //System.out.println("["+se.getUserName()+"] fails to remove a friend["
-                    //		+se.getFriendName()+"].");
-                    printMessage("[" + se.getUserName() + "] fails to remove a friend["
-                            + se.getFriendName() + "].\n");
+                    // System.out.println("["+se.getUserName()+"] fails to remove a friend["
+                    // +se.getFriendName()+"].");
+                    printMessage("[" + se.getUserName() + "] fails to remove a friend[" + se.getFriendName() + "].\n");
                 }
                 break;
             case CMSNSEvent.RESPONSE_FRIEND_LIST:
-                //System.out.println("["+se.getUserName()+"] receives "+se.getNumFriends()+" friends "
-                //		+"of total "+se.getTotalNumFriends()+" friends.");
-                printMessage("[" + se.getUserName() + "] receives " + se.getNumFriends() + " friends "
-                        + "of total " + se.getTotalNumFriends() + " friends.\n");
-                //System.out.print("Friends: ");
+                // System.out.println("["+se.getUserName()+"] receives "+se.getNumFriends()+"
+                // friends "
+                // +"of total "+se.getTotalNumFriends()+" friends.");
+                printMessage("[" + se.getUserName() + "] receives " + se.getNumFriends() + " friends " + "of total "
+                        + se.getTotalNumFriends() + " friends.\n");
+                // System.out.print("Friends: ");
                 printMessage("Friends: ");
                 for (i = 0; i < se.getFriendList().size(); i++) {
-                    //System.out.print(se.getFriendList().get(i)+" ");
+                    // System.out.print(se.getFriendList().get(i)+" ");
                     printMessage(se.getFriendList().get(i) + " ");
                 }
-                //System.out.println();
+                // System.out.println();
                 printMessage("\n");
                 break;
             case CMSNSEvent.RESPONSE_FRIEND_REQUESTER_LIST:
-                //System.out.println("["+se.getUserName()+"] receives "+se.getNumFriends()+" requesters "
-                //		+"of total "+se.getTotalNumFriends()+" requesters.");
-                printMessage("[" + se.getUserName() + "] receives " + se.getNumFriends() + " requesters "
-                        + "of total " + se.getTotalNumFriends() + " requesters.\n");
-                //System.out.print("Requesters: ");
+                // System.out.println("["+se.getUserName()+"] receives "+se.getNumFriends()+"
+                // requesters "
+                // +"of total "+se.getTotalNumFriends()+" requesters.");
+                printMessage("[" + se.getUserName() + "] receives " + se.getNumFriends() + " requesters " + "of total "
+                        + se.getTotalNumFriends() + " requesters.\n");
+                // System.out.print("Requesters: ");
                 printMessage("Requesters: ");
                 for (i = 0; i < se.getFriendList().size(); i++) {
-                    //System.out.print(se.getFriendList().get(i)+" ");
+                    // System.out.print(se.getFriendList().get(i)+" ");
                     printMessage(se.getFriendList().get(i) + " ");
                 }
-                //System.out.println();
+                // System.out.println();
                 printMessage("\n");
                 break;
             case CMSNSEvent.RESPONSE_BI_FRIEND_LIST:
-                //System.out.println("["+se.getUserName()+"] receives "+se.getNumFriends()+" bi-friends "
-                //		+"of total "+se.getTotalNumFriends()+" bi-friends.");
-                printMessage("[" + se.getUserName() + "] receives " + se.getNumFriends() + " bi-friends "
-                        + "of total " + se.getTotalNumFriends() + " bi-friends.\n");
-                //System.out.print("Bi-friends: ");
+                // System.out.println("["+se.getUserName()+"] receives "+se.getNumFriends()+"
+                // bi-friends "
+                // +"of total "+se.getTotalNumFriends()+" bi-friends.");
+                printMessage("[" + se.getUserName() + "] receives " + se.getNumFriends() + " bi-friends " + "of total "
+                        + se.getTotalNumFriends() + " bi-friends.\n");
+                // System.out.print("Bi-friends: ");
                 printMessage("Bi-friends: ");
                 for (i = 0; i < se.getFriendList().size(); i++) {
-                    //System.out.print(se.getFriendList().get(i)+" ");
+                    // System.out.print(se.getFriendList().get(i)+" ");
                     printMessage(se.getFriendList().get(i) + " ");
                 }
-                //System.out.println();
+                // System.out.println();
                 printMessage("\n");
                 break;
             case CMSNSEvent.CHANGE_ATTACH_DOWNLOAD_SCHEME:
-                String[] attachScheme = {"Full", "Thumbnail", "Prefetching", "None"};
+                String[] attachScheme = { "Full", "Thumbnail", "Prefetching", "None" };
                 printMessage("Server changes the scheme for attachment download of SNS content to ["
                         + attachScheme[se.getAttachDownloadScheme()] + "].\n");
                 break;
@@ -1028,16 +1028,17 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         Iterator<CMSNSContent> iter = null;
         boolean bShowLink = true;
 
-        //System.out.println("# downloaded contents: "+se.getNumContents());
+        // System.out.println("# downloaded contents: "+se.getNumContents());
         printMessage("# downloaded contents: " + se.getNumContents() + "\n");
-        //System.out.println("# contents to be printed: "+contentList.getSNSContentNum());
+        // System.out.println("# contents to be printed:
+        // "+contentList.getSNSContentNum());
         printMessage("# contents to be printed: " + contentList.getSNSContentNum() + "\n");
 
         // writes info to the file
         int nRealDelay = (int) (System.currentTimeMillis() - m_lStartTime);
         int nAccessDelay = nRealDelay + m_nEstDelaySum;
         printMessage("Real download delay: " + nRealDelay + " ms\n");
-        if (m_pw != null)    // if multiple downloading is requested,
+        if (m_pw != null) // if multiple downloading is requested,
         {
             m_pw.format("%10d %10d%n", nAccessDelay, se.getNumContents());
             m_pw.flush();
@@ -1047,14 +1048,15 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         iter = contentList.getContentList().iterator();
         while (iter.hasNext()) {
             CMSNSContent cont = iter.next();
-            //System.out.println("--------------------------------------");
+            // System.out.println("--------------------------------------");
             printMessage("-----------------------------------------------------------\n");
-            //System.out.println("ID("+cont.getContentID()+"), Date("+cont.getDate()+"), Writer("
-            //		+cont.getWriterName()+"), File("+cont.getAttachedFileName()+")");
-            printMessage("ID(" + cont.getContentID() + "), Date(" + cont.getDate() + "), Writer("
-                    + cont.getWriterName() + "), #attachment(" + cont.getNumAttachedFiles()
-                    + "), replyID(" + cont.getReplyOf() + "), lod(" + cont.getLevelOfDisclosure() + ")\n");
-            //System.out.println("Message: "+cont.getMessage());
+            // System.out.println("ID("+cont.getContentID()+"), Date("+cont.getDate()+"),
+            // Writer("
+            // +cont.getWriterName()+"), File("+cont.getAttachedFileName()+")");
+            printMessage("ID(" + cont.getContentID() + "), Date(" + cont.getDate() + "), Writer(" + cont.getWriterName()
+                    + "), #attachment(" + cont.getNumAttachedFiles() + "), replyID(" + cont.getReplyOf() + "), lod("
+                    + cont.getLevelOfDisclosure() + ")\n");
+            // System.out.println("Message: "+cont.getMessage());
             printMessage("Message: " + cont.getMessage() + "\n");
             if (cont.getNumAttachedFiles() > 0) {
                 ArrayList<String> fNameList = cont.getFileNameList();
@@ -1110,10 +1112,10 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                         }
                         printFilePath(fPath);
                     }
-                }    // for
-            }    // if
-        }    // while
-        //printMessage("sum of estimated download delay: "+m_nEstDelaySum +" ms\n");
+                } // for
+            } // if
+        } // while
+        // printMessage("sum of estimated download delay: "+m_nEstDelaySum +" ms\n");
 
         // continue simulation until m_nSimNum = 0
         if (--m_nSimNum > 0) {
@@ -1125,7 +1127,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
             m_clientStub.requestSNSContent(strWriterName, nContentOffset);
             if (CMInfo._CM_DEBUG) {
-                //System.out.println("["+strUserName+"] requests content with offset("+nContentOffset+").");
+                // System.out.println("["+strUserName+"] requests content with
+                // offset("+nContentOffset+").");
                 printMessage("[" + strUserName + "] requests content of writer[" + strWriterName + "] with offset("
                         + nContentOffset + ").\n");
             }
@@ -1158,48 +1161,54 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         CMMultiServerEvent mse = (CMMultiServerEvent) cme;
         switch (mse.getID()) {
             case CMMultiServerEvent.NOTIFY_SERVER_INFO:
-                //System.out.println("New server info received: num servers: "+mse.getServerNum() );
+                // System.out.println("New server info received: num servers:
+                // "+mse.getServerNum() );
                 printMessage("New server info received: num servers: " + mse.getServerNum() + "\n");
                 Iterator<CMServerInfo> iter = mse.getServerInfoList().iterator();
-                //System.out.format("%-20s %-20s %-10s %-10s%n", "name", "addr", "port", "udp port");
+                // System.out.format("%-20s %-20s %-10s %-10s%n", "name", "addr", "port", "udp
+                // port");
                 printMessage(String.format("%-20s %-20s %-10s %-10s%n", "name", "addr", "port", "udp port"));
-                //System.out.println("--------------------------------------------------------------");
+                // System.out.println("--------------------------------------------------------------");
                 printMessage("--------------------------------------------------------------\n");
                 while (iter.hasNext()) {
                     CMServerInfo si = iter.next();
-                    //System.out.format("%-20s %-20s %-10d %-10d%n", si.getServerName(),
-                    //		si.getServerAddress(), si.getServerPort(), si.getServerUDPPort());
-                    printMessage(String.format("%-20s %-20s %-10d %-10d%n", si.getServerName(),
-                            si.getServerAddress(), si.getServerPort(), si.getServerUDPPort()));
+                    // System.out.format("%-20s %-20s %-10d %-10d%n", si.getServerName(),
+                    // si.getServerAddress(), si.getServerPort(), si.getServerUDPPort());
+                    printMessage(String.format("%-20s %-20s %-10d %-10d%n", si.getServerName(), si.getServerAddress(),
+                            si.getServerPort(), si.getServerUDPPort()));
                 }
                 break;
             case CMMultiServerEvent.NOTIFY_SERVER_LEAVE:
-                //System.out.println("An additional server["+mse.getServerName()+"] left the "
-                //		+ "default server.");
-                printMessage("An additional server[" + mse.getServerName() + "] left the "
-                        + "default server.\n");
+                // System.out.println("An additional server["+mse.getServerName()+"] left the "
+                // + "default server.");
+                printMessage("An additional server[" + mse.getServerName() + "] left the " + "default server.\n");
                 break;
             case CMMultiServerEvent.ADD_RESPONSE_SESSION_INFO:
-                //System.out.println("Session information of server["+mse.getServerName()+"]");
+                // System.out.println("Session information of server["+mse.getServerName()+"]");
                 printMessage("Session information of server[" + mse.getServerName() + "]\n");
-                //System.out.format("%-60s%n", "------------------------------------------------------------");
+                // System.out.format("%-60s%n",
+                // "------------------------------------------------------------");
                 printMessage(String.format("%-60s%n", "------------------------------------------------------------"));
-                //System.out.format("%-20s%-20s%-10s%-10s%n", "name", "address", "port", "user num");
+                // System.out.format("%-20s%-20s%-10s%-10s%n", "name", "address", "port", "user
+                // num");
                 printMessage(String.format("%-20s%-20s%-10s%-10s%n", "name", "address", "port", "user num"));
-                //System.out.format("%-60s%n", "------------------------------------------------------------");
+                // System.out.format("%-60s%n",
+                // "------------------------------------------------------------");
                 printMessage(String.format("%-60s%n", "------------------------------------------------------------"));
                 Iterator<CMSessionInfo> iterSI = mse.getSessionInfoList().iterator();
 
                 while (iterSI.hasNext()) {
                     CMSessionInfo tInfo = iterSI.next();
-                    //System.out.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(), tInfo.getAddress(),
-                    //		tInfo.getPort(), tInfo.getUserNum());
+                    // System.out.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(),
+                    // tInfo.getAddress(),
+                    // tInfo.getPort(), tInfo.getUserNum());
                     printMessage(String.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(), tInfo.getAddress(),
                             tInfo.getPort(), tInfo.getUserNum()));
                 }
                 break;
             case CMMultiServerEvent.ADD_LOGIN_ACK:
-                //System.out.println("This client successfully logs in to server["+mse.getServerName()+"].");
+                // System.out.println("This client successfully logs in to
+                // server["+mse.getServerName()+"].");
                 printMessage("This client successfully logs in to server[" + mse.getServerName() + "].\n");
                 break;
         }
@@ -1211,51 +1220,50 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         switch (cme.getID()) {
             case CMMqttEvent.CONNACK:
                 CMMqttEventCONNACK conackEvent = (CMMqttEventCONNACK) cme;
-                //printMessage("received "+conackEvent+"\n");
-                printMessage("[" + conackEvent.getSender() + "] sent CMMqttEvent.CONNACK, "
-                        + "[return code: " + conackEvent.getReturnCode() + "]\n");
+                // printMessage("received "+conackEvent+"\n");
+                printMessage("[" + conackEvent.getSender() + "] sent CMMqttEvent.CONNACK, " + "[return code: "
+                        + conackEvent.getReturnCode() + "]\n");
                 break;
             case CMMqttEvent.PUBLISH:
                 CMMqttEventPUBLISH pubEvent = (CMMqttEventPUBLISH) cme;
-                //printMessage("received "+pubEvent+"\n");
-                printMessage("[" + pubEvent.getSender() + "] sent CMMqttEvent.PUBLISH, "
-                        + "[packet ID: " + pubEvent.getPacketID() + "], [topic: "
-                        + pubEvent.getTopicName() + "], [msg: " + pubEvent.getAppMessage()
-                        + "], [QoS: " + pubEvent.getQoS() + "]\n");
+                // printMessage("received "+pubEvent+"\n");
+                printMessage("[" + pubEvent.getSender() + "] sent CMMqttEvent.PUBLISH, " + "[packet ID: "
+                        + pubEvent.getPacketID() + "], [topic: " + pubEvent.getTopicName() + "], [msg: "
+                        + pubEvent.getAppMessage() + "], [QoS: " + pubEvent.getQoS() + "]\n");
                 break;
             case CMMqttEvent.PUBACK:
                 CMMqttEventPUBACK pubackEvent = (CMMqttEventPUBACK) cme;
-                //printMessage("received "+pubackEvent+"\n");
-                printMessage("[" + pubackEvent.getSender() + "] sent CMMqttEvent.PUBACK, "
-                        + "[packet ID: " + pubackEvent.getPacketID() + "]\n");
+                // printMessage("received "+pubackEvent+"\n");
+                printMessage("[" + pubackEvent.getSender() + "] sent CMMqttEvent.PUBACK, " + "[packet ID: "
+                        + pubackEvent.getPacketID() + "]\n");
                 break;
             case CMMqttEvent.PUBREC:
                 CMMqttEventPUBREC pubrecEvent = (CMMqttEventPUBREC) cme;
-                //printMessage("received "+pubrecEvent+"\n");
-                printMessage("[" + pubrecEvent.getSender() + "] sent CMMqttEvent.PUBREC, "
-                        + "[packet ID: " + pubrecEvent.getPacketID() + "]\n");
+                // printMessage("received "+pubrecEvent+"\n");
+                printMessage("[" + pubrecEvent.getSender() + "] sent CMMqttEvent.PUBREC, " + "[packet ID: "
+                        + pubrecEvent.getPacketID() + "]\n");
                 break;
             case CMMqttEvent.PUBREL:
                 CMMqttEventPUBREL pubrelEvent = (CMMqttEventPUBREL) cme;
-                //printMessage("received "+pubrelEvent+"\n");
-                printMessage("[" + pubrelEvent.getSender() + "] sent CMMqttEventPUBREL, "
-                        + "[packet ID: " + pubrelEvent.getPacketID() + "]\n");
+                // printMessage("received "+pubrelEvent+"\n");
+                printMessage("[" + pubrelEvent.getSender() + "] sent CMMqttEventPUBREL, " + "[packet ID: "
+                        + pubrelEvent.getPacketID() + "]\n");
                 break;
             case CMMqttEvent.PUBCOMP:
                 CMMqttEventPUBCOMP pubcompEvent = (CMMqttEventPUBCOMP) cme;
-                //printMessage("received "+pubcompEvent+"\n");
-                printMessage("[" + pubcompEvent.getSender() + "] sent CMMqttEvent.PUBCOMP, "
-                        + "[packet ID: " + pubcompEvent.getPacketID() + "]\n");
+                // printMessage("received "+pubcompEvent+"\n");
+                printMessage("[" + pubcompEvent.getSender() + "] sent CMMqttEvent.PUBCOMP, " + "[packet ID: "
+                        + pubcompEvent.getPacketID() + "]\n");
                 break;
             case CMMqttEvent.SUBACK:
                 CMMqttEventSUBACK subackEvent = (CMMqttEventSUBACK) cme;
-                //printMessage("received "+subackEvent+"\n");
+                // printMessage("received "+subackEvent+"\n");
                 printMessage("[" + subackEvent.getSender() + "] sent CMMqttEvent.SUBACK, "
                         + subackEvent.getReturnCodeList() + "\n");
                 break;
             case CMMqttEvent.UNSUBACK:
                 CMMqttEventUNSUBACK unsubackEvent = (CMMqttEventUNSUBACK) cme;
-                //printMessage("received "+unsubackEvent+"\n");
+                // printMessage("received "+unsubackEvent+"\n");
                 printMessage("[" + unsubackEvent.getSender() + "] sent CMMqttEvent.UNSUBACK\n");
                 break;
         }
@@ -1264,31 +1272,26 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
     }
 
     private void printMessage(String strText) {
-		/*
-		m_outTextArea.append(strText);
-		m_outTextArea.setCaretPosition(m_outTextArea.getDocument().getLength());
-		*/
-		/*
-		StyledDocument doc = m_outTextPane.getStyledDocument();
-		try {
-			doc.insertString(doc.getLength(), strText, null);
-			m_outTextPane.setCaretPosition(m_outTextPane.getDocument().getLength());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
+        /*
+         * m_outTextArea.append(strText);
+         * m_outTextArea.setCaretPosition(m_outTextArea.getDocument().getLength());
+         */
+        /*
+         * StyledDocument doc = m_outTextPane.getStyledDocument(); try {
+         * doc.insertString(doc.getLength(), strText, null);
+         * m_outTextPane.setCaretPosition(m_outTextPane.getDocument().getLength()); }
+         * catch (BadLocationException e) { // TODO Auto-generated catch block
+         * e.printStackTrace(); }
+         */
         System.out.println(strText);
 
         return;
     }
-	
-	/*
-	private void printStyledMessage(String strText, String strStyleName)
-	{
-		m_client.printStyledMessage(strText, strStyleName);
-	}
-	*/
+
+    /*
+     * private void printStyledMessage(String strText, String strStyleName) {
+     * m_client.printStyledMessage(strText, strStyleName); }
+     */
 
     private void printImage(String strPath) {
 
@@ -1298,12 +1301,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
     }
 
-	/*
-	private void setMessage(String strText)
-	{
-		m_outTextArea.setText(strText);
-		m_outTextArea.setCaretPosition(m_outTextArea.getDocument().getLength());
-	}
-	*/
+    /*
+     * private void setMessage(String strText) { m_outTextArea.setText(strText);
+     * m_outTextArea.setCaretPosition(m_outTextArea.getDocument().getLength()); }
+     */
 
 }

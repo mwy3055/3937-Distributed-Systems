@@ -27,7 +27,7 @@ public class SendDictionaryQuery implements Callable<Integer> {
         return "https://od-api.oxforddictionaries.com/api/v2/entries/en-us/" + word_id + "?fields=pronunciations&strictMatch=false";
     }
 
-    private int sendQuery() throws Exception {
+    private int sendQuery() {
         String queryURL = getQueryURL();
 
         Request request = new Request.Builder()
@@ -38,9 +38,14 @@ public class SendDictionaryQuery implements Callable<Integer> {
                 .build();
 
         OkHttpClient client = new OkHttpClient();
-        Response response = client.newCall(request).execute();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            return WordChainInfo.RESULT_API_ERROR;
+        }
         if (!response.isSuccessful()) {
-            throw new IOException("Error code " + response);
+            return WordChainInfo.RESULT_API_ERROR;
         }
         /* Asynchronous request
         client.newCall(request).enqueue(new Callback() {
@@ -68,7 +73,13 @@ public class SendDictionaryQuery implements Callable<Integer> {
         });*/
 
         Gson gson = new Gson();
-        APIResponse parsedResponse = gson.fromJson(response.body().string(), APIResponse.class);
+        APIResponse parsedResponse;
+        try {
+            parsedResponse = gson.fromJson(response.body().string(), APIResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return WordChainInfo.RESULT_API_ERROR;
+        }
         if (isNoun(parsedResponse)) {
             stringSet.add(word);
             return WordChainInfo.RESULT_OK;
@@ -87,7 +98,7 @@ public class SendDictionaryQuery implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         if (stringSet.contains(word)) {
             return WordChainInfo.RESULT_DUPLICATION;
         }

@@ -12,6 +12,7 @@ public class WordSendingEvent extends CMEvent {
 
     public WordSendingEvent() {
         this.m_nType = WordChainInfo.EVENT_SEND_WORD;
+        this.m_nID = WordChainInfo.EVENT_SEND_WORD;
         this.word = "";
     }
 

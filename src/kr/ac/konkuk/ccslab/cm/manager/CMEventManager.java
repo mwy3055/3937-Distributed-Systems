@@ -6,9 +6,7 @@ import kr.ac.konkuk.ccslab.cm.event.mqttevent.*;
 import kr.ac.konkuk.ccslab.cm.info.*;
 import kr.ac.konkuk.ccslab.cm.thread.CMEventReceiver;
 import project.WordChainInfo;
-import project.event.NextUserEvent;
-import project.event.WordResultEvent;
-import project.event.WordSendingEvent;
+import project.event.*;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -124,12 +122,18 @@ public class CMEventManager {
             case WordChainInfo.EVENT_SEND_WORD:
                 WordSendingEvent wordEvent = new WordSendingEvent(buf);
                 return wordEvent;
-            case WordChainInfo.EVENT_NEXTUSER:
+            case WordChainInfo.EVENT_NEXT_USER:
                 NextUserEvent nextUserEvent = new NextUserEvent(buf);
                 return nextUserEvent;
             case WordChainInfo.EVENT_RESULT_WORD:
                 WordResultEvent wordResultEvent = new WordResultEvent(buf);
                 return wordResultEvent;
+            case WordChainInfo.EVENT_NOTIFY_ADMIN:
+                NotifyAdminEvent adminEvent = new NotifyAdminEvent(buf);
+                return adminEvent;
+            case WordChainInfo.EVENT_GAME_START:
+                RequestGameStartEvent gameStartEvent = new RequestGameStartEvent(buf);
+                return gameStartEvent;
             default:
                 System.err.println("CMEventManager.unmarshallEvent(), unknown event type: " + nEventType);
                 return null;
