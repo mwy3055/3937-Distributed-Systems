@@ -2,6 +2,7 @@ package project.client;
 
 import kr.ac.konkuk.ccslab.cm.entity.CMServerInfo;
 import kr.ac.konkuk.ccslab.cm.entity.CMSessionInfo;
+import kr.ac.konkuk.ccslab.cm.entity.CMUser;
 import kr.ac.konkuk.ccslab.cm.event.*;
 import kr.ac.konkuk.ccslab.cm.event.handler.CMAppEventHandler;
 import kr.ac.konkuk.ccslab.cm.event.mqttevent.*;
@@ -13,6 +14,7 @@ import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
 import project.WordChainInfo;
 import project.event.NextUserEvent;
+import project.event.NotifyAdminEvent;
 import project.event.WordResultEvent;
 
 import javax.swing.*;
@@ -281,11 +283,15 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
-            case WordChainInfo.EVENT_NEXTUSER:
+            case WordChainInfo.EVENT_NEXT_USER:
                 processNextUserEvent(cme);
                 break;
             case WordChainInfo.EVENT_RESULT_WORD:
                 processReplyWordEvent(cme);
+                break;
+            case WordChainInfo.EVENT_NOTIFY_ADMIN:
+                processNotifyAdminEvent(cme);
+                break;
             default:
                 return;
         }
@@ -295,12 +301,10 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
     // TODO: process GameFinishEvent
 
-    // TODO: process TimeOutEvent
-
 
     private void processNextUserEvent(CMEvent cme) {
         NextUserEvent event = (NextUserEvent) cme;
-        printMessage(String.format("I am the next user of group %s, session %s.\n", event.getHandlerGroup(), event.getHandlerSession()));
+        m_client.processMyTurn();
     }
 
     private void processReplyWordEvent(CMEvent cme) {
@@ -319,6 +323,17 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         } else if (resultCode == WordChainInfo.RESULT_TIMEOUT) {
             printMessage(String.format("[Server] Timeout! Your life will decrease by 1."));
         }
+    }
+
+    private void processNotifyAdminEvent(CMEvent cme) {
+        NotifyAdminEvent event = (NotifyAdminEvent) cme;
+        CMInteractionInfo info = m_clientStub.getCMInfo().getInteractionInfo();
+        CMUser myself = info.getMyself();
+        myself.setAdmin(true);
+        System.out.println(String.format("You are the admin of session [%s], group [%s].", myself.getCurrentSession(), myself.getCurrentGroup()));
+        System.out.println("If you want to start the game, enter \"start\" to the console.");
+        System.out.println("You can only start the game when there are more than 2 users in the group.");
+        m_client.startGame();
     }
 
     private void processSessionEvent(CMEvent cme) {

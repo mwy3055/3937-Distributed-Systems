@@ -7,6 +7,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMConfigurator;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
+import project.event.RequestGameStartEvent;
 import project.event.WordSendingEvent;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.*;
 
 
 public class WordChainClient {
@@ -26,10 +28,18 @@ public class WordChainClient {
     private boolean m_bRun;
     private Scanner m_scan = null;
 
+    private BlockingQueue<String> lines;
+    private boolean isGettingWordInput;
+    private ExecutorService executorService;
+
     public WordChainClient() {
         m_clientStub = new CMClientStub();
         m_eventHandler = new WordChainClientEventHandler(m_clientStub, this);
         m_bRun = true;
+
+        lines = new LinkedBlockingQueue<>();
+        isGettingWordInput = false;
+        executorService = Executors.newCachedThreadPool();
     }
 
     public CMClientStub getClientStub() {
@@ -41,7 +51,7 @@ public class WordChainClient {
     }
 
     ///////////////////////////////////////////////////////////////
-    // test methods
+    // TODO: Implement from here
 
     public void startTest() {
         System.out.println("client application starts.");
@@ -49,12 +59,26 @@ public class WordChainClient {
         m_scan = new Scanner(System.in);
         String strInput = null;
         int nCommand = -1;
+/*
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    lines.add(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+*/
         while (m_bRun) {
             System.out.println("Type \"0\" for menu.");
             System.out.print("> ");
             try {
+                //strInput = lines.take();
                 strInput = br.readLine();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
                 continue;
@@ -72,7 +96,7 @@ public class WordChainClient {
                     printAllMenus();
                     break;
                 case 100:
-                    testStartCM();
+                    connectServer();
                     break;
                 case 999:
                     testTerminateCM();
@@ -303,7 +327,7 @@ public class WordChainClient {
                     testMqttDisconnect();
                     break;
                 case 990:
-                    testWordEvent();
+                    processMyTurn();
                     break;
                 default:
                     System.err.println("Unknown command.");
@@ -320,7 +344,157 @@ public class WordChainClient {
         m_scan.close();
     }
 
-    public void testWordEvent() {
+    public void connectServer() {
+        boolean bRet = m_clientStub.startCM();
+        if (!bRet) {
+            System.err.println("CM initialization error!");
+            return;
+        }
+
+        // get current server info from the server configuration file
+        String strCurServerAddress = null;
+        int nCurServerPort = -1;
+        String strNewServerAddress = "";
+        String strNewServerPort = "";
+
+        strCurServerAddress = m_clientStub.getServerAddress();
+        nCurServerPort = m_clientStub.getServerPort();
+
+        // ask the user if he/she would like to change the server info
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("========== start WordChainClient ==========");
+        System.out.println("Default server address: " + strCurServerAddress);
+        System.out.println("Default server port: " + nCurServerPort);
+
+        try {
+            String temp = "";
+            while (!temp.equalsIgnoreCase("Y") && !temp.equalsIgnoreCase("N")) {
+                System.out.print(String.format("Do you want to connect to default server?(Y/N): "));
+                temp = br.readLine().trim();
+            }
+            if (temp.equalsIgnoreCase("N")) {
+                System.out.print("Enter new server address: ");
+                strNewServerAddress = br.readLine().trim();
+                System.out.print("Enter new server port: ");
+                strNewServerPort = br.readLine().trim();
+            }
+            if (!strNewServerAddress.isEmpty() && !strNewServerAddress.equals(strCurServerAddress))
+                m_clientStub.setServerAddress(strNewServerAddress);
+            if (!strNewServerPort.isEmpty() && Integer.parseInt(strNewServerPort) != nCurServerPort)
+                m_clientStub.setServerPort(Integer.parseInt(strNewServerPort));
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // startTest();
+    }
+
+    public void login() {
+        String userName = null;
+
+        System.out.println("====== Login to server.");
+        System.out.print("user name: ");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            userName = br.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Sent the login request. Please wait...");
+
+        CMSessionEvent se = m_clientStub.syncLoginCM(userName, ""); // TODO: if you want to use DB, you should get password input
+        if (se != null) {
+            System.out.println(String.format("Successfully logged in to session %s!", se.getSessionName()));
+        } else {
+            System.err.println("Failed the login request!");
+            System.exit(1);
+        }
+        System.out.println("======");
+
+
+    }
+
+    public void showSessionInfoSync() {
+        CMSessionEvent se = null;
+        System.out.println("====== Loading session information. Please wait...");
+        se = m_clientStub.syncRequestSessionInfo();
+        if (se == null) {
+            System.err.println("failed the session-info request!");
+            return;
+        }
+
+        // print the request result
+        Iterator<CMSessionInfo> iter = se.getSessionInfoList().iterator();
+
+        System.out.format("%-60s%n", "------------------------------------------------------------");
+        System.out.format("%-20s%-20s%-10s%-10s%n", "name", "address", "port", "user num");
+        System.out.format("%-60s%n", "------------------------------------------------------------");
+
+        while (iter.hasNext()) {
+            CMSessionInfo tInfo = iter.next();
+            System.out.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(), tInfo.getAddress(),
+                    tInfo.getPort(), tInfo.getUserNum());
+        }
+        System.out.println("======");
+    }
+
+    public void startGame() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = "";
+        while (!input.equalsIgnoreCase("start")) {
+            try {
+                input = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (input.equalsIgnoreCase("start")) {
+                break;
+            }
+            System.out.println("Enter \"start\" to start the game.\n");
+        }
+        sendGameStartEvent();
+    }
+
+    public void sendGameStartEvent() {
+        CMUser myself = m_clientStub.getMyself();
+        if (!myself.getAdmin()) {
+            System.err.println("You are not a admin. Wait the admin to start the game.\n");
+            return;
+        }
+        System.out.println("Send game start request to server.");
+        RequestGameStartEvent event = new RequestGameStartEvent(myself.getCurrentSession(), myself.getCurrentGroup());
+        m_clientStub.send(event, "SERVER");
+    }
+
+    // TODO: if server starts the game, execute this method
+    public void playGame() {
+        // TODO: follow the server's instruction until game is over
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    lines.add(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+
+        while (true) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // TODO: after game finished: what to do? logout? terminate client?
+    }
+
+    public void processMyTurn() {
         CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
         CMUser myself = interInfo.getMyself();
         String strInput = null;
@@ -330,35 +504,31 @@ public class WordChainClient {
             return;
         }
 
-        System.out.println("====== test wordEvent in current group");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("====== Your turn. Enter the word.");
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.print("Type word: ");
         try {
-            strInput = br.readLine();
-        } catch (IOException e) {
+            strInput = lines.poll(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (strInput == null) return;
+
+        if (strInput == null) {
+            System.out.println("TIMEOUT");
+            return;
+        }
+        System.out.println(String.format("Input: %s", strInput));
 
         WordSendingEvent event = new WordSendingEvent();
-        event.setHandlerSession(myself.getCurrentSession());
-        event.setHandlerGroup(myself.getCurrentGroup());
         event.setWord(strInput);
         m_clientStub.send(event, "SERVER");
-        event = null;
 
         System.out.println(String.format("====== send %s to server", strInput));
     }
 
-    // TODO: if server starts the game, execute this method
-    public void playGame() {
-        // TODO: deactivate the input line(JTextArea?)
-
-        // TODO: follow the server's instruction until game is over
-
-        // TODO: after game finished: what to do? logout? terminate client?
-    }
+    ///////////////////////////////////////////////////////////////
+    // TODO: Implement end. DO NOT EDIT THE METHODS BELOW.
 
     public void printAllMenus() {
         System.out.println("---------------------------------- Help");
@@ -431,9 +601,6 @@ public class WordChainClient {
         String strPassword = null;
         boolean bRequestResult = false;
         Console console = System.console();
-        if (console == null) {
-            System.err.println("Unable to obtain console.");
-        }
 
         System.out.println("====== login to default server");
         System.out.print("user name: ");
@@ -445,7 +612,7 @@ public class WordChainClient {
                 strPassword = br.readLine();
             } else
                 strPassword = new String(console.readPassword("password: "));
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -508,47 +675,6 @@ public class WordChainClient {
         else
             System.err.println("failed the logout request!");
         System.out.println("======");
-    }
-
-    public void testStartCM() {
-        // get current server info from the server configuration file
-        String strCurServerAddress = null;
-        int nCurServerPort = -1;
-        String strNewServerAddress = null;
-        String strNewServerPort = null;
-
-        strCurServerAddress = m_clientStub.getServerAddress();
-        nCurServerPort = m_clientStub.getServerPort();
-
-        // ask the user if he/she would like to change the server info
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("========== start CM");
-        System.out.println("current server address: " + strCurServerAddress);
-        System.out.println("current server port: " + nCurServerPort);
-
-        try {
-            System.out.print("new server address (enter for current value): ");
-            strNewServerAddress = br.readLine().trim();
-            System.out.print("new server port (enter for current value): ");
-            strNewServerPort = br.readLine().trim();
-
-            // update the server info if the user would like to do
-            if (!strNewServerAddress.isEmpty() && !strNewServerAddress.equals(strCurServerAddress))
-                m_clientStub.setServerAddress(strNewServerAddress);
-            if (!strNewServerPort.isEmpty() && Integer.parseInt(strNewServerPort) != nCurServerPort)
-                m_clientStub.setServerPort(Integer.parseInt(strNewServerPort));
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        boolean bRet = m_clientStub.startCM();
-        if (!bRet) {
-            System.err.println("CM initialization error!");
-            return;
-        }
-        startTest();
     }
 
     public void testTerminateCM() {
@@ -3062,9 +3188,7 @@ public class WordChainClient {
         WordChainClient client = new WordChainClient();
         CMClientStub cmStub = client.getClientStub();
         cmStub.setAppEventHandler(client.getClientEventHandler());
-        client.testStartCM();
-
-        System.out.println("Client application is terminated.");
+        client.connectServer();
+        client.login();
     }
-
 }

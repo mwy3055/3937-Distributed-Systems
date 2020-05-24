@@ -1,5 +1,7 @@
 package project.server;
 
+import kr.ac.konkuk.ccslab.cm.entity.CMGroup;
+import kr.ac.konkuk.ccslab.cm.entity.CMUser;
 import kr.ac.konkuk.ccslab.cm.event.*;
 import kr.ac.konkuk.ccslab.cm.event.handler.CMAppEventHandler;
 import kr.ac.konkuk.ccslab.cm.event.mqttevent.*;
@@ -10,6 +12,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMDBManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
 import project.WordChainInfo;
+import project.event.RequestGameStartEvent;
 import project.event.WordSendingEvent;
 
 import java.io.*;
@@ -34,7 +37,7 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
     private int m_nTotalNumFilesPerSession;
     private int m_nCurNumFilesPerSession;
 
-    private ExecutorService m_executorService = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService;
 
     public WordChainServerEventHandler(CMServerStub serverStub, WordChainServer server) {
         m_server = server;
@@ -47,6 +50,7 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
         m_strFileReceiver = null;
         m_nTotalNumFilesPerSession = 0;
         m_nCurNumFilesPerSession = 0;
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -78,11 +82,28 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
+            case WordChainInfo.EVENT_GAME_START:
+                processGameStartEvent(cme);
+                break;
+                /*
             case WordChainInfo.EVENT_SEND_WORD:
                 processWordEvent(cme);
-                break;
+                break;*/
             default:
                 return;
+        }
+    }
+
+    private void processGameStartEvent(CMEvent cme) {
+        RequestGameStartEvent event = (RequestGameStartEvent) cme;
+        String sessionName = event.getSessionName();
+        String groupName = event.getGroupName();
+        CMGroup group = m_server.getGroup(sessionName, groupName);
+        if (group.getGroupUsers().getMemberNum() >= 2) {
+            System.out.println(String.format("Game start: session [%s], group [%s].\n", sessionName, groupName));
+            m_server.startGame(sessionName, groupName);
+        } else {
+            System.out.println(String.format("Reject game start of session [%s], group [%s].", sessionName, groupName));
         }
     }
 
@@ -90,12 +111,10 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
         CMConfigurationInfo confInfo = m_serverStub.getCMInfo().getConfigurationInfo();
         WordSendingEvent wordEvent = (WordSendingEvent) cme;
         String word = wordEvent.getWord();
-        printMessage(String.format("User %s from group %s, session %s sent word %s.\n",
-                wordEvent.getSender(), wordEvent.getHandlerGroup(), wordEvent.getHandlerSession(),word));
-        // TODO: receive event if time is over?
+        printMessage(String.format("User %s sent word %s.\n", wordEvent.getSender(), word));
 
         SendDictionaryQuery query = new SendDictionaryQuery(word);
-        Future<Integer> result = m_executorService.submit(query);
+        Future<Integer> result = executorService.submit(query);
 
         int rtnValue = -2;
         int scoreChange = 0;
@@ -202,21 +221,24 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
         CMInterestEvent ie = (CMInterestEvent) cme;
         switch (ie.getID()) {
             case CMInterestEvent.USER_ENTER:
-                //System.out.println("["+ie.getUserName()+"] enters group("+ie.getCurrentGroup()+") in session("
-                //		+ie.getHandlerSession()+").");
                 printMessage("[" + ie.getUserName() + "] enters group(" + ie.getCurrentGroup() + ") in session("
                         + ie.getHandlerSession() + ").\n");
+                CMGroup group = m_server.getGroup(ie.getHandlerSession(), ie.getCurrentGroup());
+                if (group.getGroupUsers().getMemberNum() == 1) {
+                    m_server.setGroupAdmin(ie.getHandlerSession(), ie.getCurrentGroup(), ie.getUserName());
+                }
                 break;
             case CMInterestEvent.USER_LEAVE:
-                //System.out.println("["+ie.getUserName()+"] leaves group("+ie.getHandlerGroup()+") in session("
-                //		+ie.getHandlerSession()+").");
                 printMessage("[" + ie.getUserName() + "] leaves group(" + ie.getHandlerGroup() + ") in session("
                         + ie.getHandlerSession() + ").\n");
+                group = m_server.getGroup(ie.getHandlerSession(), ie.getCurrentGroup());
+                CMUser admin = group.getGroupAdmin();
+                if (admin != null && admin.getName().equals(ie.getUserName())) {
+                    m_server.setGroupAdmin(ie.getHandlerSession(), ie.getCurrentGroup());
+                }
                 break;
             case CMInterestEvent.USER_TALK:
-                //System.out.println("("+ie.getHandlerSession()+", "+ie.getHandlerGroup()+")");
                 printMessage("(" + ie.getHandlerSession() + ", " + ie.getHandlerGroup() + ")\n");
-                //System.out.println("<"+ie.getUserName()+">: "+ie.getTalk());
                 printMessage("<" + ie.getUserName() + ">: " + ie.getTalk() + "\n");
                 break;
             default:
