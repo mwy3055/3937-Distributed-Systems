@@ -299,7 +299,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
 
     // TODO: process GameStartEvent
     private void processGameStartEvent(CMEvent cme) {
-        GameStartEvent event = (GameStartEvent) cme;
+
     }
     // TODO: process GameFinishEvent
 

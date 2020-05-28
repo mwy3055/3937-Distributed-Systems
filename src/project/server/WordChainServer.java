@@ -29,10 +29,7 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectableChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -2052,7 +2049,7 @@ public class WordChainServer extends JFrame {
 
         private int turnLeft = 30;
 
-        public GameControl(String sessonName, String groupName) {
+        public GameControl(String sessionName, String groupName) {
             this.sessionName = sessionName;
             this.groupName = groupName;
 
@@ -2063,15 +2060,27 @@ public class WordChainServer extends JFrame {
         // main function
         public void run() {
             // TODO: notify game is started to all users in group
-
+            CMDummyEvent due = new CMDummyEvent();
+            due.setHandlerSession(currentSession.getSessionName());
+            due.setHandlerGroup(currentGroup.getGroupName());
+            due.setDummyInfo("GAME START!");
+            m_serverStub.cast(due,currentSession.getSessionName(),currentGroup.getGroupName());
+            //due = null;
             // TODO: show random alphabet to start with
+            //f(turnLeft == 30){
+                Random rnd = new Random();
+                String startLetter = String.valueOf((char) (rnd.nextInt(26) + 65));
+                due.setDummyInfo("write the letter start with "+startLetter);
+                m_serverStub.cast(due,currentSession.getSessionName(),currentGroup.getGroupName());
+            //    }
 
             // TODO: main loop
             while (turnLeft > 0) {
                 printMessage(String.format("Current turn of session [%s], group [%s]: %d\n", currentSession.getSessionName(), currentGroup.getGroupName(), turnLeft));
                 // TODO: give the next user a turn to type word
-                CMUser nextUser = currentGroup.getNextUser();
-                printMessage(String.format("Next user of session [%s], group [%s] is [%s].", currentSession.getSessionName(), currentGroup.getGroupName(), nextUser.getName()));
+                sendNextUserEvent(currentSession.getSessionName(),currentGroup.getGroupName());
+                CMUser nextUser = currentGroup.getCurrentUser();
+                printMessage(String.format("Next user of session [%s], group [%s] is [%s].\n", currentSession.getSessionName(), currentGroup.getGroupName(), nextUser.getName()));
                 // TODO: wait 5 seconds for a response
 
                 // TODO: handle WordSendingEvent of user if time is not over, at WordChainServerEventHandler.processWordEvent()

@@ -85,10 +85,9 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
             case WordChainInfo.EVENT_GAME_START:
                 processGameStartEvent(cme);
                 break;
-                /*
             case WordChainInfo.EVENT_SEND_WORD:
                 processWordEvent(cme);
-                break;*/
+                break;
             default:
                 return;
         }
@@ -111,13 +110,18 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
         CMConfigurationInfo confInfo = m_serverStub.getCMInfo().getConfigurationInfo();
         WordSendingEvent wordEvent = (WordSendingEvent) cme;
         String word = wordEvent.getWord();
+
+        String firstLetter = word.substring(0,0);
+
         printMessage(String.format("User %s sent word %s.\n", wordEvent.getSender(), word));
 
         SendDictionaryQuery query = new SendDictionaryQuery(word);
         Future<Integer> result = executorService.submit(query);
 
+
         int rtnValue = -2;
         int scoreChange = 0;
+
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
