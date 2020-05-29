@@ -13,6 +13,7 @@ import kr.ac.konkuk.ccslab.cm.sns.CMSNSContentList;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
 import project.WordChainInfo;
+import project.event.GameStartEvent;
 import project.event.NextUserEvent;
 import project.event.NotifyAdminEvent;
 import project.event.WordResultEvent;
@@ -300,6 +301,9 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
     // TODO: process GameStartEvent
     private void processGameStartEvent(CMEvent cme) {
         GameStartEvent event = (GameStartEvent) cme;
+        printMessage(String.format("Game starts at session [%s], group [%s].", event.getSessionName(), event.getGroupName()));
+        printMessage(String.format("Your order is %d.", event.getOrder()));
+        m_client.playGame();
     }
     // TODO: process GameFinishEvent
 
@@ -335,7 +339,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 myself.getCurrentGroup()));
         System.out.println("If you want to start the game, enter \"start\" to the console.");
         System.out.println("You can only start the game when there are more than 2 users in the group.");
-        m_client.startGame();
+        m_client.waitGameStartRequest();
     }
 
     private void processSessionEvent(CMEvent cme) {
@@ -908,7 +912,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 break;
             case CMSNSEvent.CONTENT_DOWNLOAD_RESPONSE:
                 contentList.removeAllSNSContents(); // clear the content list to which downloaded contents will be
-                                                    // stored
+                // stored
                 m_nEstDelaySum = 0;
                 break;
             case CMSNSEvent.CONTENT_DOWNLOAD:
@@ -1009,7 +1013,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 printMessage("\n");
                 break;
             case CMSNSEvent.CHANGE_ATTACH_DOWNLOAD_SCHEME:
-                String[] attachScheme = { "Full", "Thumbnail", "Prefetching", "None" };
+                String[] attachScheme = {"Full", "Thumbnail", "Prefetching", "None"};
                 printMessage("Server changes the scheme for attachment download of SNS content to ["
                         + attachScheme[se.getAttachDownloadScheme()] + "].\n");
                 break;

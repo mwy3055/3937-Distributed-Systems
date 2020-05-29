@@ -11,10 +11,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.sns.CMSNSUserAccessSimulator;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
 import project.WordChainInfo;
-import project.event.NextUserEvent;
-import project.event.NotifyAdminEvent;
-import project.event.WordResultEvent;
-import project.event.WordSendingEvent;
+import project.event.*;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -29,10 +26,7 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectableChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -375,9 +369,6 @@ public class WordChainServer extends JFrame {
                 break;
             case 106:    // send event with wrong type
                 sendEventWithWrongEventType();
-                break;
-            case 107:    // test synchronous event
-                sendNextUserEvent("session1", "g1");
                 break;
             default:
                 //System.out.println("Unknown command.");
@@ -1718,6 +1709,7 @@ public class WordChainServer extends JFrame {
      * Test method to get next user of a group
      * should not be called while implementing
      */
+    /*
     public void showNextUser(String groupName, String sessionName) {
         CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
         Iterator<CMSession> sessionIterator = interInfo.getSessionList().iterator();
@@ -1737,7 +1729,7 @@ public class WordChainServer extends JFrame {
                     printMessage(String.format("Session %s, group %s: has no user.\n", session.getSessionName(), gInfo.getGroupName()));
                 } else {
                     String userName = nextUser.getName();
-                    NextUserEvent nextUserEvent = new NextUserEvent(userName);
+                    NextUserEvent nextUserEvent = new NextUserEvent(userName, "");
                     nextUserEvent.setHandlerGroup(gInfo.getGroupName());
                     nextUserEvent.setHandlerSession(session.getSessionName());
                     m_serverStub.send(nextUserEvent, userName);
@@ -1746,36 +1738,7 @@ public class WordChainServer extends JFrame {
                 }
             }
         }
-    }
-
-    public void sendQueryResult(String userName, String word, int resultCode, int scoreChange) {
-        WordResultEvent resultEvent = new WordResultEvent(resultCode, word, scoreChange);
-       /* resultEvent.setReceiver(userName);
-        resultEvent.setID(WordChainInfo.EVENT_RESULT_WORD);
-        printMessage(String.format("%d, %s, %s, %s\n", resultEvent.getID(), resultEvent.getReceiver(), resultEvent.getHandlerGroup(), resultEvent.getHandlerSession()));
-       */
-        m_serverStub.send(resultEvent, userName);
-    }
-
-    public void sendNextUserEvent(String sessionName, String groupName) {
-        CMGroup group = getGroup(sessionName, groupName);
-        CMUser nextUser = group.getNextUser();
-        if (nextUser == null) {
-            printMessage("sendNextUser(): no member\n");
-        } else {
-            NextUserEvent event = new NextUserEvent(nextUser.getName());
-            CMEvent replyEvent = m_serverStub.sendrecv(event, nextUser.getName(), WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 5000);
-            if (replyEvent == null) {
-                printMessage("sendNextUser(): timeout\n");
-                sendQueryResult(nextUser.getName(), "[null]", WordChainInfo.RESULT_TIMEOUT, 0);
-            } else {
-                WordSendingEvent sendingEvent = (WordSendingEvent) replyEvent;
-                printMessage(String.format("Received %s from user %s.\n", sendingEvent.getWord(), sendingEvent.getSender()));
-                processWordEvent(sendingEvent);
-            }
-        }
-    }
-
+    }*/
     public CMSession getSession(String sessionName) {
         CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
         CMSession session = null;
@@ -1852,17 +1815,15 @@ public class WordChainServer extends JFrame {
     }
 
     private void processWordEvent(WordSendingEvent wordEvent) {
-        CMConfigurationInfo confInfo = m_serverStub.getCMInfo().getConfigurationInfo();
         String word = wordEvent.getWord();
         printMessage(String.format("User %s from group %s, session %s sent word %s.\n",
-                wordEvent.getSender(), wordEvent.getHandlerGroup(), wordEvent.getHandlerSession(), word));
-        // TODO: receive event if time is over?
+                wordEvent.getSender(), wordEvent.getGroupName(), wordEvent.getSessionName(), word));
 
         SendDictionaryQuery query = new SendDictionaryQuery(word);
         Future<Integer> result = executor.submit(query);
 
         int rtnValue = -2;
-        int scoreChange = 0;
+        int scoreChange = 0, lifeChange = 0;
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -1874,9 +1835,11 @@ public class WordChainServer extends JFrame {
                 break;
             case WordChainInfo.RESULT_DUPLICATION:
                 printMessage(String.format("%s already exists.\n", word));
+                lifeChange = -1;
                 break;
             case WordChainInfo.RESULT_NOTNOUN:
                 printMessage(String.format("%s is not a noun.\n", word));
+                lifeChange = -1;
                 break;
             case WordChainInfo.RESULT_OK:
                 printMessage(String.format("%s is a noun.\n", word));
@@ -1886,8 +1849,13 @@ public class WordChainServer extends JFrame {
                 printMessage("ELSE\n");
                 break;
         }
-        sendQueryResult(wordEvent.getSender(), word, rtnValue, scoreChange);
         // TODO: user status update(score...)
+        sendQueryResult(wordEvent.getSessionName(), wordEvent.getGroupName(), wordEvent.getSender(), word, rtnValue, scoreChange, lifeChange);
+    }
+
+    public void sendQueryResult(String sessionName, String groupName, String userName, String word, int resultCode, int scoreChange, int lifeChange) {
+        WordResultEvent resultEvent = new WordResultEvent(userName, resultCode, word, scoreChange, lifeChange);
+        m_serverStub.cast(resultEvent, sessionName, groupName);
     }
 
     public class MyKeyListener implements KeyListener {
@@ -2046,6 +2014,7 @@ public class WordChainServer extends JFrame {
     public class GameControl extends Thread {
         private String groupName;
         private String sessionName;
+        private String previousWord;
 
         private CMSession currentSession;
         private CMGroup currentGroup;
@@ -2055,6 +2024,7 @@ public class WordChainServer extends JFrame {
         public GameControl(String sessonName, String groupName) {
             this.sessionName = sessionName;
             this.groupName = groupName;
+            this.previousWord = "";
 
             currentSession = getSession(sessionName);
             currentGroup = getGroup(sessionName, groupName);
@@ -2062,28 +2032,44 @@ public class WordChainServer extends JFrame {
 
         // main function
         public void run() {
-            // TODO: notify game is started to all users in group
+            CMMember member = currentGroup.getGroupUsers();
+            int order = 1;
+            for (CMUser user : member.getAllMembers()) {
+                GameStartEvent event = new GameStartEvent(sessionName, groupName, order);
+                m_serverStub.send(event, user.getName());
+                order++;
+            }
+            previousWord = getRandomAlphabet();
 
-            // TODO: show random alphabet to start with
-
-            // TODO: main loop
+            // main loop
             while (turnLeft > 0) {
                 printMessage(String.format("Current turn of session [%s], group [%s]: %d\n", currentSession.getSessionName(), currentGroup.getGroupName(), turnLeft));
-                // TODO: give the next user a turn to type word
                 CMUser nextUser = currentGroup.getNextUser();
                 printMessage(String.format("Next user of session [%s], group [%s] is [%s].", currentSession.getSessionName(), currentGroup.getGroupName(), nextUser.getName()));
-                // TODO: wait 5 seconds for a response
 
-                // TODO: handle WordSendingEvent of user if time is not over, at WordChainServerEventHandler.processWordEvent()
-                // TODO: developing(leader)
+                NextUserEvent event = new NextUserEvent(nextUser.getName(), previousWord);
+                CMEvent replyEvent = m_serverStub.sendrecv(event, nextUser.getName(), WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 5000);
+                if (replyEvent == null) {
+                    printMessage("Reply of user: TIMEOUT\n");
+                    // TODO: if time is over, decrease user's life by 1 and notify to all users
+                    sendQueryResult(sessionName, groupName, nextUser.getName(), "TIMEOUT", WordChainInfo.RESULT_TIMEOUT, 0, -1);
+                } else {
+                    WordSendingEvent sendingEvent = (WordSendingEvent) replyEvent;
+                    printMessage(String.format("Received %s from user %s.\n", sendingEvent.getWord(), sendingEvent.getSender()));
+                    processWordEvent(sendingEvent);
+                }
 
-                // TODO: if time is over, decrease user's life by 1 and notify to all users
 
                 turnLeft--;
             }
 
-            // TODO: game finished, show result
+            // TODO: game finished, show result to users
             printMessage(String.format("Session [%s], group [%s]: game finished.", currentSession.getSessionName(), currentGroup.getGroupName()));
+        }
+
+        private String getRandomAlphabet() {
+            int random = new Random().nextInt('z' - 'a');
+            return String.format("%c", 'a' + random);
         }
     }
 

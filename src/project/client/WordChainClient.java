@@ -7,7 +7,10 @@ import kr.ac.konkuk.ccslab.cm.manager.CMConfigurator;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
+import project.WordChainInfo;
+import project.event.NextUserEvent;
 import project.event.RequestGameStartEvent;
+import project.event.WordResultEvent;
 import project.event.WordSendingEvent;
 
 import javax.swing.*;
@@ -396,7 +399,7 @@ public class WordChainClient {
         System.out.println("Sent the login request. Please wait...");
 
         CMSessionEvent se = m_clientStub.syncLoginCM(userName, ""); // TODO: if you want to use DB, you should get
-                                                                    // password input
+        // password input
         if (se != null) {
             System.out.println(String.format("Successfully logged in to session %s!", se.getSessionName()));
         } else {
@@ -431,7 +434,7 @@ public class WordChainClient {
         System.out.println("======");
     }
 
-    public void startGame() {
+    public void waitGameStartRequest() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input = "";
         while (!input.equalsIgnoreCase("start")) {
@@ -459,9 +462,10 @@ public class WordChainClient {
         m_clientStub.send(event, "SERVER");
     }
 
-    // TODO: if server starts the game, execute this method
     public void playGame() {
         // TODO: follow the server's instruction until game is over
+        System.err.println("WARNING: Do not enter your inputs blindly.");
+        System.err.println("WARNING: It will violate your turn.");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Thread t = new Thread(() -> {
             while (true) {
@@ -475,11 +479,39 @@ public class WordChainClient {
         t.setDaemon(true);
         t.start();
 
+        CMUser myself = m_clientStub.getMyself();
         while (true) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            CMDummyEvent dummyEvent = new CMDummyEvent();
+            NextUserEvent event = (NextUserEvent) m_clientStub.sendrecv(dummyEvent, m_clientStub.getDefaultServerName(), CMInfo.CM_DUMMY_EVENT, WordChainInfo.EVENT_GAME_START, 100);
+            if (event == null) {
+                System.out.println("Someone is typing the word...");
+            } else {
+                String input = null;
+                System.out.println("Your turn! Type the word.");
+                System.out.print(String.format("Previous word: [%s] -> ", event.getPreviousWord()));
+                try {
+                    input = lines.poll(5, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (input == null || input.equals("")) {
+                    System.out.println("Timeout!");
+                } else {
+                    WordSendingEvent sendEvent = new WordSendingEvent(input, myself.getCurrentSession(), myself.getCurrentGroup());
+                    sendEvent.setSender(m_clientStub.getMyself().getName());
+                    WordResultEvent resultEvent = (WordResultEvent) m_clientStub.sendrecv(sendEvent, m_clientStub.getDefaultServerName(), WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_RESULT_WORD, 5000);
+                    if (resultEvent == null) {
+                        System.out.println("Something went wrong while communicating with the server.");
+                        System.out.println("Your turn will pass.");
+                    } else {
+                        if (resultEvent.getReceiver().equals(myself.getName())) {
+                            // TODO: my result, update my status
+                        } else {
+                            // TODO: other user's result, just show their changes
+                        }
+                    }
+                }
             }
         }
         // TODO: after game finished: what to do? logout? terminate client?

@@ -13,16 +13,13 @@ import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
 import project.WordChainInfo;
 import project.event.RequestGameStartEvent;
-import project.event.WordSendingEvent;
 
 import java.io.*;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class WordChainServerEventHandler implements CMAppEventHandler {
     private WordChainServer m_server;
@@ -82,7 +79,7 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
-            case WordChainInfo.EVENT_GAME_START:
+            case WordChainInfo.EVENT_REQUEST_GAME_START:
                 processGameStartEvent(cme);
                 break;
                 /*
@@ -106,7 +103,7 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
             System.out.println(String.format("Reject game start of session [%s], group [%s].", sessionName, groupName));
         }
     }
-
+/*
     private void processWordEvent(CMEvent cme) {
         CMConfigurationInfo confInfo = m_serverStub.getCMInfo().getConfigurationInfo();
         WordSendingEvent wordEvent = (WordSendingEvent) cme;
@@ -141,10 +138,9 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
                 printMessage("ELSE\n");
                 break;
         }
-        m_server.sendQueryResult(wordEvent.getSender(), word, rtnValue, scoreChange);
-        // TODO: user status update(score...)
+        m_server.sendQueryResult(wordEvent.getSessionName(), wordEvent.getGroupName(), wordEvent.getSender(), word, rtnValue, scoreChange);
     }
-
+*/
     private void processSessionEvent(CMEvent cme) {
         CMConfigurationInfo confInfo = m_serverStub.getCMInfo().getConfigurationInfo();
         CMSessionEvent se = (CMSessionEvent) cme;
