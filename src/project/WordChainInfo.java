@@ -18,5 +18,6 @@ public class WordChainInfo {
     public static final int EVENT_REQUEST_GAME_START = 903;
     public static final int EVENT_NOTIFY_ADMIN = 904;
     public static final int EVENT_GAME_START = 905;
+    public static final int EVENT_GAME_FINISH = 906;
 
 };

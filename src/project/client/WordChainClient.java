@@ -7,11 +7,10 @@ import kr.ac.konkuk.ccslab.cm.manager.CMConfigurator;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
+import project.WordChainHelper;
 import project.WordChainInfo;
-import project.event.NextUserEvent;
+import project.event.GameStartEvent;
 import project.event.RequestGameStartEvent;
-import project.event.WordResultEvent;
-import project.event.WordSendingEvent;
 
 import javax.swing.*;
 import java.io.*;
@@ -22,7 +21,10 @@ import java.nio.channels.SocketChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class WordChainClient {
     private CMClientStub m_clientStub;
@@ -31,8 +33,9 @@ public class WordChainClient {
     private Scanner m_scan = null;
 
     private BlockingQueue<String> lines;
-    private boolean isGettingWordInput;
     private ExecutorService executorService;
+
+    private boolean isWaitingGameStart;
 
     public WordChainClient() {
         m_clientStub = new CMClientStub();
@@ -40,8 +43,8 @@ public class WordChainClient {
         m_bRun = true;
 
         lines = new LinkedBlockingQueue<>();
-        isGettingWordInput = false;
         executorService = Executors.newCachedThreadPool();
+        isWaitingGameStart = true;
     }
 
     public CMClientStub getClientStub() {
@@ -50,6 +53,14 @@ public class WordChainClient {
 
     public WordChainClientEventHandler getClientEventHandler() {
         return m_eventHandler;
+    }
+
+    public void setWaitingGameStart(boolean start) {
+        this.isWaitingGameStart = start;
+    }
+
+    public BlockingQueue<String> getLines() {
+        return lines;
     }
 
     ///////////////////////////////////////////////////////////////
@@ -320,9 +331,6 @@ public class WordChainClient {
                 case 205: // MQTT disconnect
                     testMqttDisconnect();
                     break;
-                case 990:
-                    processMyTurn();
-                    break;
                 default:
                     System.err.println("Unknown command.");
                     break;
@@ -381,13 +389,12 @@ public class WordChainClient {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        // startTest();
     }
 
     public void login() {
         String userName = null;
 
+        // TODO: If you want to use user database, you should get password input
         System.out.println("====== Login to server.");
         System.out.print("user name: ");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -398,8 +405,7 @@ public class WordChainClient {
         }
         System.out.println("Sent the login request. Please wait...");
 
-        CMSessionEvent se = m_clientStub.syncLoginCM(userName, ""); // TODO: if you want to use DB, you should get
-        // password input
+        CMSessionEvent se = m_clientStub.syncLoginCM(userName, "");
         if (se != null) {
             System.out.println(String.format("Successfully logged in to session %s!", se.getSessionName()));
         } else {
@@ -408,146 +414,85 @@ public class WordChainClient {
         }
         System.out.println("======");
 
-    }
-
-    public void showSessionInfoSync() {
-        CMSessionEvent se = null;
-        System.out.println("====== Loading session information. Please wait...");
-        se = m_clientStub.syncRequestSessionInfo();
-        if (se == null) {
-            System.err.println("failed the session-info request!");
-            return;
-        }
-
-        // print the request result
-        Iterator<CMSessionInfo> iter = se.getSessionInfoList().iterator();
-
-        System.out.format("%-60s%n", "------------------------------------------------------------");
-        System.out.format("%-20s%-20s%-10s%-10s%n", "name", "address", "port", "user num");
-        System.out.format("%-60s%n", "------------------------------------------------------------");
-
-        while (iter.hasNext()) {
-            CMSessionInfo tInfo = iter.next();
-            System.out.format("%-20s%-20s%-10d%-10d%n", tInfo.getSessionName(), tInfo.getAddress(), tInfo.getPort(),
-                    tInfo.getUserNum());
-        }
-        System.out.println("======");
-    }
-
-    public void waitGameStartRequest() {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String input = "";
-        while (!input.equalsIgnoreCase("start")) {
-            try {
-                input = br.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (input.equalsIgnoreCase("start")) {
-                break;
-            }
-            System.out.println("Enter \"start\" to start the game.\n");
-        }
-        sendGameStartEvent();
-    }
-
-    public void sendGameStartEvent() {
-        CMUser myself = m_clientStub.getMyself();
-        if (!myself.getAdmin()) {
-            System.err.println("You are not a admin. Wait the admin to start the game.\n");
-            return;
-        }
-        System.out.println("Send game start request to server.");
-        RequestGameStartEvent event = new RequestGameStartEvent(myself.getCurrentSession(), myself.getCurrentGroup());
-        m_clientStub.send(event, "SERVER");
-    }
-
-    public void playGame() {
-        // TODO: follow the server's instruction until game is over
-        System.err.println("WARNING: Do not enter your inputs blindly.");
-        System.err.println("WARNING: It will violate your turn.");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        Thread t = new Thread(() -> {
-            while (true) {
-                try {
-                    lines.add(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        t.setDaemon(true);
-        t.start();
-
-        CMUser myself = m_clientStub.getMyself();
-        while (true) {
-            CMDummyEvent dummyEvent = new CMDummyEvent();
-            NextUserEvent event = (NextUserEvent) m_clientStub.sendrecv(dummyEvent, m_clientStub.getDefaultServerName(), CMInfo.CM_DUMMY_EVENT, WordChainInfo.EVENT_GAME_START, 100);
-            if (event == null) {
-                System.out.println("Someone is typing the word...");
-            } else {
-                String input = null;
-                System.out.println("Your turn! Type the word.");
-                System.out.print(String.format("Previous word: [%s] -> ", event.getPreviousWord()));
-                try {
-                    input = lines.poll(5, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if (input == null || input.equals("")) {
-                    System.out.println("Timeout!");
-                } else {
-                    WordSendingEvent sendEvent = new WordSendingEvent(input, myself.getCurrentSession(), myself.getCurrentGroup());
-                    sendEvent.setSender(m_clientStub.getMyself().getName());
-                    WordResultEvent resultEvent = (WordResultEvent) m_clientStub.sendrecv(sendEvent, m_clientStub.getDefaultServerName(), WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_RESULT_WORD, 5000);
-                    if (resultEvent == null) {
-                        System.out.println("Something went wrong while communicating with the server.");
-                        System.out.println("Your turn will pass.");
-                    } else {
-                        if (resultEvent.getReceiver().equals(myself.getName())) {
-                            // TODO: my result, update my status
-                        } else {
-                            // TODO: other user's result, just show their changes
-                        }
-                    }
-                }
-            }
-        }
-        // TODO: after game finished: what to do? logout? terminate client?
-    }
-
-    public void processMyTurn() {
-        CMInteractionInfo interInfo = m_clientStub.getCMInfo().getInteractionInfo();
-        CMUser myself = interInfo.getMyself();
-        String strInput = null;
-
-        if (myself.getState() != CMInfo.CM_SESSION_JOIN) {
-            System.out.println("You should join a session and a group!");
-            return;
-        }
-
-        System.out.println("====== Your turn. Enter the word.");
-        // BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        System.out.print("Type word: ");
         try {
-            strInput = lines.poll(5, TimeUnit.SECONDS);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        if (strInput == null) {
-            System.out.println("TIMEOUT");
-            return;
+        if (!m_clientStub.getMyself().getAdmin()) {
+            new Thread(() -> waitGameStart()).start();
         }
-        System.out.println(String.format("Input: %s", strInput));
+    }
 
-        WordSendingEvent event = new WordSendingEvent();
-        event.setWord(strInput);
-        m_clientStub.send(event, "SERVER");
+    /* For admin user */
+    public void requestGameStart() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        while (isWaitingGameStart) {
+            String input = "";
+            while (!input.equalsIgnoreCase("start")) {
+                try {
+                    input = br.readLine();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
+                if (input.equalsIgnoreCase("start")) {
+                    break;
+                }
+                System.out.println("Enter \"start\" to start the game.");
+            }
+            if (sendGameStartEvent()) {
+                break;
+            }
+            // sendGameStartEvent();
+        }
+        playGame();
+    }
 
-        System.out.println(String.format("====== send %s to server", strInput));
+    public boolean sendGameStartEvent() {
+        CMUser myself = m_clientStub.getMyself();
+        if (!myself.getAdmin()) {
+            System.err.println("You are not a admin. Wait the admin to start the game.\n");
+            return false;
+        }
+        System.out.println("Send game start request to server.");
+        RequestGameStartEvent event = new RequestGameStartEvent(myself.getCurrentSession(), myself.getCurrentGroup());
+        event.setSender(myself.getName());
+        // m_clientStub.send(event, m_clientStub.getDefaultServerName());
+        GameStartEvent startEvent = (GameStartEvent) m_clientStub.sendrecv(event, m_clientStub.getDefaultServerName(),
+                WordChainInfo.EVENT_GAME_START, WordChainInfo.EVENT_GAME_START, 2000);
+        if (startEvent == null || startEvent.getStart() == 0) {
+            System.out.println(startEvent == null);
+            System.out.println("Server Response: Can't start the game. Wait more players to come.");
+            return false;
+        } else if (startEvent.getStart() == 1) {
+            System.out.println(String.format("Game starts at session [%s], group [%s].", startEvent.getSessionName(), startEvent.getGroupName()));
+            System.out.println(String.format("Your order is %d.", startEvent.getOrder()));
+            return true;
+        } else {
+            System.out.println("Unknown error at sendGameStartEvent().");
+            return false;
+        }
+    }
+
+    /* For non-admin user */
+    public void waitGameStart() {
+        CMDummyEvent dummyEvent = new CMDummyEvent();
+        GameStartEvent startEvent = (GameStartEvent) m_clientStub.sendrecv(dummyEvent, m_clientStub.getDefaultServerName(),
+                WordChainInfo.EVENT_GAME_START, WordChainInfo.EVENT_GAME_START, 0);
+        playGame();
+    }
+
+    public void playGame() {
+        // TODO: follow the server's instruction(event) until game is over
+        String sessionName = m_clientStub.getMyself().getCurrentSession();
+        String groupName = m_clientStub.getMyself().getCurrentGroup();
+        System.out.println("=================================================");
+        System.out.println(String.format("Game starts at session [%s], group [%s].", sessionName, groupName));
+        System.err.println("WARNING: Do not enter your inputs blindly.");
+        System.err.println("WARNING: It will violate the whole game process.");
+        System.out.println("=================================================");
+        WordChainHelper.startGettingInput();
     }
 
     ///////////////////////////////////////////////////////////////

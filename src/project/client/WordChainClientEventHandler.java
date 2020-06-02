@@ -12,11 +12,9 @@ import kr.ac.konkuk.ccslab.cm.sns.CMSNSContent;
 import kr.ac.konkuk.ccslab.cm.sns.CMSNSContentList;
 import kr.ac.konkuk.ccslab.cm.stub.CMClientStub;
 import kr.ac.konkuk.ccslab.cm.util.CMUtil;
+import project.WordChainHelper;
 import project.WordChainInfo;
-import project.event.GameStartEvent;
-import project.event.NextUserEvent;
-import project.event.NotifyAdminEvent;
-import project.event.WordResultEvent;
+import project.event.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 public class WordChainClientEventHandler implements CMAppEventHandler {
     // private JTextArea m_outTextArea;
@@ -59,6 +58,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
     private boolean m_bStartC2CFTPSession;
     private int m_nTotalNumFilesPerSession;
     private int m_nCurNumFilesPerSession;
+
+    private Thread getGameStartInputThread;
 
     public WordChainClientEventHandler(CMClientStub clientStub, WordChainClient client) {
         m_client = client;
@@ -292,41 +293,15 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 break;
             case WordChainInfo.EVENT_NOTIFY_ADMIN:
                 processNotifyAdminEvent(cme);
+                break;/*
+            case WordChainInfo.EVENT_GAME_START:
+                processGameStartEvent(cme);
+                break;*/
+            case WordChainInfo.EVENT_GAME_FINISH:
+                processGameFinishEvent(cme);
                 break;
             default:
                 return;
-        }
-    }
-
-    // TODO: process GameStartEvent
-    private void processGameStartEvent(CMEvent cme) {
-        GameStartEvent event = (GameStartEvent) cme;
-        printMessage(String.format("Game starts at session [%s], group [%s].", event.getSessionName(), event.getGroupName()));
-        printMessage(String.format("Your order is %d.", event.getOrder()));
-        m_client.playGame();
-    }
-    // TODO: process GameFinishEvent
-
-    private void processNextUserEvent(CMEvent cme) {
-        NextUserEvent event = (NextUserEvent) cme;
-        m_client.processMyTurn();
-    }
-
-    private void processReplyWordEvent(CMEvent cme) {
-        // TODO of leader: is this event mine?
-        WordResultEvent resultEvent = (WordResultEvent) cme;
-        String word = resultEvent.getWord();
-        int resultCode = resultEvent.getResultCode();
-        int scoreChange = resultEvent.getScoreChange();
-
-        if (resultCode == WordChainInfo.RESULT_OK) {
-            printMessage(String.format("[Server] %s is valid. You got %d scores!", word, scoreChange));
-        } else if (resultCode == WordChainInfo.RESULT_NOTNOUN) {
-            printMessage(String.format("[Server] %s is not a noun. Your life will decrease by 1.", word));
-        } else if (resultCode == WordChainInfo.RESULT_DUPLICATION) {
-            printMessage(String.format("[Server] Someone already said %s. Your life will decrease by 1.", word));
-        } else if (resultCode == WordChainInfo.RESULT_TIMEOUT) {
-            printMessage(String.format("[Server] Timeout! Your life will decrease by 1."));
         }
     }
 
@@ -339,8 +314,86 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 myself.getCurrentGroup()));
         System.out.println("If you want to start the game, enter \"start\" to the console.");
         System.out.println("You can only start the game when there are more than 2 users in the group.");
-        m_client.waitGameStartRequest();
+        getGameStartInputThread = new Thread(() -> m_client.requestGameStart());
+        getGameStartInputThread.start();
     }
+
+    private void processGameStartEvent(CMEvent cme) {
+        GameStartEvent event = (GameStartEvent) cme;
+        if (event.getStart() == 1) {
+            m_client.playGame();/*
+            if (getGameStartInputThread != null) {
+                getGameStartInputThread.interrupt();
+            }
+            m_client.setWaitingGameStart(false);*/
+        } else {
+            printMessage("Server Response: Can't start the game. Wait more players to come.");
+        }
+    }
+
+    private void processNextUserEvent(CMEvent cme) {
+        NextUserEvent event = (NextUserEvent) cme;
+        CMUser myself = m_clientStub.getMyself();
+        if (event.getUserName().equals(myself.getName())) {
+            String input = null;
+            System.out.println("Your turn! Type the word.");
+            System.out.print(String.format("Previous word: [%s] -> ", event.getPreviousWord()));
+            try {
+                input = WordChainHelper.lines.poll(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (input == null || input.equals("")) {
+                System.out.println("Timeout!");
+                input = "";
+            } else {
+                System.out.println(String.format("Your input: %s", input));
+            }
+            WordSendingEvent sendEvent = new WordSendingEvent(input, myself.getCurrentSession(), myself.getCurrentGroup());
+            sendEvent.setSender(m_clientStub.getMyself().getName());
+            m_clientStub.send(sendEvent, m_clientStub.getDefaultServerName());
+        } else {
+            System.out.println("Someone is typing the word...");
+        }
+    }
+
+    private void processReplyWordEvent(CMEvent cme) {
+        WordResultEvent resultEvent = (WordResultEvent) cme;
+        CMUser myself = m_clientStub.getMyself();
+        String userName = resultEvent.getUserName();
+        String word = resultEvent.getWord();
+        int resultCode = resultEvent.getResultCode();
+        int scoreChange = resultEvent.getScoreChange();
+
+        if (!userName.equals(myself.getName())) {
+            // TODO: show results of other users
+            printMessage("Other user's result.\n");
+        } else if (resultCode == WordChainInfo.RESULT_OK) {
+            printMessage(String.format("[Server] %s is valid. You got %d scores!\n", word, scoreChange));
+        } else if (resultCode == WordChainInfo.RESULT_NOTNOUN) {
+            printMessage(String.format("[Server] %s is not a noun. Your life will decrease by 1.\n", word));
+        } else if (resultCode == WordChainInfo.RESULT_DUPLICATION) {
+            printMessage(String.format("[Server] Someone already said %s. Your life will decrease by 1.\n", word));
+        } else if (resultCode == WordChainInfo.RESULT_TIMEOUT) {
+            printMessage(String.format("[Server] Timeout! Your life will decrease by 1.\n"));
+            // TODO: decrease life of local user info? or only at server?
+        } else {
+            printMessage("[Server] Unknown error. This turn will be passed.\n");
+        }
+    }
+
+    private void processGameFinishEvent(CMEvent cme) {
+        GameFinishEvent finishEvent = (GameFinishEvent) cme;
+        // TODO: print game results
+        printMessage("Game finished.\n");
+
+        // TODO: After game finish: what to do?
+        // TODO: terminate CM first if you want to terminate the client
+        System.exit(0);
+    }
+
+    ///////////////////////////////////////////////
+    // TODO: Implementation end. DO NOT EDIT THE METHODS BELOW.
 
     private void processSessionEvent(CMEvent cme) {
         long lDelay = 0;

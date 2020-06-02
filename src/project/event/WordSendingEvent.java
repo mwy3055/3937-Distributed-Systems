@@ -18,6 +18,7 @@ public class WordSendingEvent extends CMEvent {
 
     public WordSendingEvent(String word, String sessionName, String groupName) {
         this.m_nType = WordChainInfo.EVENT_SEND_WORD;
+        this.m_nID = WordChainInfo.EVENT_SEND_WORD;
         this.word = word;
         this.sessionName = sessionName;
         this.groupName = groupName;
@@ -28,7 +29,6 @@ public class WordSendingEvent extends CMEvent {
         this.unmarshall(msg);
     }
 
-
     protected int getByteNum() {
         int byteNum = super.getByteNum();
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.word.getBytes().length;
@@ -36,7 +36,6 @@ public class WordSendingEvent extends CMEvent {
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.groupName.getBytes().length;
         return byteNum;
     }
-
 
     @Override
     protected void marshallBody() {
@@ -52,13 +51,6 @@ public class WordSendingEvent extends CMEvent {
         this.groupName = this.getStringFromByteBuffer(msg);
     }
 
-
-    public void setWord(String word) {
-        if (word != null) {
-            this.word = word;
-        }
-    }
-
     public String getWord() {
         return this.word;
     }
@@ -67,15 +59,7 @@ public class WordSendingEvent extends CMEvent {
         return sessionName;
     }
 
-    public void setSessionName(String sessionName) {
-        this.sessionName = sessionName;
-    }
-
     public String getGroupName() {
         return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
     }
 }

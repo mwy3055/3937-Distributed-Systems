@@ -137,6 +137,9 @@ public class CMEventManager {
             case WordChainInfo.EVENT_GAME_START:
                 GameStartEvent gameStartEvent = new GameStartEvent(buf);
                 return gameStartEvent;
+            case WordChainInfo.EVENT_GAME_FINISH:
+                GameFinishEvent gameFinishEvent = new GameFinishEvent(buf);
+                return gameFinishEvent;
             default:
                 System.err.println("CMEventManager.unmarshallEvent(), unknown event type: " + nEventType);
                 return null;

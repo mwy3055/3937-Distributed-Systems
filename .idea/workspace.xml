@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="3937 Distributed Systems:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -20,58 +25,29 @@
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:branch-mwy" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
-      <change afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.project" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/3937 Distributed Systems.eml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/project/event/NotifyAdminEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/project/event/RequestGameStartEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/3937_Distributed_Systems_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/project/WordChainHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cm-client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-client.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cm-server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-server.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroup.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMGroup.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/entity/CMUser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/WordChainInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/NextUserEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/NextUserEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/WordSendingEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/event/WordSendingEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/SendDictionaryQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/SendDictionaryQuery.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyKeyListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer$MyMenuListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/project/server/TestServerEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMClientApp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMClientEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMMqttEventTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMServerApp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMServerEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyKeyListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyMenuListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient$MyMouseListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinClientEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer$MyActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer$MyKeyListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer$MyMenuListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/test/CMWinServerEventHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMGroupManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/NextUserEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/NextUserEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/event/GameFinishEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/GameFinishEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/event/GameStartEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/GameStartEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" afterDir="false" />
     </list>
@@ -118,9 +94,9 @@
     <property name="add_unversioned_files" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AndroidSDK" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/대학수업관련/3-1/분산시스템/텀프로젝트/CM" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
     <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -137,7 +113,7 @@
       <recent name="E:\code\3937 Distributed Systems" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.WordChainServer">
+  <component name="RunManager" selected="Application.WordChainClient">
     <configuration name="MyClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="midexam.MyClient" />
       <module name="3937 Distributed Systems" />
@@ -205,8 +181,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.WordChainServer" />
         <item itemvalue="Application.WordChainClient" />
+        <item itemvalue="Application.WordChainServer" />
         <item itemvalue="Application.WordChainServer" />
         <item itemvalue="Application.TestClient" />
         <item itemvalue="Application.MyClient" />
@@ -268,6 +244,14 @@
       <workItem from="1590241210097" duration="483000" />
       <workItem from="1590282462585" duration="6774000" />
       <workItem from="1590294236237" duration="2232000" />
+      <workItem from="1590716789827" duration="89000" />
+      <workItem from="1590721241563" duration="434000" />
+      <workItem from="1590890750566" duration="7076000" />
+      <workItem from="1590920598513" duration="2589000" />
+      <workItem from="1590986491074" duration="5318000" />
+      <workItem from="1591022625843" duration="3067000" />
+      <workItem from="1591077417276" duration="3136000" />
+      <workItem from="1591109064144" duration="1283000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -360,7 +344,14 @@
       <option name="project" value="LOCAL" />
       <updated>1590223965553</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="delete class file from repository">
+      <created>1590899916129</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1590899916129</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -412,7 +403,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="branch-mwy" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
@@ -445,14 +436,23 @@
     <MESSAGE value="0518 class file commit" />
     <MESSAGE value="0520&#10;&#10;구현해야 할 메소드를 TODO로 정리함&#10;  - WordChainServer&#10;  - WordChainServerEventHandler&#10;  - WordChainClient&#10;  - WordChainClientEventHandler&#10;  - 구현시 CM 내부를 건드릴 때도 있으니, 모르면 조장에게 문의하기" />
     <MESSAGE value="branch test commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="branch test commit" />
+    <MESSAGE value="delete class file from repository" />
+    <option name="LAST_COMMIT_MESSAGE" value="delete class file from repository" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser" timestamp="1590295180491">
+    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser" timestamp="1590991121389">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1590295180491" />
+    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1590991121389" />
+    <state x="689" y="309" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1590987994324">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="689" y="309" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1590987994324" />
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1590991549068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1590991549068" />
     <state x="559" y="115" key="CommitChangelistDialog2" timestamp="1587281701416">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -461,59 +461,91 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588834992378" />
-    <state x="658" y="260" key="FileChooserDialogImpl" timestamp="1587536956329">
+    <state x="658" y="260" key="FileChooserDialogImpl" timestamp="1590988305941">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="658" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1587536956329" />
+    <state x="658" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1590988305941" />
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose" timestamp="1585108926410">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1585108926410" />
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1590296236339">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1591110278223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1590296236339" />
-    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1590296236339">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
+    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1591110278223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1590296236339" />
-    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1590296236339">
+    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
+    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1591110278223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1590296236339" />
-    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1590296236339">
+    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1591110278223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1590296236339" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1587472330340">
+    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1591080562347">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1587472330340" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1587472330340">
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591080562347" />
+    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1591080562347">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1587472330340" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1587472330340">
+    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591080562347" />
+    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1591080562347">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1587472330340" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1587472330340">
+    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591080562347" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1591080562347">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1587472330340" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591080562347" />
+    <state width="1877" height="348" key="GridCell.Tab.2.bottom" timestamp="1591080212735">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591080212735" />
+    <state width="1877" height="348" key="GridCell.Tab.2.center" timestamp="1591080212735">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591080212735" />
+    <state width="1877" height="348" key="GridCell.Tab.2.left" timestamp="1591080212735">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591080212735" />
+    <state width="1877" height="348" key="GridCell.Tab.2.right" timestamp="1591080212735">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591080212735" />
+    <state width="1877" height="348" key="GridCell.Tab.3.bottom" timestamp="1591080214084">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591080214084" />
+    <state width="1877" height="348" key="GridCell.Tab.3.center" timestamp="1591080214083">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591080214083" />
+    <state width="1877" height="348" key="GridCell.Tab.3.left" timestamp="1591080214083">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591080214083" />
+    <state width="1877" height="348" key="GridCell.Tab.3.right" timestamp="1591080214083">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591080214083" />
     <state x="399" y="92" key="RollbackChangesDialog" timestamp="1589990977512">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="399" y="92" key="RollbackChangesDialog/0.0.1280.689@0.0.1280.689" timestamp="1589990977512" />
     <state x="598" y="221" key="RollbackChangesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588834969896" />
-    <state x="440" y="94" key="SettingsEditor" timestamp="1588835121576">
+    <state x="440" y="94" key="SettingsEditor" timestamp="1590988308198">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1588835121576" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1590225928319">
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1590988308198" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1590899923853">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1590225928319" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1590899923853" />
     <state x="665" y="411" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1587281372770">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -526,10 +558,51 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="633" y="307" key="git4idea.merge.GitPullDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589717750866" />
-    <state x="339" y="130" key="new project wizard" timestamp="1587212924351">
+    <state x="339" y="130" key="new project wizard" timestamp="1590721367870">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="339" y="130" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1587212924351" />
+    <state x="339" y="130" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1590721367870" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/thread/CMEventReceiver.java</url>
+          <line>72</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/thread/CMEventReceiver.java</url>
+          <line>73</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/thread/CMEventReceiver.java</url>
+          <line>74</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/thread/CMEventReceiver.java</url>
+          <line>75</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/thread/CMEventReceiver.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/event/CMEventSynchronizer.java</url>
+          <line>38</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/event/CMEventSynchronizer.java</url>
+          <line>40</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/3937_Distributed_Systems$WordChainClient.ic" NAME="WordChainClient Coverage Results" MODIFIED="1589986828167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

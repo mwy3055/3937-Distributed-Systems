@@ -8,16 +8,19 @@ import java.nio.ByteBuffer;
 
 public class GameStartEvent extends CMEvent {
 
+    private int start;
     private String sessionName;
     private String groupName;
     private int order;
 
     public GameStartEvent() {
-        this("", "", 0);
+        this(0, "", "", 0);
     }
 
-    public GameStartEvent(String sessionName, String groupName, int order) {
+    public GameStartEvent(int start, String sessionName, String groupName, int order) {
         this.m_nType = WordChainInfo.EVENT_GAME_START;
+        this.m_nID = WordChainInfo.EVENT_GAME_START;
+        this.start = start;
         this.sessionName = sessionName;
         this.groupName = groupName;
         this.order = order;
@@ -29,34 +32,32 @@ public class GameStartEvent extends CMEvent {
     }
 
     @Override
-    public CMEvent unmarshall(ByteBuffer msg) {
-        msg.clear();
-        this.unmarshallHeader(msg);
-        this.unmarshallBody(msg);
-        return this;
-    }
-
-    @Override
     protected int getByteNum() {
         int byteNum = super.getByteNum();
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.sessionName.getBytes().length;
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.groupName.getBytes().length;
-        byteNum += 4;
+        byteNum += Integer.BYTES * 2;
         return byteNum;
     }
 
     @Override
     protected void marshallBody() {
-        this.putStringToByteBuffer(sessionName);
-        this.putStringToByteBuffer(groupName);
-        this.putInt2BytesToByteBuffer(order);
+        this.putInt2BytesToByteBuffer(this.start);
+        this.putStringToByteBuffer(this.sessionName);
+        this.putStringToByteBuffer(this.groupName);
+        this.putInt2BytesToByteBuffer(this.order);
     }
 
     @Override
     protected void unmarshallBody(ByteBuffer msg) {
-        this.sessionName = getStringFromByteBuffer(msg);
-        this.groupName = getStringFromByteBuffer(msg);
-        this.order = getInt2BytesFromByteBuffer(msg);
+        this.start = this.getInt2BytesFromByteBuffer(msg);
+        this.sessionName = this.getStringFromByteBuffer(msg);
+        this.groupName = this.getStringFromByteBuffer(msg);
+        this.order = this.getInt2BytesFromByteBuffer(msg);
+    }
+
+    public int getStart() {
+        return start;
     }
 
     public String getSessionName() {

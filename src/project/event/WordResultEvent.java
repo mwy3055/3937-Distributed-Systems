@@ -25,7 +25,7 @@ public class WordResultEvent extends CMEvent {
         this.resultCode = code;
         this.word = word;
         this.scoreChange = scoreChange;
-        this.lifeChange=lifeChange;
+        this.lifeChange = lifeChange;
     }
 
     public WordResultEvent(ByteBuffer msg) {
@@ -43,7 +43,7 @@ public class WordResultEvent extends CMEvent {
     @Override
     protected int getByteNum() {
         int byteNum = super.getByteNum();
-        byteNum += 4 * 3;
+        byteNum += Integer.BYTES * 3;
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.userName.getBytes().length;
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.word.getBytes().length;
         return byteNum;
@@ -55,7 +55,7 @@ public class WordResultEvent extends CMEvent {
         this.resultCode = getInt2BytesFromByteBuffer(msg);
         this.word = getStringFromByteBuffer(msg);
         this.scoreChange = getInt2BytesFromByteBuffer(msg);
-        this.lifeChange=getInt2BytesFromByteBuffer(msg);
+        this.lifeChange = getInt2BytesFromByteBuffer(msg);
     }
 
     @Override
@@ -67,43 +67,24 @@ public class WordResultEvent extends CMEvent {
         this.putInt2BytesToByteBuffer(this.lifeChange);
     }
 
-    public int getResultCode() {
-        return resultCode;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+    public int getResultCode() {
+        return resultCode;
     }
 
     public String getWord() {
         return word;
     }
 
-    public void setWord(String word) {
-        this.word = word;
-    }
-
     public int getScoreChange() {
         return scoreChange;
-    }
-
-    public void setScoreChange(int scoreChange) {
-        this.scoreChange = scoreChange;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public int getLifeChange() {
         return lifeChange;
     }
 
-    public void setLifeChange(int lifeChange) {
-        this.lifeChange = lifeChange;
-    }
 }
