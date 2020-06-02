@@ -2029,7 +2029,7 @@ public class WordChainServer extends JFrame {
 
             currentSession = getSession(sessionName);
             currentGroup = getGroup(sessionName, groupName);
-            turnLeft = 6;
+            turnLeft = 30;
         }
 
         // main function
