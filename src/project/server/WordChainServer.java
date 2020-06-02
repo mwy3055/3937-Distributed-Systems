@@ -1849,7 +1849,7 @@ public class WordChainServer extends JFrame {
                 printMessage("ELSE\n");
                 break;
         }
-        // TODO: user status update(score...)
+        // TODO: user status update(score, life...)
         sendQueryResult(wordEvent.getSessionName(), wordEvent.getGroupName(), wordEvent.getSender(), word, rtnValue, scoreChange, lifeChange);
         return rtnValue;
     }
@@ -2073,7 +2073,7 @@ public class WordChainServer extends JFrame {
                 turnLeft--;
             }
 
-            // TODO: game finished, cast GameFinishEvent to all group users
+            // TODO: game finished, make result string, then cast GameFinishEvent to all group users
             printMessage(String.format("Session [%s], group [%s]: game finished.\n", currentSession.getSessionName(), currentGroup.getGroupName()));
             GameFinishEvent finishEvent = new GameFinishEvent("result");
             m_serverStub.cast(finishEvent, sessionName, groupName);
