@@ -31,25 +31,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/3937_Distributed_Systems_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/project/WordChainHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-client.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cm-server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-server.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/GameFinishEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/GameFinishEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/GameStartEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/GameStartEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,7 +124,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="WordChainClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="WordChainClient" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="project.client.WordChainClient" />
       <module name="3937 Distributed Systems" />
       <extension name="coverage">
@@ -179,6 +163,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.MyClient" />
+      <item itemvalue="Application.TestClient" />
+      <item itemvalue="Application.WordChainClient" />
+      <item itemvalue="Application.WordChainServer" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.WordChainClient" />
@@ -188,6 +178,18 @@
         <item itemvalue="Application.MyClient" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -252,6 +254,7 @@
       <workItem from="1591022625843" duration="3067000" />
       <workItem from="1591077417276" duration="3136000" />
       <workItem from="1591109064144" duration="1283000" />
+      <workItem from="1591352475408" duration="392000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -355,7 +358,7 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ORDER">
@@ -409,17 +412,12 @@
                   </entry>
                 </map>
               </option>
+              <option name="COLUMN_ORDER" />
             </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="OPEN_GENERIC_TABS">
-      <map>
-        <entry key="1" value="TOOL_WINDOW" />
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
@@ -441,6 +439,10 @@
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591352580480">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1591352580480" />
     <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser" timestamp="1590991121389">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -453,9 +455,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1590991549068" />
-    <state x="559" y="115" key="CommitChangelistDialog2" timestamp="1587281701416">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="447" y="0" key="CommitChangelistDialog2" timestamp="1591352992312">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state x="447" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1591352992312" />
     <state x="559" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1587281701416" />
     <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1588834992378">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -469,21 +472,25 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1585108926410" />
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1591110278223">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="236" key="GridCell.Tab.0.bottom" timestamp="1591352638413">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="236" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1591352638413" />
     <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
-    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1591110278223">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="236" key="GridCell.Tab.0.center" timestamp="1591352638413">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="236" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1591352638413" />
     <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
-    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1591110278223">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="236" key="GridCell.Tab.0.left" timestamp="1591352638413">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="236" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1591352638413" />
     <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
-    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1591110278223">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1493" height="236" key="GridCell.Tab.0.right" timestamp="1591352638413">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
+    <state width="1493" height="236" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1591352638413" />
     <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1591080562347">
       <screen x="0" y="0" width="1920" height="1040" />

@@ -366,7 +366,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         int scoreChange = resultEvent.getScoreChange();
 
         if (!userName.equals(myself.getName())) {
-            // TODO: show results of other users
+            printMessage(String.format("%s : word - %s, result code : %d, score change : %d\n",userName, word, resultCode, scoreChange));
             printMessage("Other user's result.\n");
         } else if (resultCode == WordChainInfo.RESULT_OK) {
             printMessage(String.format("[Server] %s is valid. You got %d scores!\n", word, scoreChange));
@@ -376,7 +376,6 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             printMessage(String.format("[Server] Someone already said %s. Your life will decrease by 1.\n", word));
         } else if (resultCode == WordChainInfo.RESULT_TIMEOUT) {
             printMessage(String.format("[Server] Timeout! Your life will decrease by 1.\n"));
-            // TODO: decrease life of local user info? or only at server?
         } else {
             printMessage("[Server] Unknown error. This turn will be passed.\n");
         }
@@ -816,7 +815,6 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                     try {
                         Desktop.getDesktop().open(file);
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     m_bReqAttachedFile = false;
@@ -1194,7 +1192,6 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
                 try {
                     m_fos.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -1337,7 +1334,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
          * StyledDocument doc = m_outTextPane.getStyledDocument(); try {
          * doc.insertString(doc.getLength(), strText, null);
          * m_outTextPane.setCaretPosition(m_outTextPane.getDocument().getLength()); }
-         * catch (BadLocationException e) { // TODO Auto-generated catch block
+         * catch (BadLocationException e) {
          * e.printStackTrace(); }
          */
         System.out.println(strText);
