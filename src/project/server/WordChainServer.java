@@ -2060,7 +2060,7 @@ public class WordChainServer extends JFrame {
                         WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 1, 5000);
                 if (receivedEvents == null || receivedEvents.length == 0) {
                     printMessage(String.format("Reply of user [%s]: TIMEOUT\n", nextUser.getName()));
-                    //  ifTODO: time is over, decrease user's life by 1 and notify to all users
+                    //  TODO: if time is over, decrease user's life by 1 and notify to all users
                     sendQueryResult(sessionName, groupName, nextUser.getName(), "TIMEOUT",
                             WordChainInfo.RESULT_TIMEOUT, 0, -1);
                 } else {
