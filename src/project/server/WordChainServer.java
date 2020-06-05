@@ -2073,7 +2073,7 @@ public class WordChainServer extends JFrame {
                 turnLeft--;
             }
 
-            // TODO: game finished, make result string, then cast GameFinishEvent to all group users
+        
 
             printMessage(String.format("Session [%s], group [%s]: game finished.\n", currentSession.getSessionName(), currentGroup.getGroupName()));
             GameFinishEvent finishEvent = new GameFinishEvent(getResultString());
@@ -2084,7 +2084,7 @@ public class WordChainServer extends JFrame {
             String a = "Result\n";
             for (CMUser user : currentGroup.getGroupUsers().getAllMembers()) {
 
-                a += String.format("Username: [%s] got score: [%s]\n", user.getName(), user.getscore());
+                a += String.format("Username: [%s] got score: [%s]\n", user.getName(), user.getScore());
             }
             return a;
 
