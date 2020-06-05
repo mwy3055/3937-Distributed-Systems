@@ -2084,9 +2084,20 @@ public class WordChainServer extends JFrame {
             }
 
             // TODO: game finished, make result string, then cast GameFinishEvent to all group users
+
             printMessage(String.format("Session [%s], group [%s]: game finished.\n", currentSession.getSessionName(), currentGroup.getGroupName()));
-            GameFinishEvent finishEvent = new GameFinishEvent("result");
+            GameFinishEvent finishEvent = new GameFinishEvent(getResultString());
             m_serverStub.cast(finishEvent, sessionName, groupName);
+        }
+
+        private String getResultString() {
+            String a = "Result\n";
+            for (CMUser user : currentGroup.getGroupUsers().getAllMembers()) {
+
+                a += String.format("Username: [%s] got score: [%s]\n", user.getName(), user.getScore());
+            }
+            return a;
+
         }
 
         private String getRandomAlphabet() {
