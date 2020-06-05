@@ -16,7 +16,7 @@ public class RequestGameStartEvent extends CMEvent {
     }
 
     public RequestGameStartEvent(String sessionName, String groupName) {
-        this.m_nType = WordChainInfo.EVENT_GAME_START;
+        this.m_nType = WordChainInfo.EVENT_REQUEST_GAME_START;
         this.sessionName = sessionName;
         this.groupName = groupName;
     }

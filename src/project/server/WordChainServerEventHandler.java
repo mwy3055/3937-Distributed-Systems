@@ -12,6 +12,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMDBManager;
 import kr.ac.konkuk.ccslab.cm.manager.CMFileTransferManager;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
 import project.WordChainInfo;
+import project.event.GameStartEvent;
 import project.event.RequestGameStartEvent;
 import project.event.WordSendingEvent;
 
@@ -19,10 +20,8 @@ import java.io.*;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class WordChainServerEventHandler implements CMAppEventHandler {
     private WordChainServer m_server;
@@ -82,11 +81,8 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
             case CMInfo.CM_MQTT_EVENT:
                 processMqttEvent(cme);
                 break;
-            case WordChainInfo.EVENT_GAME_START:
+            case WordChainInfo.EVENT_REQUEST_GAME_START:
                 processGameStartEvent(cme);
-                break;
-            case WordChainInfo.EVENT_SEND_WORD:
-                processWordEvent(cme);
                 break;
             default:
                 return;
@@ -99,29 +95,27 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
         String groupName = event.getGroupName();
         CMGroup group = m_server.getGroup(sessionName, groupName);
         if (group.getGroupUsers().getMemberNum() >= 2) {
-            System.out.println(String.format("Game start: session [%s], group [%s].\n", sessionName, groupName));
             m_server.startGame(sessionName, groupName);
         } else {
-            System.out.println(String.format("Reject game start of session [%s], group [%s].", sessionName, groupName));
+            printMessage(String.format("Reject game start of session [%s], group [%s].\n", sessionName, groupName));
+            printMessage(String.format("Sender: %s\n", event.getSender()));
+            GameStartEvent gameStartEvent = new GameStartEvent(0, sessionName, groupName, 0);
+            System.out.println(m_serverStub.send(gameStartEvent, event.getSender()));
         }
     }
 
     private void processWordEvent(CMEvent cme) {
-        CMConfigurationInfo confInfo = m_serverStub.getCMInfo().getConfigurationInfo();
         WordSendingEvent wordEvent = (WordSendingEvent) cme;
+        System.out.println(String.format("Received %s from %s.", wordEvent.getSender(), wordEvent.getWord()));
+        /*
         String word = wordEvent.getWord();
-
-        String firstLetter = word.substring(0,0);
-
         printMessage(String.format("User %s sent word %s.\n", wordEvent.getSender(), word));
 
         SendDictionaryQuery query = new SendDictionaryQuery(word);
         Future<Integer> result = executorService.submit(query);
 
-
         int rtnValue = -2;
         int scoreChange = 0;
-
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -145,8 +139,8 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
                 printMessage("ELSE\n");
                 break;
         }
-        m_server.sendQueryResult(wordEvent.getSender(), word, rtnValue, scoreChange);
-        // TODO: user status update(score...)
+        m_server.sendQueryResult(wordEvent.getSessionName(), wordEvent.getGroupName(), wordEvent.getSender(), word, rtnValue, scoreChange);
+         */
     }
 
     private void processSessionEvent(CMEvent cme) {
@@ -252,10 +246,12 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
 
     private void processDummyEvent(CMEvent cme) {
         CMDummyEvent due = (CMDummyEvent) cme;
+        /*
         //System.out.println("session("+due.getHandlerSession()+"), group("+due.getHandlerGroup()+")");
         printMessage("session(" + due.getHandlerSession() + "), group(" + due.getHandlerGroup() + ")\n");
         //System.out.println("dummy msg: "+due.getDummyInfo());
         printMessage("dummy msg: " + due.getDummyInfo() + "\n");
+        */
         return;
     }
 

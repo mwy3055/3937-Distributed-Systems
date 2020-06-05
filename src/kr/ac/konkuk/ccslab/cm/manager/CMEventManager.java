@@ -118,7 +118,7 @@ public class CMEventManager {
                         System.err.println("CMEventManager.unmarshallEvent(), unknown MQTT event ID: " + nEventID);
                         return null;
                 }
-            // WordChain custom event
+                // WordChain custom event
             case WordChainInfo.EVENT_SEND_WORD:
                 WordSendingEvent wordEvent = new WordSendingEvent(buf);
                 return wordEvent;
@@ -131,9 +131,15 @@ public class CMEventManager {
             case WordChainInfo.EVENT_NOTIFY_ADMIN:
                 NotifyAdminEvent adminEvent = new NotifyAdminEvent(buf);
                 return adminEvent;
+            case WordChainInfo.EVENT_REQUEST_GAME_START:
+                RequestGameStartEvent requestGameStartEvent = new RequestGameStartEvent(buf);
+                return requestGameStartEvent;
             case WordChainInfo.EVENT_GAME_START:
-                RequestGameStartEvent gameStartEvent = new RequestGameStartEvent(buf);
+                GameStartEvent gameStartEvent = new GameStartEvent(buf);
                 return gameStartEvent;
+            case WordChainInfo.EVENT_GAME_FINISH:
+                GameFinishEvent gameFinishEvent = new GameFinishEvent(buf);
+                return gameFinishEvent;
             default:
                 System.err.println("CMEventManager.unmarshallEvent(), unknown event type: " + nEventType);
                 return null;

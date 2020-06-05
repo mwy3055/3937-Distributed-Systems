@@ -6,53 +6,58 @@ import project.WordChainInfo;
 
 import java.nio.ByteBuffer;
 
-public class WordSendingEvent extends CMEvent {
+public class GameStartEvent extends CMEvent {
 
-    private String word;
+    private int start;
     private String sessionName;
     private String groupName;
+    private int order;
 
-    public WordSendingEvent() {
-        this("", "", "");
+    public GameStartEvent() {
+        this(0, "", "", 0);
     }
 
-    public WordSendingEvent(String word, String sessionName, String groupName) {
-        this.m_nType = WordChainInfo.EVENT_SEND_WORD;
-        this.m_nID = WordChainInfo.EVENT_SEND_WORD;
-        this.word = word;
+    public GameStartEvent(int start, String sessionName, String groupName, int order) {
+        this.m_nType = WordChainInfo.EVENT_GAME_START;
+        this.m_nID = WordChainInfo.EVENT_GAME_START;
+        this.start = start;
         this.sessionName = sessionName;
         this.groupName = groupName;
+        this.order = order;
     }
 
-    public WordSendingEvent(ByteBuffer msg) {
+    public GameStartEvent(ByteBuffer msg) {
         this();
         this.unmarshall(msg);
     }
 
+    @Override
     protected int getByteNum() {
         int byteNum = super.getByteNum();
-        byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.word.getBytes().length;
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.sessionName.getBytes().length;
         byteNum += CMInfo.STRING_LEN_BYTES_LEN + this.groupName.getBytes().length;
+        byteNum += Integer.BYTES * 2;
         return byteNum;
     }
 
     @Override
     protected void marshallBody() {
-        this.putStringToByteBuffer(this.word);
+        this.putInt2BytesToByteBuffer(this.start);
         this.putStringToByteBuffer(this.sessionName);
         this.putStringToByteBuffer(this.groupName);
+        this.putInt2BytesToByteBuffer(this.order);
     }
 
     @Override
     protected void unmarshallBody(ByteBuffer msg) {
-        this.word = this.getStringFromByteBuffer(msg);
+        this.start = this.getInt2BytesFromByteBuffer(msg);
         this.sessionName = this.getStringFromByteBuffer(msg);
         this.groupName = this.getStringFromByteBuffer(msg);
+        this.order = this.getInt2BytesFromByteBuffer(msg);
     }
 
-    public String getWord() {
-        return this.word;
+    public int getStart() {
+        return start;
     }
 
     public String getSessionName() {
@@ -61,5 +66,9 @@ public class WordSendingEvent extends CMEvent {
 
     public String getGroupName() {
         return groupName;
+    }
+
+    public int getOrder() {
+        return order;
     }
 }

@@ -306,7 +306,7 @@ public class CMMember extends CMObject {
     }
 
     public synchronized CMUser getUser(int index) {
-        if (0 > index || index >= m_memberList.size()) {
+        if (index < 0 || index >= m_memberList.size()) {
             return null;
         } else {
             return m_memberList.get(index);
