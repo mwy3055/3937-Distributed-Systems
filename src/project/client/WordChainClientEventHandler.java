@@ -385,6 +385,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         GameFinishEvent finishEvent = (GameFinishEvent) cme;
         // TODO: print game results
         printMessage("Game finished.\n");
+        printMessage(finishEvent.getResult());
 
         // TODO: After game finish: what to do?
         // TODO: terminate CM first if you want to terminate the client
