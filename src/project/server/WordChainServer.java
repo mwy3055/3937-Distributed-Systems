@@ -1814,7 +1814,7 @@ public class WordChainServer extends JFrame {
         control.start();
     }
 
-    private int processWordEvent(WordSendingEvent wordEvent) {
+    private WordResult processWordEvent(WordSendingEvent wordEvent) {
         String word = wordEvent.getWord();
         printMessage(String.format("User %s from group %s, session %s sent word %s.\n",
                 wordEvent.getSender(), wordEvent.getGroupName(), wordEvent.getSessionName(), word));
@@ -1823,7 +1823,7 @@ public class WordChainServer extends JFrame {
         Future<Integer> result = executor.submit(query);
 
         int rtnValue = -2;
-        int scoreChange = 0, lifeChange = 0;
+        int lifeChange = 0;
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -1843,15 +1843,17 @@ public class WordChainServer extends JFrame {
                 break;
             case WordChainInfo.RESULT_OK:
                 printMessage(String.format("%s is a noun.\n", word));
-                scoreChange = 100; // TODO: implement score calculation method
                 break;
             default:
                 printMessage("ELSE\n");
                 break;
         }
-        // TODO: user status update(score, life...)
-        sendQueryResult(wordEvent.getSessionName(), wordEvent.getGroupName(), wordEvent.getSender(), word, rtnValue, scoreChange, lifeChange);
-        return rtnValue;
+        return new WordResult(wordEvent.getWord(), rtnValue, lifeChange);
+    }
+
+    private int calculateScore(long timediff) {
+        int score = (int) (50 + (timediff / 100));
+        return score;
     }
 
     public void sendQueryResult(String sessionName, String groupName, String userName, String word, int resultCode, int scoreChange, int lifeChange) {
@@ -2056,19 +2058,27 @@ public class WordChainServer extends JFrame {
                 printMessage(String.format("Next user of session [%s], group [%s] is [%s].\n", sessionName, groupName, nextUser.getName()));
 
                 NextUserEvent event = new NextUserEvent(nextUser.getName(), previousWord);
+                long t1 = System.currentTimeMillis();
                 CMEvent[] receivedEvents = m_serverStub.castrecv(event, sessionName, groupName,
                         WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 1, 5000);
+                long t2 = System.currentTimeMillis();
                 if (receivedEvents == null || receivedEvents.length == 0) {
                     printMessage(String.format("Reply of user [%s]: TIMEOUT\n", nextUser.getName()));
-                    //  TODO: if time is over, decrease user's life by 1 and notify to all users
                     sendQueryResult(sessionName, groupName, nextUser.getName(), "TIMEOUT",
                             WordChainInfo.RESULT_TIMEOUT, 0, -1);
                 } else {
-                    WordSendingEvent sendingEvent = (WordSendingEvent) receivedEvents[0];
-                    printMessage(String.format("Received %s from user %s.\n", sendingEvent.getWord(), sendingEvent.getSender()));
-                    if (processWordEvent(sendingEvent) == WordChainInfo.RESULT_OK) {
-                        previousWord = sendingEvent.getWord();
-                    }
+                    WordSendingEvent receivedEvent = (WordSendingEvent) receivedEvents[0];
+                    printMessage(String.format("Received %s from user %s.\n", receivedEvent.getWord(), receivedEvent.getSender()));
+                    WordResult result = processWordEvent(receivedEvent);
+                    int scoreChange = 0;
+                    if (result.getRtnValue() == WordChainInfo.RESULT_OK) {
+                        previousWord = receivedEvent.getWord();
+                        scoreChange = calculateScore(t2 - t1);
+                        nextUser.addScore(scoreChange);
+                    } else
+                        nextUser.decreaseLife();
+                    sendQueryResult(receivedEvent.getSessionName(), receivedEvent.getGroupName(), receivedEvent.getSender(),
+                            result.getWord(), result.getRtnValue(), scoreChange, result.getLifeChange());
                 }
                 turnLeft--;
             }
