@@ -32,8 +32,19 @@
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cm-server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-server.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/3937 Distributed Systems/META-INF/3937 Distributed Systems.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMInteractionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMInteractionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/WordChainHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/server/WordResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordResult.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +108,7 @@
       <recent name="E:\code\3937 Distributed Systems" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.WordChainClient">
+  <component name="RunManager" selected="Application.WordChainServer">
     <configuration name="MyClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="midexam.MyClient" />
       <module name="3937 Distributed Systems" />
@@ -124,7 +135,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="WordChainClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="WordChainClient" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="project.client.WordChainClient" />
       <module name="3937 Distributed Systems" />
       <extension name="coverage">
@@ -163,6 +174,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.MyClient" />
+      <item itemvalue="Application.TestClient" />
+      <item itemvalue="Application.WordChainClient" />
+      <item itemvalue="Application.WordChainServer" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.WordChainClient" />
@@ -246,6 +263,9 @@
       <workItem from="1591273529009" duration="584000" />
       <workItem from="1591405356452" duration="163000" />
       <workItem from="1591405596170" duration="403000" />
+      <workItem from="1591406215201" duration="1853000" />
+      <workItem from="1591408643091" duration="3876000" />
+      <workItem from="1591420302462" duration="106000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -467,10 +487,14 @@
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser" timestamp="1590991121389">
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591406632881">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1590991121389" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1591406632881" />
+    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser" timestamp="1591406812896">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="765" y="225" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1591406812896" />
     <state x="689" y="309" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1590987994324">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -495,22 +519,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1585108926410" />
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1591111163876">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1591412780230">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
-    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1591111163876">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591412780230" />
+    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1591412780230">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
-    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1591111163876">
+    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591412780230" />
+    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1591412780230">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
-    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1591111163876">
+    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591412780230" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1591412780230">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591412780230" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1591080562347">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

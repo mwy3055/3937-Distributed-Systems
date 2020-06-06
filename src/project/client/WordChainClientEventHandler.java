@@ -312,8 +312,6 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         myself.setAdmin(true);
         System.out.println(String.format("You are the admin of session [%s], group [%s].", myself.getCurrentSession(),
                 myself.getCurrentGroup()));
-        System.out.println("If you want to start the game, enter \"start\" to the console.");
-        System.out.println("You can only start the game when there are more than 2 users in the group.");
         getGameStartInputThread = new Thread(() -> m_client.requestGameStart());
         getGameStartInputThread.start();
     }
@@ -338,6 +336,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             String input = null;
             System.out.println("Your turn! Type the word.");
             System.out.print(String.format("Previous word: [%s] -> ", event.getPreviousWord()));
+            WordChainHelper.lines.clear();
             try {
                 input = WordChainHelper.lines.poll(5, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
@@ -366,11 +365,11 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         int scoreChange = resultEvent.getScoreChange();
 
         if (!userName.equals(myself.getName())) {
-            printMessage(String.format("%s : word - %s, result code : %d, score change : %d\n",userName, word, resultCode, scoreChange));
-            printMessage("Other user's result.\n");
+            printMessage(String.format("User [%s] typed [%s], score change : %d", userName, word, scoreChange));
+            printMessage(String.format("Result: %s\n", WordChainHelper.getWordResultString(resultCode)));
         } else if (resultCode == WordChainInfo.RESULT_OK) {
             printMessage(String.format("[Server] %s is valid. You got %d scores!\n", word, scoreChange));
-        } else if (resultCode == WordChainInfo.RESULT_NOTNOUN) {
+        } else if (resultCode == WordChainInfo.RESULT_NOT_NOUN) {
             printMessage(String.format("[Server] %s is not a noun. Your life will decrease by 1.\n", word));
         } else if (resultCode == WordChainInfo.RESULT_DUPLICATION) {
             printMessage(String.format("[Server] Someone already said %s. Your life will decrease by 1.\n", word));
@@ -384,12 +383,18 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
     private void processGameFinishEvent(CMEvent cme) {
         GameFinishEvent finishEvent = (GameFinishEvent) cme;
         // TODO: print game results
-        printMessage("Game finished.\n");
         printMessage(finishEvent.getResult());
+        printMessage("Game finished.\n");
 
         // TODO: After game finish: what to do?
-        // TODO: terminate CM first if you want to terminate the client
-        System.exit(0);
+        CMUser myself = m_clientStub.getMyself();
+        if (myself.isAdmin()) {
+            getGameStartInputThread = new Thread(() -> m_client.requestGameStart());
+            System.out.println("TEST");
+            getGameStartInputThread.start();
+        } else {
+            new Thread(() -> m_client.waitGameStart()).start();
+        }
     }
 
     ///////////////////////////////////////////////

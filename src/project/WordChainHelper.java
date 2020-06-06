@@ -30,4 +30,21 @@ public class WordChainHelper {
         t.start();
     }
 
+    public static String getWordResultString(int resultCode) {
+        switch(resultCode) {
+            case WordChainInfo.RESULT_OK:
+                return "OK";
+            case WordChainInfo.RESULT_NOT_NOUN:
+                return "NOT NOUN";
+            case WordChainInfo.RESULT_DUPLICATION:
+                return "DUPLICATION";
+            case WordChainInfo.RESULT_TIMEOUT:
+                return "TIMEOUT";
+            case WordChainInfo.RESULT_API_ERROR:
+                return "API ERROR";
+            default:
+                return "UNKNOWN ERROR";
+        }
+    }
+
 }

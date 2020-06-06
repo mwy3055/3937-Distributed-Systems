@@ -11,6 +11,7 @@ public class CMGroup extends CMGroupInfo {
     private int currentIndex;
     private CMUser currentUser;
     private CMUser groupAdmin;
+    private int leftUserNum;
 
     public CMGroup() {
         super();
@@ -49,6 +50,14 @@ public class CMGroup extends CMGroupInfo {
         m_membershipKey = key;
     }
 
+    public synchronized void init() {
+        leftUserNum = m_groupUsers.getMemberNum();
+    }
+
+    public synchronized boolean canGameProceed() {
+        return (!m_groupUsers.isEmpty()) && (1 < leftUserNum);
+    }
+
     public synchronized CMUser getCurrentUser() {
         return currentUser;
     }
@@ -61,13 +70,19 @@ public class CMGroup extends CMGroupInfo {
             currentIndex = 0;
             currentUser = m_groupUsers.getUser(0);
         } else if (m_groupUsers.isMember(currentUser)) {
-            currentIndex = (currentIndex + 1) % (m_groupUsers.getAllMembers().size());
-            currentUser = m_groupUsers.getUser(currentIndex);
+            do {
+                currentIndex = (currentIndex + 1) % (m_groupUsers.getAllMembers().size());
+                currentUser = m_groupUsers.getUser(currentIndex);
+            } while (currentUser.getLife() <= 0);
         } else if (!m_groupUsers.isMember(currentUser)) {
             if (currentIndex >= m_groupUsers.getMemberNum()) {
                 currentIndex = 0;
             }
             currentUser = m_groupUsers.getUser(currentIndex);
+            while (currentUser.getLife() <= 0) {
+                currentIndex = (currentIndex + 1) % (m_groupUsers.getAllMembers().size());
+                currentUser = m_groupUsers.getUser(currentIndex);
+            }
         }
         return currentUser;
     }
@@ -79,5 +94,21 @@ public class CMGroup extends CMGroupInfo {
     public synchronized void setGroupAdmin(CMUser user) {
         this.groupAdmin = user;
         user.setAdmin(true);
+    }
+
+    public synchronized void decreaseLeftUserNum() {
+        if (0 < leftUserNum) {
+            leftUserNum--;
+        }
+    }
+
+    public synchronized int getLeftUserNum() {
+        return leftUserNum;
+    }
+
+    public synchronized void finishGame() {
+        currentIndex = -2;
+        currentUser = null;
+        leftUserNum = 0;
     }
 }

@@ -419,7 +419,7 @@ public class WordChainClient {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (!m_clientStub.getMyself().getAdmin()) {
+        if (!m_clientStub.getMyself().isAdmin()) {
             new Thread(() -> waitGameStart()).start();
         }
     }
@@ -427,6 +427,8 @@ public class WordChainClient {
     /* For admin user */
     public void requestGameStart() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("If you want to start the game, enter \"start\" to the console.");
+        System.out.println("You can only start the game when there are more than 2 users in the group.");
         while (isWaitingGameStart) {
             String input = "";
             while (!input.equalsIgnoreCase("start")) {
@@ -444,25 +446,22 @@ public class WordChainClient {
             if (sendGameStartEvent()) {
                 break;
             }
-            // sendGameStartEvent();
         }
         playGame();
     }
 
     public boolean sendGameStartEvent() {
         CMUser myself = m_clientStub.getMyself();
-        if (!myself.getAdmin()) {
+        if (!myself.isAdmin()) {
             System.err.println("You are not a admin. Wait the admin to start the game.\n");
             return false;
         }
         System.out.println("Send game start request to server.");
         RequestGameStartEvent event = new RequestGameStartEvent(myself.getCurrentSession(), myself.getCurrentGroup());
         event.setSender(myself.getName());
-        // m_clientStub.send(event, m_clientStub.getDefaultServerName());
         GameStartEvent startEvent = (GameStartEvent) m_clientStub.sendrecv(event, m_clientStub.getDefaultServerName(),
-                WordChainInfo.EVENT_GAME_START, WordChainInfo.EVENT_GAME_START, 2000);
+                WordChainInfo.EVENT_GAME_START, WordChainInfo.EVENT_GAME_START, 5000);
         if (startEvent == null || startEvent.getStart() == 0) {
-            System.out.println(startEvent == null);
             System.out.println("Server Response: Can't start the game. Wait more players to come.");
             return false;
         } else if (startEvent.getStart() == 1) {

@@ -437,7 +437,7 @@ public class WordChainServer extends JFrame {
         // ask the user if he/she would like to change the server info
         JTextField serverAddressTextField = new JTextField(strCurServerAddress);
         JTextField serverPortTextField = new JTextField(String.valueOf(nSavedServerPort));
-        Object msg[] = { "Server Address: ", serverAddressTextField, "Server Port: ", serverPortTextField };
+        Object msg[] = {"Server Address: ", serverAddressTextField, "Server Port: ", serverPortTextField};
         int option = JOptionPane.showConfirmDialog(null, msg, "Server Information", JOptionPane.OK_CANCEL_OPTION);
 
         // update the server info if the user would like to do
@@ -541,11 +541,11 @@ public class WordChainServer extends JFrame {
         printMessage("====== request a file\n");
         JTextField fileNameField = new JTextField();
         JTextField fileOwnerField = new JTextField();
-        String[] fAppendMode = { "Default", "Overwrite", "Append" };
+        String[] fAppendMode = {"Default", "Overwrite", "Append"};
         JComboBox<String> fAppendBox = new JComboBox<String>(fAppendMode);
 
-        Object[] message = { "File Name:", fileNameField, "File Owner:", fileOwnerField, "File Append Mode: ",
-                fAppendBox };
+        Object[] message = {"File Name:", fileNameField, "File Owner:", fileOwnerField, "File Append Mode: ",
+                fAppendBox};
         int option = JOptionPane.showConfirmDialog(null, message, "File Request Input", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.CANCEL_OPTION || option != JOptionPane.OK_OPTION) {
             printMessage("canceled!\n");
@@ -596,10 +596,10 @@ public class WordChainServer extends JFrame {
          * == null) return;
          */
         JTextField freceiverField = new JTextField();
-        String[] fAppendMode = { "Default", "Overwrite", "Append" };
+        String[] fAppendMode = {"Default", "Overwrite", "Append"};
         JComboBox<String> fAppendBox = new JComboBox<String>(fAppendMode);
 
-        Object[] message = { "File Receiver: ", freceiverField, "File Append Mode: ", fAppendBox };
+        Object[] message = {"File Receiver: ", freceiverField, "File Append Mode: ", fAppendBox};
         int option = JOptionPane.showConfirmDialog(null, message, "File Push", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.CANCEL_OPTION || option != JOptionPane.OK_OPTION) {
             printMessage("canceled.\n");
@@ -751,9 +751,9 @@ public class WordChainServer extends JFrame {
         String strUserName = null;
         int nScheme = -1;
         JTextField userField = new JTextField();
-        String[] attachLod = { "Full", "Thumbnail", "Prefetching", "None" };
+        String[] attachLod = {"Full", "Thumbnail", "Prefetching", "None"};
         JComboBox<String> lodBox = new JComboBox<String>(attachLod);
-        Object[] message = { "Target user name (Enter for all users)", userField, "Image QoS: ", lodBox };
+        Object[] message = {"Target user name (Enter for all users)", userField, "Image QoS: ", lodBox};
         int option = JOptionPane.showConfirmDialog(null, message, "Attachement Download Scheme",
                 JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
@@ -792,12 +792,12 @@ public class WordChainServer extends JFrame {
         avgDayAccCountField.setText(Integer.toString(nAvgDayAccCount));
         JTextField totalSimDaysField = new JTextField();
         totalSimDaysField.setText(Integer.toString(nTotalSimDays));
-        String[] accPattern = { "Random", "Skewed" };
+        String[] accPattern = {"Random", "Skewed"};
         JComboBox<String> accPatternBox = new JComboBox<String>(accPattern);
         accPatternBox.setSelectedIndex(0);
 
-        Object[] message = { "Number of users:", userNumField, "Average daily access count:", avgDayAccCountField,
-                "Total number of simulation days:", totalSimDaysField, "Access pattern:", accPatternBox };
+        Object[] message = {"Number of users:", userNumField, "Average daily access count:", avgDayAccCountField,
+                "Total number of simulation days:", totalSimDaysField, "Access pattern:", accPatternBox};
         int option = JOptionPane.showConfirmDialog(null, message, "Configuration of simulation variables",
                 JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
@@ -822,7 +822,7 @@ public class WordChainServer extends JFrame {
             normalMeanField.setText(Double.toString(dNormalMean));
             JTextField normalSDField = new JTextField();
             normalSDField.setText(Double.toString(dNormalSD));
-            Object[] messageNormal = { "Mean value:", normalMeanField, "Standard deviation:", normalSDField };
+            Object[] messageNormal = {"Mean value:", normalMeanField, "Standard deviation:", normalSDField};
             option = JOptionPane.showConfirmDialog(null, messageNormal, "Config for normal distribution",
                     JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
@@ -1060,10 +1060,10 @@ public class WordChainServer extends JFrame {
         // ask channel type, (server name), channel index (integer greater than 0),
         // addr, port
 
-        String[] chTypes = { "SocketChannel(not yet supported)", "DatagramChannel", "MulticastChannel" };
+        String[] chTypes = {"SocketChannel(not yet supported)", "DatagramChannel", "MulticastChannel"};
         JComboBox<String> chTypeBox = new JComboBox<String>(chTypes);
         chTypeBox.setSelectedIndex(1);
-        Object[] message = { "Channel Type: ", chTypeBox };
+        Object[] message = {"Channel Type: ", chTypeBox};
         int option = JOptionPane.showConfirmDialog(null, message, "Channel type", JOptionPane.OK_CANCEL_OPTION);
         if (option != JOptionPane.OK_OPTION)
             return;
@@ -1081,30 +1081,30 @@ public class WordChainServer extends JFrame {
              * String[] syncAsync = {"synchronous call", "asynchronous call"}; JComboBox
              * syncAsyncComboBox = new JComboBox(syncAsync);
              * syncAsyncComboBox.setSelectedIndex(1); // default value is asynchronous call
-             * 
+             *
              * JTextField chIndexField = new JTextField(); JTextField strServerField = new
              * JTextField(); Object[] scMessage = { "", blockRadioButton, "",
              * nonBlockRadioButton, "syncronous or asynchronous call", syncAsyncComboBox,
              * "Channel key (> 0 for nonblocking ch, >=0 for blocking ch)", chIndexField,
              * "Server name(empty for the default server)", strServerField };
-             * 
+             *
              * int scResponse = JOptionPane.showConfirmDialog(null, scMessage,
              * "Socket Channel", JOptionPane.OK_CANCEL_OPTION);
-             * 
+             *
              * if(scResponse != JOptionPane.OK_OPTION) return; nChKey =
              * Integer.parseInt(chIndexField.getText());
-             * 
+             *
              * if(blockRadioButton.isSelected()) isBlock = true; else isBlock = false;
-             * 
+             *
              * if(!isBlock && nChKey <= 0) {
              * printMessage("testAddChannel(), invalid nonblocking socket channel key ("
              * +nChKey+")!\n"); return; } else if(isBlock && nChKey < 0) {
              * printMessage("testAddChannel(), invalid blocking socket channel key ("+nChKey
              * +")!\n"); return; }
-             * 
+             *
              * if(syncAsyncComboBox.getSelectedIndex() == 0) isSyncCall = true; else
              * isSyncCall = false;
-             * 
+             *
              * strServerName = strServerField.getText(); if(strServerName == null ||
              * strServerName.equals("")) strServerName = "SERVER"; // default server name
              */
@@ -1118,8 +1118,8 @@ public class WordChainServer extends JFrame {
 
             JTextField chIndexField = new JTextField();
 
-            Object[] scMessage = { "", blockRadioButton, "", nonBlockRadioButton,
-                    "Port number (key of the datagram channel)", chIndexField };
+            Object[] scMessage = {"", blockRadioButton, "", nonBlockRadioButton,
+                    "Port number (key of the datagram channel)", chIndexField};
 
             int scResponse = JOptionPane.showConfirmDialog(null, scMessage, "Add Datagram Channel",
                     JOptionPane.OK_CANCEL_OPTION);
@@ -1142,8 +1142,8 @@ public class WordChainServer extends JFrame {
             JTextField gnameField = new JTextField();
             JTextField chAddrField = new JTextField();
             JTextField chPortField = new JTextField();
-            Object[] multicastMessage = { "Target Session Name: ", snameField, "Target Group Name: ", gnameField,
-                    "Channel Multicast Address: ", chAddrField, "Channel Multicast Port: ", chPortField };
+            Object[] multicastMessage = {"Target Session Name: ", snameField, "Target Group Name: ", gnameField,
+                    "Channel Multicast Address: ", chAddrField, "Channel Multicast Port: ", chPortField};
             int multicastResponse = JOptionPane.showConfirmDialog(null, multicastMessage, "Additional Multicast Input",
                     JOptionPane.OK_CANCEL_OPTION);
             if (multicastResponse != JOptionPane.OK_OPTION)
@@ -1188,7 +1188,7 @@ public class WordChainServer extends JFrame {
              * printMessage("Failed to add a nonblocking socket channe at the client or " +
              * "failed to request to add the channel info to the server: key("+nChKey
              * +") to server("+strServerName+")\n"); } }
-             * 
+             *
              * break;
              */
             case CMInfo.CM_DATAGRAM_CHANNEL:
@@ -1237,10 +1237,10 @@ public class WordChainServer extends JFrame {
 
         printMessage("====== remove additional channel\n");
 
-        String[] chTypes = { "SocketChannel(not yet supported)", "DatagramChannel", "MulticastChannel" };
+        String[] chTypes = {"SocketChannel(not yet supported)", "DatagramChannel", "MulticastChannel"};
         JComboBox<String> chTypeBox = new JComboBox<String>(chTypes);
         chTypeBox.setSelectedIndex(1);
-        Object[] message = { "Channel Type: ", chTypeBox };
+        Object[] message = {"Channel Type: ", chTypeBox};
         int option = JOptionPane.showConfirmDialog(null, message, "Removal of Additional Channel",
                 JOptionPane.OK_CANCEL_OPTION);
         if (option != JOptionPane.OK_OPTION)
@@ -1258,30 +1258,30 @@ public class WordChainServer extends JFrame {
              * String syncAsync[] = {"synchronous call", "asynchronous call"}; JComboBox
              * syncAsyncComboBox = new JComboBox(syncAsync);
              * syncAsyncComboBox.setSelectedIndex(1); //default value is asynchronous call
-             * 
+             *
              * JTextField chIndexField = new JTextField(); JTextField strServerField = new
              * JTextField(); Object[] scMessage = { "", blockRadioButton, "",
              * nonBlockRadioButton, "Synchronous or asynchronous call", syncAsyncComboBox,
              * "Channel key (> 0 for nonblocking ch, >=0 for blocking ch)", chIndexField,
              * "Server name(empty for the default server)", strServerField };
-             * 
+             *
              * int scResponse = JOptionPane.showConfirmDialog(null, scMessage,
              * "Socket Channel", JOptionPane.OK_CANCEL_OPTION);
-             * 
+             *
              * if(scResponse != JOptionPane.OK_OPTION) return; nChKey =
              * Integer.parseInt(chIndexField.getText());
-             * 
+             *
              * if(blockRadioButton.isSelected()) isBlock = true; else isBlock = false;
-             * 
+             *
              * if(!isBlock && nChKey <= 0) {
              * printMessage("testRemoveChannel(), invalid nonblocking socket channel key ("
              * +nChKey+")!\n"); return; } else if(isBlock && nChKey < 0) {
              * printMessage("testRemoveChannel(), invalid blocking socket channel key ("
              * +nChKey+")!\n"); return; }
-             * 
+             *
              * if(syncAsyncComboBox.getSelectedIndex() == 0) isSyncCall = true; else
              * isSyncCall = false;
-             * 
+             *
              * strServerName = strServerField.getText(); if(strServerName == null ||
              * strServerName.equals("")) strServerName = "SERVER"; // default server name
              */
@@ -1294,8 +1294,8 @@ public class WordChainServer extends JFrame {
             bGroup.add(nonBlockRadioButton);
 
             JTextField chIndexField = new JTextField();
-            Object[] scMessage = { "", blockRadioButton, "", nonBlockRadioButton,
-                    "Port number (key of the datagram channel):", chIndexField };
+            Object[] scMessage = {"", blockRadioButton, "", nonBlockRadioButton,
+                    "Port number (key of the datagram channel):", chIndexField};
 
             int scResponse = JOptionPane.showConfirmDialog(null, scMessage, "Remove Datagram Channel",
                     JOptionPane.OK_CANCEL_OPTION);
@@ -1319,8 +1319,8 @@ public class WordChainServer extends JFrame {
             JTextField gnameField = new JTextField();
             JTextField chAddrField = new JTextField();
             JTextField chPortField = new JTextField();
-            Object[] sgMessage = { "Target Session Name: ", snameField, "Target Group Name: ", gnameField,
-                    "Channel Multicast Address: ", chAddrField, "Channel Multicast Port: ", chPortField };
+            Object[] sgMessage = {"Target Session Name: ", snameField, "Target Group Name: ", gnameField,
+                    "Channel Multicast Address: ", chAddrField, "Channel Multicast Port: ", chPortField};
             int sgOption = JOptionPane.showConfirmDialog(null, sgMessage, "Target Session and Group",
                     JOptionPane.OK_CANCEL_OPTION);
             if (sgOption != JOptionPane.OK_OPTION)
@@ -1356,7 +1356,7 @@ public class WordChainServer extends JFrame {
              * +"), server("+strServerName+")\n"); else
              * printMessage("Failed to remove a nonblocing socket channel: key("+nChKey
              * +"), server("+strServerName+")\n"); }
-             * 
+             *
              * break;
              */
             case CMInfo.CM_DATAGRAM_CHANNEL:
@@ -1449,7 +1449,7 @@ public class WordChainServer extends JFrame {
 
         JTextField fieldTextField = new JTextField();
         JTextField valueTextField = new JTextField();
-        Object[] msg = { "Field Name:", fieldTextField, "Value:", valueTextField };
+        Object[] msg = {"Field Name:", fieldTextField, "Value:", valueTextField};
         int nRet = JOptionPane.showConfirmDialog(null, msg, "Change Configuration", JOptionPane.OK_CANCEL_OPTION);
         if (nRet != JOptionPane.OK_OPTION)
             return;
@@ -1629,7 +1629,7 @@ public class WordChainServer extends JFrame {
      * ""); nextUserEvent.setHandlerGroup(gInfo.getGroupName());
      * nextUserEvent.setHandlerSession(session.getSessionName());
      * m_serverStub.send(nextUserEvent, userName);
-     * 
+     *
      * printMessage(String.format("Session %s, group %s: Next user is %s\n",
      * session.getSessionName(), gInfo.getGroupName(), userName)); } } } }
      */
@@ -1711,7 +1711,7 @@ public class WordChainServer extends JFrame {
         control.start();
     }
 
-    private WordResult processWordEvent(WordSendingEvent wordEvent) {
+    private WordResult processWordEvent(WordSendingEvent wordEvent, long timeDiff) {
         String word = wordEvent.getWord();
         printMessage(String.format("User %s from group %s, session %s sent word %s.\n", wordEvent.getSender(),
                 wordEvent.getGroupName(), wordEvent.getSessionName(), word));
@@ -1720,7 +1720,7 @@ public class WordChainServer extends JFrame {
         Future<Integer> result = executor.submit(query);
 
         int rtnValue = -2;
-        int lifeChange = 0;
+        int scoreChange = 0, lifeChange = 0;
         try {
             rtnValue = result.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -1734,18 +1734,19 @@ public class WordChainServer extends JFrame {
                 printMessage(String.format("%s already exists.\n", word));
                 lifeChange = -1;
                 break;
-            case WordChainInfo.RESULT_NOTNOUN:
+            case WordChainInfo.RESULT_NOT_NOUN:
                 printMessage(String.format("%s is not a noun.\n", word));
                 lifeChange = -1;
                 break;
             case WordChainInfo.RESULT_OK:
                 printMessage(String.format("%s is a noun.\n", word));
+                scoreChange = calculateScore(timeDiff);
                 break;
             default:
                 printMessage("ELSE\n");
                 break;
         }
-        return new WordResult(wordEvent.getWord(), rtnValue, lifeChange);
+        return new WordResult(wordEvent.getWord(), rtnValue, scoreChange, lifeChange);
     }
 
     private int calculateScore(long timediff) {
@@ -1754,7 +1755,7 @@ public class WordChainServer extends JFrame {
     }
 
     public void sendQueryResult(String sessionName, String groupName, String userName, String word, int resultCode,
-            int scoreChange, int lifeChange) {
+                                int scoreChange, int lifeChange) {
         WordResultEvent resultEvent = new WordResultEvent(userName, resultCode, word, scoreChange, lifeChange);
         m_serverStub.cast(resultEvent, sessionName, groupName);
     }
@@ -1929,11 +1930,14 @@ public class WordChainServer extends JFrame {
 
             currentSession = getSession(sessionName);
             currentGroup = getGroup(sessionName, groupName);
-            turnLeft = 30;
+            turnLeft = 4;
         }
 
         // main function
         public void run() {
+            currentSession.init();
+            currentGroup.init();
+
             CMMember member = currentGroup.getGroupUsers();
             int order = 1;
             for (CMUser user : member.getAllMembers()) {
@@ -1950,9 +1954,8 @@ public class WordChainServer extends JFrame {
                 e.printStackTrace();
             }
             // main loop
-            while (turnLeft > 0 && !currentGroup.getGroupUsers().isEmpty()) {
-                printMessage(String.format("Current turn of session [%s], group [%s]: %d\n", sessionName, groupName,
-                        turnLeft));
+            while (turnLeft > 0 && currentGroup.canGameProceed()) {
+                printMessage(String.format("Current turn of session [%s], group [%s]: %d\n", sessionName, groupName, turnLeft));
                 CMUser nextUser = currentGroup.getNextUser();
                 printMessage(String.format("Next user of session [%s], group [%s] is [%s].\n", sessionName, groupName,
                         nextUser.getName()));
@@ -1960,8 +1963,9 @@ public class WordChainServer extends JFrame {
                 NextUserEvent event = new NextUserEvent(nextUser.getName(), previousWord);
                 long t1 = System.currentTimeMillis();
                 CMEvent[] receivedEvents = m_serverStub.castrecv(event, sessionName, groupName,
-                        WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 1, 5000);
+                        WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 1, WordChainInfo.WORD_TIME_LIMIT_MILIS);
                 long t2 = System.currentTimeMillis();
+
                 if (receivedEvents == null || receivedEvents.length == 0) {
                     printMessage(String.format("Reply of user [%s]: TIMEOUT\n", nextUser.getName()));
                     sendQueryResult(sessionName, groupName, nextUser.getName(), "TIMEOUT", WordChainInfo.RESULT_TIMEOUT,
@@ -1970,16 +1974,18 @@ public class WordChainServer extends JFrame {
                     WordSendingEvent receivedEvent = (WordSendingEvent) receivedEvents[0];
                     printMessage(String.format("Received %s from user %s.\n", receivedEvent.getWord(),
                             receivedEvent.getSender()));
-                    WordResult result = processWordEvent(receivedEvent);
-                    int scoreChange = 0;
+                    WordResult result = processWordEvent(receivedEvent, t2 - t1);
                     if (result.getRtnValue() == WordChainInfo.RESULT_OK) {
-                        previousWord = receivedEvent.getWord();
-                        scoreChange = calculateScore(t2 - t1);
-                        nextUser.addScore(scoreChange);
-                    } else
+                        previousWord = result.getWord();
+                        nextUser.addScore(result.getScoreChange());
+                    } else {
                         nextUser.decreaseLife();
+                        if (nextUser.getLife() == 0) {
+                            currentGroup.decreaseLeftUserNum();
+                        }
+                    }
                     sendQueryResult(receivedEvent.getSessionName(), receivedEvent.getGroupName(),
-                            receivedEvent.getSender(), result.getWord(), result.getRtnValue(), scoreChange,
+                            receivedEvent.getSender(), result.getWord(), result.getRtnValue(), result.getScoreChange(),
                             result.getLifeChange());
                 }
                 turnLeft--;
@@ -1989,14 +1995,16 @@ public class WordChainServer extends JFrame {
                     currentGroup.getGroupName()));
             GameFinishEvent finishEvent = new GameFinishEvent(getResultString());
             m_serverStub.cast(finishEvent, sessionName, groupName);
+
+            currentSession.finishGame();
+            currentGroup.finishGame();
         }
 
         private String getResultString() {
             StringBuilder resultBuilder = new StringBuilder();
             resultBuilder.append("Result\n");
             for (CMUser user : currentGroup.getGroupUsers().getAllMembers()) {
-                resultBuilder
-                        .append(String.format("Username: [%s] got score: [%s]\n", user.getName(), user.getScore()));
+                resultBuilder.append(String.format("Username: [%s], score: [%s]\n", user.getName(), user.getScore()));
             }
             return resultBuilder.toString();
         }

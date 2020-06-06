@@ -84,7 +84,7 @@ public class SendDictionaryQuery implements Callable<Integer> {
             stringSet.add(word);
             return WordChainInfo.RESULT_OK;
         } else {
-            return WordChainInfo.RESULT_NOTNOUN;
+            return WordChainInfo.RESULT_NOT_NOUN;
         }
     }
 
