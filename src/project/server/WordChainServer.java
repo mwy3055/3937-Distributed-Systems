@@ -2060,7 +2060,7 @@ public class WordChainServer extends JFrame {
                         WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 1, 5000);
                 if (receivedEvents == null || receivedEvents.length == 0) {
                     printMessage(String.format("Reply of user [%s]: TIMEOUT\n", nextUser.getName()));
-                    // TODO: if time is over, decrease user's life by 1 and notify to all users
+                    //  TODO: if time is over, decrease user's life by 1 and notify to all users
                     sendQueryResult(sessionName, groupName, nextUser.getName(), "TIMEOUT",
                             WordChainInfo.RESULT_TIMEOUT, 0, -1);
                 } else {
@@ -2073,10 +2073,21 @@ public class WordChainServer extends JFrame {
                 turnLeft--;
             }
 
-            // TODO: game finished, make result string, then cast GameFinishEvent to all group users
+        
+
             printMessage(String.format("Session [%s], group [%s]: game finished.\n", currentSession.getSessionName(), currentGroup.getGroupName()));
-            GameFinishEvent finishEvent = new GameFinishEvent("result");
+            GameFinishEvent finishEvent = new GameFinishEvent(getResultString());
             m_serverStub.cast(finishEvent, sessionName, groupName);
+        }
+
+        private String getResultString() {
+            String a = "Result\n";
+            for (CMUser user : currentGroup.getGroupUsers().getAllMembers()) {
+
+                a += String.format("Username: [%s] got score: [%s]\n", user.getName(), user.getScore());
+            }
+            return a;
+
         }
 
         private String getRandomAlphabet() {

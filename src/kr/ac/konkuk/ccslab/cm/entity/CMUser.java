@@ -36,6 +36,9 @@ public class CMUser extends CMObject {
 
     private boolean admin;
 
+    private int m_score;
+    private int m_life;
+
     /**
      * Creates an instance of the CMUser class.
      */
@@ -58,8 +61,9 @@ public class CMUser extends CMObject {
         m_lLastEventTransTime = -1;
         m_myLastEventTransTimeHashtable = new Hashtable<String, Long>();
         m_nKeepAliveTime = 0;
-
         admin = false;
+        m_score = 0;
+        m_life = 0;
     }
 
     /**
@@ -88,8 +92,9 @@ public class CMUser extends CMObject {
         m_lLastEventTransTime = -1;
         m_myLastEventTransTimeHashtable = new Hashtable<String, Long>();
         m_nKeepAliveTime = 0;
-
         admin = false;
+        m_score = 0;
+        m_life = 0;
     }
 
     // set methods
@@ -329,4 +334,23 @@ public class CMUser extends CMObject {
     public synchronized boolean getAdmin() {
         return admin;
     }
+
+    public synchronized int getScore() {
+        return m_score;
+    }
+
+    public synchronized int getLife() {
+        return m_life;
+    }
+
+    // public synchronized void setScore(int score) { this.m_score = score; }
+
+    public synchronized void addScore(int newScore) {
+        this.m_score += newScore;
+    }
+    public synchronized void setLife(int life) { this.m_life = life; }
+
+    public synchronized void decreaseLife() { this.m_life--; }
+
+
 }
