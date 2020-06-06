@@ -25,31 +25,18 @@
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:branch-mwy" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/3937_Distributed_Systems_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/artifacts/3937_Distributed_Systems_jar/3937 Distributed Systems.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/META-INF/3937 Distributed Systems.kotlin_module" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/3937 Distributed Systems/META-INF/MANIFEST.MF" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/project/WordChainHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-client.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-server.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/manager/CMEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/GameFinishEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/GameFinishEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/GameStartEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/GameStartEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordResultEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/event/WordSendingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -251,7 +238,15 @@
       <workItem from="1590986491074" duration="5318000" />
       <workItem from="1591022625843" duration="3067000" />
       <workItem from="1591077417276" duration="3136000" />
-      <workItem from="1591109064144" duration="1283000" />
+      <workItem from="1591109064144" duration="1488000" />
+      <workItem from="1591110634692" duration="82000" />
+      <workItem from="1591110752045" duration="5000" />
+      <workItem from="1591110876008" duration="288000" />
+      <workItem from="1591169707800" duration="132000" />
+      <workItem from="1591170192953" duration="63000" />
+      <workItem from="1591171893940" duration="49000" />
+      <workItem from="1591272235661" duration="9000" />
+      <workItem from="1591273529009" duration="584000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -351,7 +346,35 @@
       <option name="project" value="LOCAL" />
       <updated>1590899916129</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="게임의 전반적인 흐름 수정&#10;&#10;- 클라이언트가 코드의 순서를 따라가지 않고, 서버가 전달하는 이벤트를 수신하여 동작함&#10;- 서버는 코드를 순서대로 따라가는 방식으로 유지&#10;- 일반적인 게임의 흐름대로 진행되는 것을 확인함">
+      <created>1591110522429</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1591110522429</updated>
+    </task>
+    <task id="LOCAL-00017" summary="delete local jar file">
+      <created>1591110680930</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1591110680930</updated>
+    </task>
+    <task id="LOCAL-00018" summary="revert a change for testing">
+      <created>1591111049142</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1591111049142</updated>
+    </task>
+    <task id="LOCAL-00019" summary="edited TODOs">
+      <created>1591111151121</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1591111151121</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -403,7 +426,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="branch-mwy" />
                       </list>
                     </value>
                   </entry>
@@ -437,7 +460,11 @@
     <MESSAGE value="0520&#10;&#10;구현해야 할 메소드를 TODO로 정리함&#10;  - WordChainServer&#10;  - WordChainServerEventHandler&#10;  - WordChainClient&#10;  - WordChainClientEventHandler&#10;  - 구현시 CM 내부를 건드릴 때도 있으니, 모르면 조장에게 문의하기" />
     <MESSAGE value="branch test commit" />
     <MESSAGE value="delete class file from repository" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete class file from repository" />
+    <MESSAGE value="게임의 전반적인 흐름 수정&#10;&#10;- 클라이언트가 코드의 순서를 따라가지 않고, 서버가 전달하는 이벤트를 수신하여 동작함&#10;- 서버는 코드를 순서대로 따라가는 방식으로 유지&#10;- 일반적인 게임의 흐름대로 진행되는 것을 확인함" />
+    <MESSAGE value="delete local jar file" />
+    <MESSAGE value="revert a change for testing" />
+    <MESSAGE value="edited TODOs" />
+    <option name="LAST_COMMIT_MESSAGE" value="edited TODOs" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -469,22 +496,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1585108926410" />
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1591110278223">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1591111163876">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
-    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1591110278223">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
+    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1591111163876">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
-    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1591110278223">
+    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
+    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1591111163876">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
-    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1591110278223">
+    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1591111163876">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591110278223" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591111163876" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1591080562347">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -533,19 +560,19 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="348" key="GridCell.Tab.3.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591080214083" />
-    <state x="399" y="92" key="RollbackChangesDialog" timestamp="1589990977512">
-      <screen x="0" y="0" width="1280" height="689" />
+    <state x="598" y="221" key="RollbackChangesDialog" timestamp="1591110666268">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="399" y="92" key="RollbackChangesDialog/0.0.1280.689@0.0.1280.689" timestamp="1589990977512" />
-    <state x="598" y="221" key="RollbackChangesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588834969896" />
-    <state x="440" y="94" key="SettingsEditor" timestamp="1590988308198">
+    <state x="598" y="221" key="RollbackChangesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1591110666268" />
+    <state x="440" y="94" key="SettingsEditor" timestamp="1591110654530">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1590988308198" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1590899923853">
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1591110654530" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1591111154758">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1590899923853" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1591111154758" />
     <state x="665" y="411" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1587281372770">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
