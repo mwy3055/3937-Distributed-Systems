@@ -34,7 +34,7 @@ public class CMUser extends CMObject {
     private Hashtable<String, Long> m_myLastEventTransTimeHashtable;
     private int m_nKeepAliveTime;
 
-    private boolean admin;
+    private boolean isAdmin;
 
     private int m_score;
     private int m_life;
@@ -61,9 +61,9 @@ public class CMUser extends CMObject {
         m_lLastEventTransTime = -1;
         m_myLastEventTransTimeHashtable = new Hashtable<String, Long>();
         m_nKeepAliveTime = 0;
-        admin = false;
+        isAdmin = false;
         m_score = 0;
-        m_life = 0;
+        m_life = 5;
     }
 
     /**
@@ -92,9 +92,9 @@ public class CMUser extends CMObject {
         m_lLastEventTransTime = -1;
         m_myLastEventTransTimeHashtable = new Hashtable<String, Long>();
         m_nKeepAliveTime = 0;
-        admin = false;
+        isAdmin = false;
         m_score = 0;
-        m_life = 0;
+        m_life = 5;
     }
 
     // set methods
@@ -185,7 +185,7 @@ public class CMUser extends CMObject {
     }
 
     public synchronized void setAdmin(boolean admin) {
-        this.admin = admin;
+        this.isAdmin = admin;
     }
 
     // get methods
@@ -331,8 +331,8 @@ public class CMUser extends CMObject {
         return m_nKeepAliveTime;
     }
 
-    public synchronized boolean getAdmin() {
-        return admin;
+    public synchronized boolean isAdmin() {
+        return isAdmin;
     }
 
     public synchronized int getScore() {

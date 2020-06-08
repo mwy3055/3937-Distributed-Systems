@@ -22,6 +22,10 @@ public class SendDictionaryQuery implements Callable<Integer> {
         this.word = word;
     }
 
+    public static void clearStringSet() {
+        stringSet.clear();
+    }
+
     private String getQueryURL() {
         final String word_id = word.toLowerCase();
         return "https://od-api.oxforddictionaries.com/api/v2/entries/en-us/" + word_id + "?fields=pronunciations&strictMatch=false";
@@ -84,7 +88,7 @@ public class SendDictionaryQuery implements Callable<Integer> {
             stringSet.add(word);
             return WordChainInfo.RESULT_OK;
         } else {
-            return WordChainInfo.RESULT_NOTNOUN;
+            return WordChainInfo.RESULT_NOT_NOUN;
         }
     }
 
@@ -99,6 +103,9 @@ public class SendDictionaryQuery implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        if (word.equals("")) {
+            return WordChainInfo.RESULT_TIMEOUT;
+        }
         if (stringSet.contains(word)) {
             return WordChainInfo.RESULT_DUPLICATION;
         }

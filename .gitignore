@@ -1,3 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 *.class
 !/.classpath
+!/src/META-INF/MANIFEST.MF

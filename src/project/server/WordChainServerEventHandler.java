@@ -183,6 +183,11 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
             case CMSessionEvent.LEAVE_SESSION:
                 //System.out.println("["+se.getUserName()+"] leaves a session("+se.getSessionName()+").");
                 printMessage("[" + se.getUserName() + "] leaves a session(" + se.getSessionName() + ").\n");
+                CMGroup group = m_server.getGroup(se.getSessionName(), se.getCurrentGroupName());
+                CMUser admin = group.getGroupAdmin();
+                if (admin == null || (admin.getName().equals(se.getUserName()))) {
+                    m_server.setGroupAdmin(se.getSessionName(), se.getCurrentGroupName());
+                }
                 break;
             case CMSessionEvent.ADD_NONBLOCK_SOCKET_CHANNEL:
                 //System.out.println("["+se.getChannelName()+"] request to add SocketChannel with index("
@@ -224,16 +229,13 @@ public class WordChainServerEventHandler implements CMAppEventHandler {
                 CMGroup group = m_server.getGroup(ie.getHandlerSession(), ie.getCurrentGroup());
                 if (group.getGroupUsers().getMemberNum() == 1) {
                     m_server.setGroupAdmin(ie.getHandlerSession(), ie.getCurrentGroup(), ie.getUserName());
+                } else {
+                    m_server.sendAdminEvent(ie.getUserName(), 0);
                 }
                 break;
             case CMInterestEvent.USER_LEAVE:
                 printMessage("[" + ie.getUserName() + "] leaves group(" + ie.getHandlerGroup() + ") in session("
                         + ie.getHandlerSession() + ").\n");
-                group = m_server.getGroup(ie.getHandlerSession(), ie.getCurrentGroup());
-                CMUser admin = group.getGroupAdmin();
-                if (admin != null && admin.getName().equals(ie.getUserName())) {
-                    m_server.setGroupAdmin(ie.getHandlerSession(), ie.getCurrentGroup());
-                }
                 break;
             case CMInterestEvent.USER_TALK:
                 printMessage("(" + ie.getHandlerSession() + ", " + ie.getHandlerGroup() + ")\n");

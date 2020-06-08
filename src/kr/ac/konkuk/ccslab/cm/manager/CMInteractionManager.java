@@ -726,8 +726,10 @@ public class CMInteractionManager {
 				if(CMInfo._CM_DEBUG)
 				{
 					CMDummyEvent due = (CMDummyEvent)cmEvent;
+					/*
 					System.out.println("CMInteractionManager.processEvent(), dummy event, "
 							+ "msg: "+due.getDummyInfo());
+							*/
 				}
 				bProcessed = true;
 				break;
