@@ -359,7 +359,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             sendEvent.setSender(m_clientStub.getMyself().getName());
             m_clientStub.send(sendEvent, m_clientStub.getDefaultServerName());
         } else {
-            System.out.println("Someone is typing the word...");
+            System.out.println(String.format("User [%s] is typing the word...", event.getUserName()));
         }
     }
 

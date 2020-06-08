@@ -1,5 +1,7 @@
 package project;
 
+import project.server.SendDictionaryQuery;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.BlockingQueue;
@@ -53,6 +55,10 @@ public class WordChainHelper {
             default:
                 return "UNKNOWN ERROR";
         }
+    }
+
+    public static void init() {
+        SendDictionaryQuery.clearStringSet();
     }
 
 }

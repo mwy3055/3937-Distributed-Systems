@@ -10,6 +10,7 @@ import kr.ac.konkuk.ccslab.cm.manager.CMConfigurator;
 import kr.ac.konkuk.ccslab.cm.manager.CMMqttManager;
 import kr.ac.konkuk.ccslab.cm.sns.CMSNSUserAccessSimulator;
 import kr.ac.konkuk.ccslab.cm.stub.CMServerStub;
+import project.WordChainHelper;
 import project.WordChainInfo;
 import project.event.*;
 
@@ -1906,6 +1907,7 @@ public class WordChainServer extends JFrame {
             isGamePlaying = true;
             currentSession.startGame();
             currentGroup.init();
+            WordChainHelper.init();
 
             CMMember member = currentGroup.getGroupUsers();
             int order = 1;

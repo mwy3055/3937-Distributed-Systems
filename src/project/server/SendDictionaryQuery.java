@@ -22,6 +22,10 @@ public class SendDictionaryQuery implements Callable<Integer> {
         this.word = word;
     }
 
+    public static void clearStringSet() {
+        stringSet.clear();
+    }
+
     private String getQueryURL() {
         final String word_id = word.toLowerCase();
         return "https://od-api.oxforddictionaries.com/api/v2/entries/en-us/" + word_id + "?fields=pronunciations&strictMatch=false";
