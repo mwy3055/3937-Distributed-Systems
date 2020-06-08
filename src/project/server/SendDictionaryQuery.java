@@ -99,6 +99,9 @@ public class SendDictionaryQuery implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        if (word.equals("")) {
+            return WordChainInfo.RESULT_TIMEOUT;
+        }
         if (stringSet.contains(word)) {
             return WordChainInfo.RESULT_DUPLICATION;
         }

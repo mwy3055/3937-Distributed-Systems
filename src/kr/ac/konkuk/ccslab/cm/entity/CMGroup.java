@@ -2,12 +2,15 @@ package kr.ac.konkuk.ccslab.cm.entity;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.MembershipKey;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class CMGroup extends CMGroupInfo {
     private CMMember m_groupUsers;
     private CMChannelInfo<InetSocketAddress> m_mcInfo;
     private MembershipKey m_membershipKey;    // required for leaving a group
 
+    private Queue<CMUser> userQueue;
     private int currentIndex;
     private CMUser currentUser;
     private CMUser groupAdmin;
@@ -52,10 +55,11 @@ public class CMGroup extends CMGroupInfo {
 
     public synchronized void init() {
         leftUserNum = m_groupUsers.getMemberNum();
+        userQueue = new LinkedList<CMUser>(m_groupUsers.getAllMembers());
     }
 
     public synchronized boolean canGameProceed() {
-        return (!m_groupUsers.isEmpty()) && (1 < leftUserNum);
+        return 1 < userQueue.size();
     }
 
     public synchronized CMUser getCurrentUser() {
@@ -63,6 +67,7 @@ public class CMGroup extends CMGroupInfo {
     }
 
     public synchronized CMUser getNextUser() {
+        /*
         if (m_groupUsers.isEmpty()) {
             currentIndex = -2;
             currentUser = null;
@@ -85,6 +90,22 @@ public class CMGroup extends CMGroupInfo {
             }
         }
         return currentUser;
+
+         */
+        CMUser nextUser = null;
+        while (!userQueue.isEmpty() && (nextUser == null || !m_groupUsers.isMember(nextUser))) {
+            if (nextUser != null && !m_groupUsers.isMember(nextUser)) {
+                m_groupUsers.removeMember(nextUser);
+            }
+            nextUser = userQueue.poll();
+        }
+        if (userQueue.isEmpty()) {
+            nextUser = null;
+        }
+        if (nextUser != null && m_groupUsers.isMember(nextUser)) {
+            userQueue.add(nextUser);
+        }
+        return nextUser;
     }
 
     public synchronized CMUser getGroupAdmin() {
@@ -107,6 +128,7 @@ public class CMGroup extends CMGroupInfo {
     }
 
     public synchronized void finishGame() {
+        userQueue.clear();
         currentIndex = -2;
         currentUser = null;
         leftUserNum = 0;

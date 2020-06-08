@@ -45,6 +45,7 @@ public class WordChainServer extends JFrame {
     private CMSNSUserAccessSimulator m_uaSim;
 
     private ExecutorService executor = Executors.newCachedThreadPool();
+    private boolean isGamePlaying = false;
 
     WordChainServer() {
 
@@ -1609,43 +1610,9 @@ public class WordChainServer extends JFrame {
         printMessage("\n");
     }
 
-    /**
-     * Test method to get next user of a group should not be called while
-     * implementing
-     */
-    /*
-     * public void showNextUser(String groupName, String sessionName) {
-     * CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
-     * Iterator<CMSession> sessionIterator = interInfo.getSessionList().iterator();
-     * while (sessionIterator.hasNext()) { CMSession session =
-     * sessionIterator.next(); if (!session.getSessionName().equals(sessionName)) {
-     * continue; } Iterator<CMGroup> iter = session.getGroupList().iterator(); while
-     * (iter.hasNext()) { CMGroup gInfo = iter.next(); if
-     * (!gInfo.getGroupName().equals(groupName)) { continue; } CMUser nextUser =
-     * gInfo.getNextUser(); if (nextUser == null) {
-     * printMessage(String.format("Session %s, group %s: has no user.\n",
-     * session.getSessionName(), gInfo.getGroupName())); } else { String userName =
-     * nextUser.getName(); NextUserEvent nextUserEvent = new NextUserEvent(userName,
-     * ""); nextUserEvent.setHandlerGroup(gInfo.getGroupName());
-     * nextUserEvent.setHandlerSession(session.getSessionName());
-     * m_serverStub.send(nextUserEvent, userName);
-     *
-     * printMessage(String.format("Session %s, group %s: Next user is %s\n",
-     * session.getSessionName(), gInfo.getGroupName(), userName)); } } } }
-     */
     public CMSession getSession(String sessionName) {
         CMInteractionInfo interInfo = m_serverStub.getCMInfo().getInteractionInfo();
-        CMSession session = null;
-
-        Iterator<CMSession> sessionIterator = interInfo.getSessionList().iterator();
-        while (sessionIterator.hasNext()) {
-            CMSession tempSession = sessionIterator.next();
-            if (tempSession.getSessionName().equals(sessionName)) {
-                session = tempSession;
-                break;
-            }
-        }
-        return session;
+        return interInfo.findSession(sessionName);
     }
 
     public CMGroup getGroup(String sessionName, String groupName) {
@@ -1655,17 +1622,7 @@ public class WordChainServer extends JFrame {
             System.out.println(String.format("Failed to get session [%s]!\n", sessionName));
             return null;
         }
-
-        CMGroup group = null;
-        Iterator<CMGroup> groupIterator = session.getGroupList().iterator();
-        while (groupIterator.hasNext()) {
-            CMGroup tempGroup = groupIterator.next();
-            if (tempGroup.getGroupName().equals(groupName)) {
-                group = tempGroup;
-                break;
-            }
-        }
-        return group;
+        return session.findGroup(groupName);
     }
 
     public CMUser getUser(CMGroup group, String userName) {
@@ -1682,7 +1639,7 @@ public class WordChainServer extends JFrame {
             return;
         }
         group.setGroupAdmin(user);
-        sendAdminEvent(user);
+        sendAdminEvent(user, 1);
         printMessage(String.format("User %s is now the admin of the session %s, group %s.\n", userName, sessionName,
                 groupName));
     }
@@ -1692,18 +1649,24 @@ public class WordChainServer extends JFrame {
         CMGroup group = getGroup(sessionName, groupName);
         CMMember member = group.getGroupUsers();
         if (member.isEmpty()) {
+            group.setGroupAdmin(null);
             return;
         }
         CMUser user = member.getUser(0);
         group.setGroupAdmin(user);
-        sendAdminEvent(user);
+        sendAdminEvent(user, 1);
         printMessage(String.format("User %s is now the admin of the session %s, group %s.\n", user.getName(),
                 sessionName, groupName));
     }
 
-    public void sendAdminEvent(CMUser user) {
-        NotifyAdminEvent adminEvent = new NotifyAdminEvent();
+    public void sendAdminEvent(CMUser user, int isAdmin) {
+        NotifyAdminEvent adminEvent = new NotifyAdminEvent(isAdmin);
         m_serverStub.send(adminEvent, user.getName());
+    }
+
+    public void sendAdminEvent(String userName, int isAdmin) {
+        NotifyAdminEvent adminEvent = new NotifyAdminEvent(isAdmin);
+        m_serverStub.send(adminEvent, userName);
     }
 
     public void startGame(String sessionName, String groupName) {
@@ -1749,8 +1712,8 @@ public class WordChainServer extends JFrame {
         return new WordResult(wordEvent.getWord(), rtnValue, scoreChange, lifeChange);
     }
 
-    private int calculateScore(long timediff) {
-        int score = (int) (50 + (timediff / 100));
+    private int calculateScore(long timeDiff) {
+        int score = (int) (50 + (WordChainInfo.WORD_TIME_LIMIT_MILIS - timeDiff) / 100);
         return score;
     }
 
@@ -1758,6 +1721,10 @@ public class WordChainServer extends JFrame {
                                 int scoreChange, int lifeChange) {
         WordResultEvent resultEvent = new WordResultEvent(userName, resultCode, word, scoreChange, lifeChange);
         m_serverStub.cast(resultEvent, sessionName, groupName);
+    }
+
+    public boolean isGamePlaying() {
+        return isGamePlaying;
     }
 
     public class MyKeyListener implements KeyListener {
@@ -1930,12 +1897,14 @@ public class WordChainServer extends JFrame {
 
             currentSession = getSession(sessionName);
             currentGroup = getGroup(sessionName, groupName);
-            turnLeft = 4;
+            turnLeft = 30;
+            // turnLeft = 4; // for debug
         }
 
         // main function
         public void run() {
-            currentSession.init();
+            isGamePlaying = true;
+            currentSession.startGame();
             currentGroup.init();
 
             CMMember member = currentGroup.getGroupUsers();
@@ -1957,6 +1926,10 @@ public class WordChainServer extends JFrame {
             while (turnLeft > 0 && currentGroup.canGameProceed()) {
                 printMessage(String.format("Current turn of session [%s], group [%s]: %d\n", sessionName, groupName, turnLeft));
                 CMUser nextUser = currentGroup.getNextUser();
+                if (nextUser == null) {
+                    printMessage(String.format("Insufficient user number to continue the game.\n"));
+                    break;
+                }
                 printMessage(String.format("Next user of session [%s], group [%s] is [%s].\n", sessionName, groupName,
                         nextUser.getName()));
 
@@ -1996,6 +1969,7 @@ public class WordChainServer extends JFrame {
             GameFinishEvent finishEvent = new GameFinishEvent(getResultString());
             m_serverStub.cast(finishEvent, sessionName, groupName);
 
+            isGamePlaying = false;
             currentSession.finishGame();
             currentGroup.finishGame();
         }

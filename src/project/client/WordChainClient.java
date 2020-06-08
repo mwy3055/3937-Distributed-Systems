@@ -21,10 +21,10 @@ import java.nio.channels.SocketChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+
+import static java.lang.Thread.interrupted;
 
 public class WordChainClient {
     private CMClientStub m_clientStub;
@@ -32,19 +32,48 @@ public class WordChainClient {
     private boolean m_bRun;
     private Scanner m_scan = null;
 
-    private BlockingQueue<String> lines;
     private ExecutorService executorService;
 
+    private boolean gamePlaying;
     private boolean isWaitingGameStart;
+
+    private Thread requestGameStartThread = new Thread(() -> {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("If you want to start the game, enter \"start\" to the console.");
+        System.out.println("You can only start the game when there are more than 2 users in the group.");
+        while (!interrupted() && isWaitingGameStart) {
+            String input = "";
+            while (!input.equalsIgnoreCase("start")) {
+                try {
+                    input = br.readLine();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
+                if (input.equalsIgnoreCase("start")) {
+                    break;
+                }
+                System.out.println("Enter \"start\" to start the game.");
+            }
+            if (sendGameStartEvent()) {
+                break;
+            }
+        }
+        playGame();
+    });
+
+    private Thread waitGameStartThread = new Thread(() -> {
+        System.out.println("Wait the admin to start the game.");
+    });
 
     public WordChainClient() {
         m_clientStub = new CMClientStub();
         m_eventHandler = new WordChainClientEventHandler(m_clientStub, this);
         m_bRun = true;
 
-        lines = new LinkedBlockingQueue<>();
         executorService = Executors.newCachedThreadPool();
-        isWaitingGameStart = true;
+        isWaitingGameStart = false;
+        gamePlaying = false;
     }
 
     public CMClientStub getClientStub() {
@@ -59,292 +88,8 @@ public class WordChainClient {
         this.isWaitingGameStart = start;
     }
 
-    public BlockingQueue<String> getLines() {
-        return lines;
-    }
-
-    ///////////////////////////////////////////////////////////////
-    // TODO: Implement from here
-
-    public void startTest() {
-        System.out.println("client application starts.");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        m_scan = new Scanner(System.in);
-        String strInput = null;
-        int nCommand = -1;
-        /*
-         * Thread t = new Thread(() -> { while (true) { try { lines.add(br.readLine());
-         * } catch (IOException e) { e.printStackTrace(); } } }); t.setDaemon(true);
-         * t.start();
-         */
-        while (m_bRun) {
-            System.out.println("Type \"0\" for menu.");
-            System.out.print("> ");
-            try {
-                // strInput = lines.take();
-                strInput = br.readLine();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                continue;
-            }
-
-            try {
-                nCommand = Integer.parseInt(strInput);
-            } catch (NumberFormatException e) {
-                System.out.println("Incorrect command number!");
-                continue;
-            }
-
-            switch (nCommand) {
-                case 0:
-                    printAllMenus();
-                    break;
-                case 100:
-                    connectServer();
-                    break;
-                case 999:
-                    testTerminateCM();
-                    break;
-                case 1: // connect to default server
-                    testConnectionDS();
-                    break;
-                case 2: // disconnect from default server
-                    testDisconnectionDS();
-                    break;
-                case 3: // connect to a designated server
-                    testConnectToServer();
-                    break;
-                case 4: // disconnect from a designated server
-                    testDisconnectFromServer();
-                    break;
-                case 10: // asynchronous login to default server
-                    testLoginDS();
-                    break;
-                case 11: // synchronously login to default server
-                    testSyncLoginDS();
-                    break;
-                case 12: // logout from default server
-                    testLogoutDS();
-                    break;
-                case 13: // log in to a designated server
-                    testLoginServer();
-                    break;
-                case 14: // log out from a designated server
-                    testLogoutServer();
-                    break;
-                case 20: // request session info from default server
-                    testSessionInfoDS();
-                    break;
-                case 21: // synchronously request session info from default server
-                    testSyncSessionInfoDS();
-                    break;
-                case 22: // join a session
-                    testJoinSession();
-                    break;
-                case 23: // synchronously join a session
-                    testSyncJoinSession();
-                    break;
-                case 24: // leave the current session
-                    testLeaveSession();
-                    break;
-                case 25: // change current group
-                    testChangeGroup();
-                    break;
-                case 26: // print group members
-                    testPrintGroupMembers();
-                    break;
-                case 27: // request session information from a designated server
-                    testRequestSessionInfoOfServer();
-                    break;
-                case 28: // join a session of a designated server
-                    testJoinSessionOfServer();
-                    break;
-                case 29: // leave a session of a designated server
-                    testLeaveSessionOfServer();
-                    break;
-                case 40: // chat
-                    testChat();
-                    break;
-                case 41: // test multicast chat in current group
-                    testMulticastChat();
-                    break;
-                case 42: // test CMDummyEvent
-                    testDummyEvent();
-                    break;
-                case 43: // test CMUserEvent
-                    testUserEvent();
-                    break;
-                case 44: // test datagram message
-                    testDatagram();
-                    break;
-                case 45: // user position
-                    testUserPosition();
-                    break;
-                case 46: // test sendrecv
-                    testSendRecv();
-                    break;
-                case 47: // test castrecv
-                    testCastRecv();
-                    break;
-                case 48: // test asynchronous sendrecv
-                    testAsyncSendRecv();
-                    break;
-                case 49: // test asynchronous castrecv
-                    testAsyncCastRecv();
-                    break;
-                case 50: // print group info
-                    testPrintGroupInfo();
-                    break;
-                case 51: // print current information about the client
-                    testCurrentUserStatus();
-                    break;
-                case 52: // print current channels information
-                    testPrintCurrentChannelInfo();
-                    break;
-                case 53: // request additional server info
-                    testRequestServerInfo();
-                    break;
-                case 54: // print current group info of a designated server
-                    testPrintGroupInfoOfServer();
-                    break;
-                case 55: // test input network throughput
-                    testMeasureInputThroughput();
-                    break;
-                case 56: // test output network throughput
-                    testMeasureOutputThroughput();
-                    break;
-                case 57: // print all configurations
-                    testPrintConfigurations();
-                    break;
-                case 58: // change configuration
-                    testChangeConfiguration();
-                    break;
-                case 60: // add additional channel
-                    testAddChannel();
-                    break;
-                case 61: // remove additional channel
-                    testRemoveChannel();
-                    break;
-                case 62: // test blocking channel
-                    testBlockingChannel();
-                    break;
-                case 70: // set file path
-                    testSetFilePath();
-                    break;
-                case 71: // request a file
-                    testRequestFile();
-                    break;
-                case 72: // push a file
-                    testPushFile();
-                    break;
-                case 73: // test cancel receiving a file
-                    cancelRecvFile();
-                    break;
-                case 74: // test cancel sending a file
-                    cancelSendFile();
-                    break;
-                case 75: // print sending/receiving file info
-                    printSendRecvFileInfo();
-                    break;
-                case 80: // test SNS content download
-                    testDownloadNewSNSContent();
-                    break;
-                case 81:
-                    testDownloadNextSNSContent();
-                    break;
-                case 82:
-                    testDownloadPreviousSNSContent();
-                    break;
-                case 83: // request an attached file of SNS content
-                    testRequestAttachedFileOfSNSContent();
-                    break;
-                case 84: // test SNS content upload
-                    testSNSContentUpload();
-                    break;
-                case 90: // register user
-                    testRegisterUser();
-                    break;
-                case 91: // deregister user
-                    testDeregisterUser();
-                    break;
-                case 92: // find user
-                    testFindRegisteredUser();
-                    break;
-                case 93: // add a new friend
-                    testAddNewFriend();
-                    break;
-                case 94: // remove a friend
-                    testRemoveFriend();
-                    break;
-                case 95: // request current friends list
-                    testRequestFriendsList();
-                    break;
-                case 96: // request friend requesters list
-                    testRequestFriendRequestersList();
-                    break;
-                case 97: // request bi-directional friends
-                    testRequestBiFriendsList();
-                    break;
-                case 101: // test forwarding schemes (typical vs. internal)
-                    testForwarding();
-                    break;
-                case 102: // test delay of forwarding schemes
-                    testForwardingDelay();
-                    break;
-                case 103: // test repeated downloading of SNS content
-                    testRepeatedSNSContentDownload();
-                    break;
-                case 104: // pull or push multiple files
-                    testSendMultipleFiles();
-                    break;
-                case 105: // split a file
-                    testSplitFile();
-                    break;
-                case 106: // merge files
-                    testMergeFiles();
-                    break;
-                case 107: // distribute a file and merge
-                    testDistFileProc();
-                    break;
-                case 108: // send an event with wrong # bytes
-                    testSendEventWithWrongByteNum();
-                    break;
-                case 109: // send an event with wrong event type
-                    testSendEventWithWrongEventType();
-                    break;
-                case 200: // MQTT connect
-                    testMqttConnect();
-                    break;
-                case 201: // MQTT publish
-                    testMqttPublish();
-                    break;
-                case 202: // MQTT subscribe
-                    testMqttSubscribe();
-                    break;
-                case 203: // print MQTT session info
-                    testPrintMqttSessionInfo();
-                    break;
-                case 204: // MQTT unsubscribe
-                    testMqttUnsubscribe();
-                    break;
-                case 205: // MQTT disconnect
-                    testMqttDisconnect();
-                    break;
-                default:
-                    System.err.println("Unknown command.");
-                    break;
-            }
-        }
-
-        try {
-            br.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        m_scan.close();
-    }
+///////////////////////////////////////////////////////////////
+// TODO: Implement from here
 
     public void connectServer() {
         boolean bRet = m_clientStub.startCM();
@@ -384,7 +129,6 @@ public class WordChainClient {
                 m_clientStub.setServerAddress(strNewServerAddress);
             if (!strNewServerPort.isEmpty() && Integer.parseInt(strNewServerPort) != nCurServerPort)
                 m_clientStub.setServerPort(Integer.parseInt(strNewServerPort));
-
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -406,14 +150,15 @@ public class WordChainClient {
         System.out.println("Sent the login request. Please wait...");
 
         CMSessionEvent se = m_clientStub.syncLoginCM(userName, "");
-        if (se != null) {
+        System.out.println(se.getReturnCode());
+        if (se != null && se.getReturnCode() != 0) {
             System.out.println(String.format("Successfully logged in to session %s!", se.getSessionName()));
         } else {
             System.err.println("Failed the login request!");
             System.exit(1);
         }
         System.out.println("======");
-
+/*
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -421,7 +166,7 @@ public class WordChainClient {
         }
         if (!m_clientStub.getMyself().isAdmin()) {
             new Thread(() -> waitGameStart()).start();
-        }
+        }*/
     }
 
     /* For admin user */
@@ -429,13 +174,13 @@ public class WordChainClient {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("If you want to start the game, enter \"start\" to the console.");
         System.out.println("You can only start the game when there are more than 2 users in the group.");
+        isWaitingGameStart = true;
         while (isWaitingGameStart) {
             String input = "";
             while (!input.equalsIgnoreCase("start")) {
                 try {
                     input = br.readLine();
                 } catch (Exception e) {
-                    e.printStackTrace();
                     break;
                 }
                 if (input.equalsIgnoreCase("start")) {
@@ -443,11 +188,8 @@ public class WordChainClient {
                 }
                 System.out.println("Enter \"start\" to start the game.");
             }
-            if (sendGameStartEvent()) {
-                break;
-            }
+            sendGameStartEvent();
         }
-        playGame();
     }
 
     public boolean sendGameStartEvent() {
@@ -456,9 +198,18 @@ public class WordChainClient {
             System.err.println("You are not a admin. Wait the admin to start the game.\n");
             return false;
         }
+        if (gamePlaying) {
+            System.err.println("Currently game is playing now.");
+            return false;
+        }
         System.out.println("Send game start request to server.");
         RequestGameStartEvent event = new RequestGameStartEvent(myself.getCurrentSession(), myself.getCurrentGroup());
         event.setSender(myself.getName());
+        // m_clientStub.send(event, m_clientStub.getDefaultServerName());
+        GameStartEvent startEvent = (GameStartEvent) m_clientStub.sendrecv(event, m_clientStub.getDefaultServerName(),
+                WordChainInfo.EVENT_GAME_START, WordChainInfo.EVENT_GAME_START, 1000);
+        return (startEvent != null) && (startEvent.getStart() == 1);
+        /*
         GameStartEvent startEvent = (GameStartEvent) m_clientStub.sendrecv(event, m_clientStub.getDefaultServerName(),
                 WordChainInfo.EVENT_GAME_START, WordChainInfo.EVENT_GAME_START, 5000);
         if (startEvent == null || startEvent.getStart() == 0) {
@@ -472,6 +223,8 @@ public class WordChainClient {
             System.out.println("Unknown error at sendGameStartEvent().");
             return false;
         }
+
+         */
     }
 
     /* For non-admin user */
@@ -484,8 +237,16 @@ public class WordChainClient {
 
     public void playGame() {
         // TODO: follow the server's instruction(event) until game is over
-        String sessionName = m_clientStub.getMyself().getCurrentSession();
-        String groupName = m_clientStub.getMyself().getCurrentGroup();
+        interruptRequestThread();
+        interruptWaitingThread();
+        synchronized (this) {
+            isWaitingGameStart = false;
+        }
+        gamePlaying = true;
+
+        CMUser myself = m_clientStub.getMyself();
+        String sessionName = myself.getCurrentSession();
+        String groupName = myself.getCurrentGroup();
         System.out.println("=================================================");
         System.out.println(String.format("Game starts at session [%s], group [%s].", sessionName, groupName));
         System.err.println("WARNING: Do not enter your inputs blindly.");
@@ -494,8 +255,45 @@ public class WordChainClient {
         WordChainHelper.startGettingInput();
     }
 
-    ///////////////////////////////////////////////////////////////
-    // TODO: Implement end. DO NOT EDIT THE METHODS BELOW.
+    public boolean isGamePlaying() {
+        return gamePlaying;
+    }
+
+    public void setGamePlaying(boolean playing) {
+        this.gamePlaying = playing;
+    }
+
+    public void startRequestThread() {
+        if (!requestGameStartThread.isAlive()) {
+            requestGameStartThread.start();
+        }
+    }
+
+    public void startWaitingThread() {
+        if (!waitGameStartThread.isAlive()) {
+            waitGameStartThread.start();
+        }
+    }
+
+    public void interruptRequestThread() {
+        requestGameStartThread.interrupt();
+        System.out.println("Interrupted RequestGameStartThread.");
+    }
+
+    public void interruptWaitingThread() {
+        waitGameStartThread.interrupt();
+        System.out.println("Interrupted WaitGameStartThread.");
+    }
+
+    public void terminateClient() {
+        System.out.println("Terminate WordChain Client.");
+        m_clientStub.terminateCM();
+        // TODO: InterruptedException why?
+        System.exit(0);
+    }
+
+///////////////////////////////////////////////////////////////
+// TODO: Implement end. DO NOT EDIT THE METHODS BELOW.
 
     public void printAllMenus() {
         System.out.println("---------------------------------- Help");
@@ -1295,10 +1093,10 @@ public class WordChainClient {
     }
 
     // ServerSocketChannel is not supported.
-    // A server cannot add SocketChannel.
-    // For the SocketChannel, available server name must be given as well.
-    // For the MulticastChannel, session name and group name known by this
-    // client/server must be given.
+// A server cannot add SocketChannel.
+// For the SocketChannel, available server name must be given as well.
+// For the MulticastChannel, session name and group name known by this
+// client/server must be given.
     public void testAddChannel() {
         int nChType = -1;
         int nChKey = -1;
@@ -2086,8 +1884,8 @@ public class WordChainClient {
     }
 
     // download the next SNS content list
-    // if this method is called without any previous download request, it requests
-    // the most recent list
+// if this method is called without any previous download request, it requests
+// the most recent list
     public void testDownloadNextSNSContent() {
         System.out.println("===== Request the next SNS content list");
         // start time of downloading contents
@@ -2098,8 +1896,8 @@ public class WordChainClient {
     }
 
     // download the previous SNS content list
-    // if this method is called without any previous download request, it requests
-    // the most recent list
+// if this method is called without any previous download request, it requests
+// the most recent list
     public void testDownloadPreviousSNSContent() {
         System.out.println("===== Request the previous SNS content list");
         // start time of downloading contents

@@ -168,11 +168,15 @@ public class CMSession extends CMSessionInfo {
         return tGroup;
     }
 
-    public synchronized void init() {
+    public synchronized void startGame() {
         gamePlaying = true;
     }
 
     public synchronized void finishGame() {
         gamePlaying = false;
+    }
+
+    public synchronized boolean isGamePlaying() {
+        return gamePlaying;
     }
 }
