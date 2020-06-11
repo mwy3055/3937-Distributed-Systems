@@ -88,7 +88,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             System.out.print(String.format("Previous word: [%s] -> ", event.getPreviousWord()));
             WordChainHelper.lines.clear();
             try {
-                input = WordChainHelper.lines.poll(5, TimeUnit.SECONDS);
+                input = WordChainHelper.lines.poll(WordChainInfo.WORD_TIME_LIMIT_SEC, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

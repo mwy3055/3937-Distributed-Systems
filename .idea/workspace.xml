@@ -31,6 +31,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
+      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
+    </list>
+    <list id="870003f1-24bb-4cb0-8f57-da1e61059e43" name="0611" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
@@ -189,6 +192,7 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="" />
+      <changelist id="870003f1-24bb-4cb0-8f57-da1e61059e43" name="0611" comment="" />
       <created>1585108480286</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -269,7 +273,9 @@
       <workItem from="1591617449631" duration="481000" />
       <workItem from="1591618043820" duration="26000" />
       <workItem from="1591618144828" duration="103000" />
-      <workItem from="1591851328844" duration="3212000" />
+      <workItem from="1591851328844" duration="3514000" />
+      <workItem from="1591867621756" duration="52000" />
+      <workItem from="1591869051629" duration="408000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -418,7 +424,21 @@
       <option name="project" value="LOCAL" />
       <updated>1591617916252</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="0611&#10;&#10;필요없는 코드 정리&#10;서버에서 Timeout을 정상적으로 처리하지 못하던 문제 해결&#10;CMGroup에서 유저가 한 명 남았을 때 같은 유저에게 두 번 턴을 넘겨주던 문제 해결">
+      <created>1591854813563</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1591854813563</updated>
+    </task>
+    <task id="LOCAL-00024" summary="0611&#10;&#10;클라이언트에서 시간 제한을 5초로 적용하던 문제 수정(10초로 수정)">
+      <created>1591869416825</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1591869416825</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -512,7 +532,9 @@
     <MESSAGE value="0608&#10;&#10;Admin의 클라이언트에서 게임 시작 후에도 requestGameStartThread가 계속 실행되던 문제 해결&#10;이제 CMGroup에서 Queue를 이용하여 다음 유저를 찾음&#10;이제 게임 시작 후 들어온 유저는 다른 유저의 결과를 볼 수는 있지만, 게임에 참여할 수는 없도록 변경&#10;매 턴마다 입력을 초기화하여 이전에 잘못 입력한 것이 나중 턴에 영향을 미치지 않도록 함" />
     <MESSAGE value="0608&#10;&#10;Admin의 클라이언트에서 게임 시작 후에도 requestGameStartThread가 계속 실행되던 문제 해결&#10;이제 CMGroup에서 Queue를 이용하여 다음 유저를 찾음&#10;이제 게임 시작 후 들어온 유저는 다른 유저의 결과를 볼 수는 있지만, 게임에 참여할 수는 없도록 변경&#10;매 턴마다 입력을 초기화하여 이전에 잘못 입력한 것이 나중 턴에 영향을 미치지 않도록 함&#10;이제 SendDictionaryQuery에서 문자열 &quot;&quot;에 대해 항상 Timeout을 리턴함&#10;이제 서버가 로그인하는 모든 유저에게 NotifyAdminEvent를 보내 자신이 admin인지 아닌지 알려줌" />
     <MESSAGE value="0608&#10;&#10;이제 매 게임을 시작할 때마다 저장된 문자열을 초기화함&#10;WordChainHelper에 게임을 시작할 때 CM과 관련없는 리소스를 초기화하는 init() 메소드 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="0608&#10;&#10;이제 매 게임을 시작할 때마다 저장된 문자열을 초기화함&#10;WordChainHelper에 게임을 시작할 때 CM과 관련없는 리소스를 초기화하는 init() 메소드 추가" />
+    <MESSAGE value="0611&#10;&#10;필요없는 코드 정리&#10;서버에서 Timeout을 정상적으로 처리하지 못하던 문제 해결&#10;CMGroup에서 유저가 한 명 남았을 때 같은 유저에게 두 번 턴을 넘겨주던 문제 해결" />
+    <MESSAGE value="0611&#10;&#10;클라이언트에서 시간 제한을 5초로 적용하던 문제 수정(10초로 수정)" />
+    <option name="LAST_COMMIT_MESSAGE" value="0611&#10;&#10;클라이언트에서 시간 제한을 5초로 적용하던 문제 수정(10초로 수정)" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -621,7 +643,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1591110654530" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1591617920525">
+    <state x="807" y="433" key="VCS.ChangelistChooser" timestamp="1591869434736">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="807" y="433" key="VCS.ChangelistChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1591869434736" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1591855075732">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1591617920525" />
