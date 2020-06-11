@@ -51,30 +51,6 @@ public class SendDictionaryQuery implements Callable<Integer> {
         if (!response.isSuccessful()) {
             return WordChainInfo.RESULT_API_ERROR;
         }
-        /* Asynchronous request
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Error code " + response);
-                } else {
-                    Gson gson = new Gson();
-                    APIResponse parsedResponse = gson.fromJson(response.body().string(), APIResponse.class);
-
-                    if (isNoun(parsedResponse)) {
-                        System.out.println(input + " is a noun.");
-                    } else {
-                        System.out.println(input + " is not a noun.");
-                    }
-                    stringSet.add(input);
-                }
-            }
-        });*/
 
         Gson gson = new Gson();
         APIResponse parsedResponse;
