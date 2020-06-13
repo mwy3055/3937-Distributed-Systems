@@ -31,16 +31,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
-      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
-    </list>
-    <list id="870003f1-24bb-4cb0-8f57-da1e61059e43" name="0611" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/SendDictionaryQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServerEventHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/WordChainInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/WordChainInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,7 +184,6 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="" />
-      <changelist id="870003f1-24bb-4cb0-8f57-da1e61059e43" name="0611" comment="" />
       <created>1585108480286</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -275,7 +266,8 @@
       <workItem from="1591618144828" duration="103000" />
       <workItem from="1591851328844" duration="3514000" />
       <workItem from="1591867621756" duration="52000" />
-      <workItem from="1591869051629" duration="408000" />
+      <workItem from="1591869051629" duration="539000" />
+      <workItem from="1591869976911" duration="1671000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -438,7 +430,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591869416825</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="0611&#10;&#10;클라이언트에서 시간 제한을 5초로 적용하던 문제 수정(10초로 수정)">
+      <created>1591869527528</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1591869527528</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -647,10 +646,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="433" key="VCS.ChangelistChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1591869434736" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1591855075732">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1591869562763">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1591617920525" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1591869562762" />
     <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1591516315791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

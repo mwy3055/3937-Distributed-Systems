@@ -23,4 +23,4 @@ public class WordChainInfo {
     public static final int WORD_TIME_LIMIT_MILIS = 10000;
     public static final int WORD_TIME_LIMIT_SEC = 10;
 
-};
+}
