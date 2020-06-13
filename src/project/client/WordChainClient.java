@@ -69,7 +69,7 @@ public class WordChainClient {
     }
 
     ///////////////////////////////////////////////////////////////
-    // TODO: Implement from here
+    // Implement from here
 
 
     public void connectServer() {
@@ -111,7 +111,6 @@ public class WordChainClient {
             if (!strNewServerPort.isEmpty() && Integer.parseInt(strNewServerPort) != nCurServerPort)
                 m_clientStub.setServerPort(Integer.parseInt(strNewServerPort));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -161,7 +160,7 @@ public class WordChainClient {
     }
 
     public void playGame() {
-        // TODO: follow the server's instruction(event) until game is over
+        // follow the server's instruction(event) until game is over
         interruptRequestThread();
         interruptWaitingThread();
         synchronized (this) {
@@ -220,7 +219,7 @@ public class WordChainClient {
     }
 
     ///////////////////////////////////////////////////////////////
-    // TODO: Implement end.
+    // Implement end.
 
     public static void main(String[] args) {
         WordChainClient client = new WordChainClient();

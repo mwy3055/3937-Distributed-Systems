@@ -137,7 +137,6 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         m_client.setGamePlaying(false);
         WordChainHelper.stopGettingInput();
 
-        // TODO: After game finish: what to do?
         m_client.terminateClient();
     }
 
@@ -145,8 +144,7 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
         CMDataEvent de = (CMDataEvent) cme;
         switch (de.getID()) {
             case CMDataEvent.NEW_USER:
-                printMessage("[" + de.getUserName() + "] enters group(" + de.getHandlerGroup() + ") in session("
-                        + de.getHandlerSession() + ").\n");
+                printMessage("[" + de.getUserName() + "] enters group(" + de.getHandlerGroup() + ")");
                 break;
             case CMDataEvent.REMOVE_USER:
                 printMessage("[" + de.getUserName() + "] leaves group(" + de.getHandlerGroup() + ") in session("
