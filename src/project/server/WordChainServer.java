@@ -237,10 +237,14 @@ public class WordChainServer extends JFrame {
 
     private WordResult processWordEvent(WordSendingEvent wordEvent, long timeDiff) {
         String word = wordEvent.getWord();
-        if (!word.equals("")) {
-            printMessage(String.format("User [%s] from group [%s], session [%s] sent word [%s].\n", wordEvent.getSender(),
-                    wordEvent.getGroupName(), wordEvent.getSessionName(), word));
+        if (word.equals("")) {
+            printMessage(String.format("User [%s] from group [%s], session [%s]: TIMEOUT\n",
+                    wordEvent.getSender(), wordEvent.getGroupName(), wordEvent.getSessionName()));
+            return new WordResult("TIMEOUT", WordChainInfo.RESULT_TIMEOUT, 0, -1);
         }
+        printMessage(String.format("User [%s] from group [%s], session [%s] sent word [%s].\n",
+                wordEvent.getSender(), wordEvent.getGroupName(), wordEvent.getSessionName(), word));
+
         SendDictionaryQuery query = new SendDictionaryQuery(word);
         Future<Integer> result = executor.submit(query);
 
@@ -253,7 +257,9 @@ public class WordChainServer extends JFrame {
         }
         switch (rtnValue) {
             case WordChainInfo.RESULT_API_ERROR:
-                printMessage("Dictionary API connection error!\n");
+                printMessage(String.format("%s doesn't exist in dictionary.\n", word));
+                rtnValue = WordChainInfo.RESULT_NOT_NOUN;
+                lifeChange = -1;
                 break;
             case WordChainInfo.RESULT_DUPLICATION:
                 printMessage(String.format("%s already exists.\n", word));
@@ -370,26 +376,22 @@ public class WordChainServer extends JFrame {
                 NextUserEvent event = new NextUserEvent(nextUser.getName(), previousWord);
                 long t1 = System.currentTimeMillis();
                 CMEvent[] receivedEvents = m_serverStub.castrecv(event, sessionName, groupName,
-                        WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 1, WordChainInfo.WORD_TIME_LIMIT_MILIS);
+                        WordChainInfo.EVENT_SEND_WORD, WordChainInfo.EVENT_SEND_WORD, 1, WordChainInfo.WORD_TIME_LIMIT_MILIS * 2);
                 long t2 = System.currentTimeMillis();
 
-                if (receivedEvents == null || receivedEvents.length == 0) {
-                    printMessage(String.format("Reply of user [%s]: TIMEOUT\n", nextUser.getName()));
-                    sendQueryResult(sessionName, groupName, nextUser.getName(), "TIMEOUT", WordChainInfo.RESULT_TIMEOUT,
-                            0, -1);
+                // process reply event of the user
+                WordSendingEvent receivedEvent = (WordSendingEvent) receivedEvents[0];
+                WordResult result = processWordEvent(receivedEvent, t2 - t1);
+                if (result.getRtnValue() == WordChainInfo.RESULT_OK) {
+                    previousWord = result.getWord();
+                    nextUser.addScore(result.getScoreChange());
                 } else {
-                    WordSendingEvent receivedEvent = (WordSendingEvent) receivedEvents[0];
-                    WordResult result = processWordEvent(receivedEvent, t2 - t1);
-                    if (result.getRtnValue() == WordChainInfo.RESULT_OK) {
-                        previousWord = result.getWord();
-                        nextUser.addScore(result.getScoreChange());
-                    } else {
-                        nextUser.decreaseLife();
-                    }
-                    sendQueryResult(receivedEvent.getSessionName(), receivedEvent.getGroupName(),
-                            receivedEvent.getSender(), result.getWord(), result.getRtnValue(), result.getScoreChange(),
-                            result.getLifeChange());
+                    nextUser.decreaseLife();
                 }
+                sendQueryResult(receivedEvent.getSessionName(), receivedEvent.getGroupName(),
+                        receivedEvent.getSender(), result.getWord(), result.getRtnValue(), result.getScoreChange(),
+                        result.getLifeChange());
+
                 turnLeft--;
                 currentGroup.refreshQueue();
             }

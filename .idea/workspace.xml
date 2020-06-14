@@ -32,9 +32,9 @@
   <component name="ChangeListManager">
     <list default="true" id="33c19460-a1d5-4122-81fa-d5aef94f2113" name="Default Changelist" comment="0422&#10;&#10;사용자가 입력한 단어를 보내는 WordSendingEvent 구현&#10;  - 서버는 사용자가 전송한 단어가 명사인지 판별&#10;  - 수신된 단어는 서버의 String set에 저장되어 같은 단어를 2번 이상 전송하는 경우를 감지&#10;  &#10;jar 파일 대신 CM project의 전체 소스코드를 불러옴&#10;  - WordSendingEvent를 CMEventManager가 인식하게 하기 위해 코드를 추가함">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-client.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cm-server.conf" beforeDir="false" afterPath="$PROJECT_DIR$/cm-server.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClientEventHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/kr/ac/konkuk/ccslab/cm/entity/CMGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/client/WordChainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/client/WordChainClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/project/server/WordChainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/project/server/WordChainServer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +98,7 @@
       <recent name="E:\code\3937 Distributed Systems" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.WordChainClient">
+  <component name="RunManager" selected="Application.WordChainServer">
     <configuration name="MyClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="midexam.MyClient" />
       <module name="3937 Distributed Systems" />
@@ -272,7 +272,10 @@
       <workItem from="1591869976911" duration="1671000" />
       <workItem from="1592022941754" duration="72000" />
       <workItem from="1592023074886" duration="802000" />
-      <workItem from="1592057947236" duration="155000" />
+      <workItem from="1592057947236" duration="306000" />
+      <workItem from="1592058330160" duration="400000" />
+      <workItem from="1592060007455" duration="599000" />
+      <workItem from="1592091919726" duration="2965000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1585108917087</created>
@@ -442,7 +445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591869527528</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="decreased log level from 1 to 0">
+      <created>1592058175927</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1592058175927</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -538,7 +548,8 @@
     <MESSAGE value="0608&#10;&#10;이제 매 게임을 시작할 때마다 저장된 문자열을 초기화함&#10;WordChainHelper에 게임을 시작할 때 CM과 관련없는 리소스를 초기화하는 init() 메소드 추가" />
     <MESSAGE value="0611&#10;&#10;필요없는 코드 정리&#10;서버에서 Timeout을 정상적으로 처리하지 못하던 문제 해결&#10;CMGroup에서 유저가 한 명 남았을 때 같은 유저에게 두 번 턴을 넘겨주던 문제 해결" />
     <MESSAGE value="0611&#10;&#10;클라이언트에서 시간 제한을 5초로 적용하던 문제 수정(10초로 수정)" />
-    <option name="LAST_COMMIT_MESSAGE" value="0611&#10;&#10;클라이언트에서 시간 제한을 5초로 적용하던 문제 수정(10초로 수정)" />
+    <MESSAGE value="decreased log level from 1 to 0" />
+    <option name="LAST_COMMIT_MESSAGE" value="decreased log level from 1 to 0" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -574,22 +585,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="434" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1585108926410" />
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1592058054208">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1592102649030">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1592058054208" />
-    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1592058054207">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1592102649030" />
+    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1592102649030">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1592058054207" />
-    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1592058054207">
+    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1592102649030" />
+    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1592102649030">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1592058054207" />
-    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1592058054207">
+    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1592102649030" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1592102649030">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1592058054207" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1592102649030" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1591617303850">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -651,10 +662,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="433" key="VCS.ChangelistChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1591869434736" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1591869562763">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1592058180163">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1591869562762" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1592058180163" />
     <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1591516315791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

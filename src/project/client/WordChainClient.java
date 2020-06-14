@@ -130,7 +130,6 @@ public class WordChainClient {
         System.out.println("Sent the login request. Please wait...");
 
         CMSessionEvent se = m_clientStub.syncLoginCM(userName, "");
-        System.out.println(se.getReturnCode());
         if (se != null && se.getReturnCode() != 0) {
             System.out.println(String.format("Successfully logged in to session %s!", se.getSessionName()));
         } else {

@@ -11,8 +11,6 @@ public class CMGroup extends CMGroupInfo {
     private MembershipKey m_membershipKey;    // required for leaving a group
 
     private Queue<CMUser> userQueue;
-    private int currentIndex;
-    private CMUser currentUser;
     private CMUser groupAdmin;
 
     public CMGroup() {
@@ -20,8 +18,6 @@ public class CMGroup extends CMGroupInfo {
         m_groupUsers = new CMMember();
         m_mcInfo = new CMChannelInfo<InetSocketAddress>();
         m_membershipKey = null;
-        currentIndex = -2;
-        currentUser = null;
         groupAdmin = null;
     }
 
@@ -30,8 +26,6 @@ public class CMGroup extends CMGroupInfo {
         m_groupUsers = new CMMember();
         m_mcInfo = new CMChannelInfo<InetSocketAddress>();
         m_membershipKey = null;
-        currentIndex = -2;
-        currentUser = null;
         groupAdmin = null;
     }
 
@@ -71,17 +65,13 @@ public class CMGroup extends CMGroupInfo {
         }
     }
 
-    public synchronized CMUser getCurrentUser() {
-        return currentUser;
-    }
-
     public synchronized CMUser getNextUser() {
-        CMUser nextUser = null;
+        CMUser nextUser;
         do {
             nextUser = userQueue.poll();
         } while (!userQueue.isEmpty() && nextUser != null && (!m_groupUsers.isMember(nextUser) || nextUser.getLife() <= 0));
 
-        if (nextUser != null && m_groupUsers.isMember(nextUser)) {
+        if (nextUser != null && m_groupUsers.isMember(nextUser) && nextUser.getLife() > 0) {
             userQueue.add(nextUser);
         }
         return nextUser;
@@ -98,7 +88,5 @@ public class CMGroup extends CMGroupInfo {
 
     public synchronized void finishGame() {
         userQueue.clear();
-        currentIndex = -2;
-        currentUser = null;
     }
 }
