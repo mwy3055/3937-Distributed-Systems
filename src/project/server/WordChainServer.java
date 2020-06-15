@@ -381,7 +381,14 @@ public class WordChainServer extends JFrame {
 
                 // process reply event of the user
                 WordSendingEvent receivedEvent = (WordSendingEvent) receivedEvents[0];
-                WordResult result = processWordEvent(receivedEvent, t2 - t1);
+                String word = receivedEvent.getWord();
+                WordResult result;
+                if(!word.equals("") && !previousWord.startsWith(word.substring(0, 1))) {
+                    // example: h -> ant
+                    result = new WordResult(word, WordChainInfo.RESULT_INVALID, 0, -1);
+                } else {
+                   result = processWordEvent(receivedEvent, t2 - t1);
+                }
                 if (result.getRtnValue() == WordChainInfo.RESULT_OK) {
                     previousWord = result.getWord();
                     nextUser.addScore(result.getScoreChange());

@@ -7,10 +7,11 @@ public class WordChainInfo {
 
     /* results of SendDictionaryQuery */
     public static final int RESULT_OK = 400;
-    public static final int RESULT_NOT_NOUN = 401;
-    public static final int RESULT_DUPLICATION = 402;
-    public static final int RESULT_TIMEOUT = 403;
-    public static final int RESULT_API_ERROR = 404;
+    public static final int RESULT_INVALID = 401;
+    public static final int RESULT_NOT_NOUN = 402;
+    public static final int RESULT_DUPLICATION = 403;
+    public static final int RESULT_TIMEOUT = 404;
+    public static final int RESULT_API_ERROR = 405;
 
     public static final int EVENT_SEND_WORD = 900;
     public static final int EVENT_NEXT_USER = 901;

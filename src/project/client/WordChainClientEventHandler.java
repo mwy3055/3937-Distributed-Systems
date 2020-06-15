@@ -119,6 +119,8 @@ public class WordChainClientEventHandler implements CMAppEventHandler {
             printMessage(String.format("Result: %s\n", WordChainHelper.getWordResultString(resultCode)));
         } else if (resultCode == WordChainInfo.RESULT_OK) {
             printMessage(String.format("[Server] %s is valid. You got %d scores!\n", word, scoreChange));
+        } else if (resultCode == WordChainInfo.RESULT_INVALID) {
+            printMessage(String.format("[Server] %s is not a valid input. Your life will decrease by 1.\n", word));
         } else if (resultCode == WordChainInfo.RESULT_NOT_NOUN) {
             printMessage(String.format("[Server] %s is not a noun. Your life will decrease by 1.\n", word));
         } else if (resultCode == WordChainInfo.RESULT_DUPLICATION) {

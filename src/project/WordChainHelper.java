@@ -44,6 +44,8 @@ public class WordChainHelper {
         switch (resultCode) {
             case WordChainInfo.RESULT_OK:
                 return "OK";
+            case WordChainInfo.RESULT_INVALID:
+                return "INVALID INPUT";
             case WordChainInfo.RESULT_NOT_NOUN:
                 return "NOT NOUN";
             case WordChainInfo.RESULT_DUPLICATION:
